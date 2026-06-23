@@ -1372,13 +1372,15 @@ function tornaIndietro(){
     return;
   }
 
-  if(
-    pagina === "compilaAllenamento" ||
-    pagina === "allenamenti"
-  ){
-    setPagina("allenamenti");
-    return;
-  }
+  if(pagina === "compilaAllenamento"){
+  setPagina("allenamenti");
+  return;
+}
+
+if(pagina === "allenamenti"){
+  setPagina("dashboard");
+  return;
+}
 
   if(
     pagina === "dettaglioGara" ||
