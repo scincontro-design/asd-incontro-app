@@ -1839,13 +1839,11 @@ function haAllenamentiInData(data){
 >
   <option value="">Seleziona gruppo</option>
 
-  {(utente.ruolo === "Admin" ? tuttiGruppi : gruppiAllenamento).map(
-  (gruppo, index) => (
-    <option key={index} value={gruppo}>
-      {gruppo}
-    </option>
-  )
-)}
+  {gruppiAllenamento.map((gruppo, index) => (
+  <option key={index} value={gruppo}>
+    {gruppo}
+  </option>
+))}
 
 </select>
 
