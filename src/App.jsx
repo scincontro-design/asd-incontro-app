@@ -128,8 +128,7 @@ function caricaAllenamenti(){
 
   setAllenamenti(data);
 
-  const gruppiUnici = [...new Set(data.map((a) => a.gruppo))];
-  setGruppiAllenamento(gruppiUnici);
+  caricaGruppiAllenamento();
 
   setPagina("allenamenti");
 
@@ -152,6 +151,33 @@ function caricaAllenamenti(){
   script.onerror = function(){
     alert("Errore caricamento allenamenti");
   };
+
+  document.body.appendChild(script);
+
+}
+function caricaGruppiAllenamento(){
+
+  const callbackName = "callbackGruppiAllenamento";
+
+  window[callbackName] = function(data){
+
+    setGruppiAllenamento(data);
+
+    var script = document.getElementById("jsonpGruppiAllenamento");
+    if(script){
+      script.remove();
+    }
+
+  };
+
+  var script = document.createElement("script");
+  script.id = "jsonpGruppiAllenamento";
+
+  script.src =
+    API_URL +
+    "?action=gruppiIstruttore" +
+    "&id=" + encodeURIComponent(utente.id) +
+    "&callback=" + callbackName;
 
   document.body.appendChild(script);
 
