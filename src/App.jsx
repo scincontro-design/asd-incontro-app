@@ -2180,6 +2180,35 @@ function haAllenamentiInData(data){
       </div>
 
     ))}
+    {dettaglioPresenzeRagazzo && (
+
+  <div className="mini-card">
+
+    <h3>{dettaglioPresenzeRagazzo.ragazzo}</h3>
+
+    <p>
+      Presenze totali: {dettaglioPresenzeRagazzo.totale}
+    </p>
+
+    <p>
+      Presenze settimana: {dettaglioPresenzeRagazzo.settimana}
+    </p>
+
+    <h4>Dettaglio mensile</h4>
+
+    {Object.keys(dettaglioPresenzeRagazzo.mesi || {}).map((mese, index) => (
+      <p key={index}>
+        {mese}: {dettaglioPresenzeRagazzo.mesi[mese]}
+      </p>
+    ))}
+
+    <button onClick={() => setDettaglioPresenzeRagazzo(null)}>
+      CHIUDI DETTAGLIO
+    </button>
+
+  </div>
+
+)}
 
   </div>
 
