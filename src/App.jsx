@@ -988,6 +988,9 @@ setSalvataggio(true);
 
 return (
     <div className="app">
+
+    <BottoneIndietro />
+
       <div className="dashboard-card">
 
         <h2>
@@ -1361,6 +1364,54 @@ function salvaModificaGara(){
     "&callback=" + callbackName;
 
   document.body.appendChild(script);
+
+}
+function tornaIndietro(){
+
+  if(pagina === "dashboard"){
+    return;
+  }
+
+  if(
+    pagina === "compilaAllenamento" ||
+    pagina === "allenamenti"
+  ){
+    setPagina("allenamenti");
+    return;
+  }
+
+  if(
+    pagina === "dettaglioGara" ||
+    pagina === "convocazioni" ||
+    pagina === "modificaGara" ||
+    pagina === "risultatoGara"
+  ){
+    setPagina("gare");
+    return;
+  }
+
+  if(pagina === "schedaGiocatore"){
+    setPagina("schede");
+    return;
+  }
+
+  setPagina("dashboard");
+
+}
+function BottoneIndietro(){
+
+  if(!utente || pagina === "dashboard"){
+    return null;
+  }
+
+  return (
+    <button
+      className="back-fixed"
+      onClick={tornaIndietro}
+    >
+      ←
+    </button>
+  );
 
 }
 function apriConvocazioni(){
@@ -1744,6 +1795,9 @@ function haAllenamentiInData(data){
   if(pagina === "allenamenti"){
   return (
     <div className="app">
+
+    <BottoneIndietro />
+
       <div className="dashboard-card">
 
         <h2>ALLENAMENTI</h2>
@@ -2040,6 +2094,9 @@ function haAllenamentiInData(data){
 if(pagina === "gare"){
   return (
     <div className="app">
+
+    <BottoneIndietro />
+
       <div className="dashboard-card">
 
         <h2>GARE</h2>
@@ -2268,6 +2325,9 @@ if(pagina === "gare"){
 if(pagina === "dettaglioGara" && garaSelezionata){
   return (
     <div className="app">
+
+    <BottoneIndietro />
+
       <div className="dashboard-card">
 
         <h2>DETTAGLIO GARA</h2>
@@ -2312,6 +2372,9 @@ if(pagina === "dettaglioGara" && garaSelezionata){
 if(pagina === "convocazioni" && garaSelezionata){
   return (
     <div className="app">
+
+    <BottoneIndietro />
+
       <div className="dashboard-card">
 
         <h2>CONVOCAZIONI</h2>
@@ -2365,6 +2428,9 @@ if(pagina === "convocazioni" && garaSelezionata){
 if(pagina === "modificaGara" && garaModifica){
   return (
     <div className="app">
+
+    <BottoneIndietro />
+
       <div className="dashboard-card">
 
         <h2>MODIFICA GARA</h2>
@@ -2476,6 +2542,9 @@ if(pagina === "modificaGara" && garaModifica){
 if(pagina === "risultatoGara" && garaSelezionata){
   return (
     <div className="app">
+
+    <BottoneIndietro />
+
       <div className="dashboard-card">
 
         <h2>RISULTATO GARA</h2>
@@ -2682,6 +2751,9 @@ if(pagina === "risultatoGara" && garaSelezionata){
 if(pagina === "schede"){
   return (
     <div className="app">
+
+    <BottoneIndietro />
+
       <div className="dashboard-card">
 
         <h2>SCHEDE GIOCATORI</h2>
@@ -2712,6 +2784,9 @@ if(pagina === "schede"){
 if(pagina === "schedaGiocatore" && giocatoreSelezionato){
   return (
     <div className="app">
+
+    <BottoneIndietro />
+
       <div className="dashboard-card">
 
         <h2>SCHEDA GIOCATORE</h2>
@@ -2925,6 +3000,9 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
 if(pagina === "statistiche" && statistiche){
   return (
     <div className="app">
+
+    <BottoneIndietro />
+
       <div className="dashboard-card">
 
         <h2>STATISTICHE</h2>
@@ -3060,6 +3138,9 @@ function getGruppiStatistiche(){
 if(pagina === "weekend"){
   return (
     <div className="app">
+
+    <BottoneIndietro />
+
       <div className="dashboard-card">
 
         <h2>LISTA WEEKEND</h2>
@@ -3111,6 +3192,9 @@ if(pagina === "weekend"){
 if(pagina === "iscritti"){
   return (
     <div className="app">
+
+    <BottoneIndietro />
+
       <div className="dashboard-card">
 
         <h2>GESTIONE ISCRITTI</h2>
@@ -3235,6 +3319,9 @@ if(pagina === "iscritti"){
 if(pagina === "gruppi"){
   return (
     <div className="app">
+
+    <BottoneIndietro />
+
       <div className="dashboard-card">
 
         <h2>GESTIONE GRUPPI</h2>
@@ -3324,6 +3411,9 @@ if(pagina === "gruppi"){
 
   return (
     <div className="app">
+
+    <BottoneIndietro />
+
       <div className="dashboard-card">
 
         <img src={logo} alt="Logo ASD Incontro" className="logo dashboard-logo" />

@@ -326,3 +326,36 @@ font-size: 14px;
 .disabled-button:hover{
   background:#999 !important;
 }
+
+.back-fixed{
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border-radius: 50%;
+  background: #111;
+  color: white;
+  font-size: 28px;
+  font-weight: 900;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+}
+
+.back-fixed:hover{
+  background: #e00000;
+}
+
+@media (max-width: 600px){
+  .back-fixed{
+    top: 10px;
+    left: 10px;
+    width: 42px;
+    height: 42px;
+    font-size: 24px;
+  }
+}
