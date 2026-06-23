@@ -1099,10 +1099,6 @@ return (
   ELIMINA ALLENAMENTO
 </button>
 
-        <button onClick={() => setPagina("allenamenti")}>
-          TORNA AGLI ALLENAMENTI
-        </button>
-
       </div>
     </div>
   );
@@ -2085,9 +2081,6 @@ function haAllenamentiInData(data){
   </div>
 
 )}
-        <button onClick={() => setPagina("dashboard")}>
-          TORNA ALLA DASHBOARD
-        </button>
 
       </div>
     </div>
@@ -2316,10 +2309,6 @@ if(pagina === "gare"){
 
 )}
 
-        <button onClick={() => setPagina("dashboard")}>
-          TORNA ALLA DASHBOARD
-        </button>
-
       </div>
     </div>
   );
@@ -2362,10 +2351,6 @@ if(pagina === "dettaglioGara" && garaSelezionata){
         <button onClick={eliminaGara}>
   ELIMINA GARA
 </button>
-
-        <button onClick={() => setPagina("gare")}>
-          TORNA ALLE GARE
-        </button>
 
       </div>
     </div>
@@ -2418,10 +2403,6 @@ if(pagina === "convocazioni" && garaSelezionata){
         <button onClick={salvaConvocati}>
   SALVA CONVOCATI
 </button>
-
-        <button onClick={() => setPagina("dettaglioGara")}>
-          TORNA ALLA GARA
-        </button>
 
       </div>
     </div>
@@ -2775,10 +2756,6 @@ if(pagina === "schede"){
 
         ))}
 
-        <button onClick={() => setPagina("dashboard")}>
-          TORNA ALLA DASHBOARD
-        </button>
-
       </div>
     </div>
   );
@@ -2991,10 +2968,6 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
   SALVA SCHEDA
 </button>
 
-        <button onClick={() => setPagina("schede")}>
-          TORNA ALLE SCHEDE
-        </button>
-
       </div>
     </div>
   );
@@ -3106,10 +3079,6 @@ if(pagina === "statistiche" && statistiche){
 
 ))}
 
-        <button onClick={() => setPagina("dashboard")}>
-          TORNA ALLA DASHBOARD
-        </button>
-
       </div>
     </div>
   );
@@ -3182,10 +3151,6 @@ if(pagina === "weekend"){
           </div>
 
         ))}
-
-        <button onClick={() => setPagina("dashboard")}>
-          TORNA ALLA DASHBOARD
-        </button>
 
       </div>
     </div>
@@ -3310,9 +3275,6 @@ if(pagina === "iscritti"){
 
 ))}
 
-        <button onClick={() => setPagina("dashboard")}>
-          TORNA ALLA DASHBOARD
-        </button>
 
       </div>
     </div>
@@ -3402,9 +3364,6 @@ if(pagina === "gruppi"){
 
 )}
 
-        <button onClick={() => setPagina("dashboard")}>
-          TORNA ALLA DASHBOARD
-        </button>
 
       </div>
     </div>
