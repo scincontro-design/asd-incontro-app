@@ -75,21 +75,49 @@ input:focus{
   border-color:#e00000;
 }
 
+input,
+select,
+textarea{
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
 button{
-  width:100%;
-  padding:22px;
-  border:none;
-  border-radius:22px;
-  background:black;
-  color:white;
-  font-size:28px;
-  font-weight:900;
-  cursor:pointer;
-  transition:0.2s;
+  background: #111;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: .2s;
 }
 
 button:hover{
-  background:#e00000;
+  background: #e00000;
+}
+
+h1{
+  font-size: 34px;
+  margin-bottom: 15px;
+}
+
+h2{
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+h3{
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.app{
+  padding-top: 60px;
 }
 
 input{
@@ -106,14 +134,15 @@ body{
   text-align:center;
   margin-bottom:12px;
 }
+
 .dashboard-card{
-  width:100%;
-  max-width:430px;
-  background:white;
-  border-radius:28px;
-  padding:26px;
-  box-shadow:0 10px 35px rgba(0,0,0,0.12);
-  border-top:8px solid #e00000;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 18px;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .dashboard-logo{
@@ -128,7 +157,7 @@ body{
 
 .dashboard-grid{
   display:grid;
-  grid-template-columns:1fr;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
   gap:12px;
   margin-top:24px;
 }
@@ -143,14 +172,12 @@ body{
 }
 
 .mini-card{
-  background:#f8f8f8;
-  border-radius:18px;
-  padding:16px;
-  margin-top:12px;
-  border-left:5px solid #e00000;
-  cursor:pointer;
-  transition:0.2s;
-  box-shadow:0 4px 10px rgba(0,0,0,0.05);
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
 .mini-card:hover{
