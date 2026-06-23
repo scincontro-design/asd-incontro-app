@@ -2142,6 +2142,7 @@ function haAllenamentiInData(data){
   </div>
 
 )}
+
 {tabAllenamenti === "statistiche" && (
 
   <div>
@@ -2163,28 +2164,13 @@ function haAllenamentiInData(data){
       ))}
 
     </select>
-
-    {filtraStatisticheAllenamenti().map((s, index) => (
-
-      <div
-        className="mini-card"
-        key={index}
-        onClick={() => setDettaglioPresenzeRagazzo(s)}
-      >
-
-        <b>{s.ragazzo}</b>
-        <p>Gruppo: {s.gruppo}</p>
-        <p>Presenze totali: {s.totale}</p>
-        <p>Presenze settimana: {s.settimana}</p>
-
-      </div>
-
-    ))}
-    {dettaglioPresenzeRagazzo && (
+{dettaglioPresenzeRagazzo && (
 
   <div className="mini-card">
 
-    <h3>{dettaglioPresenzeRagazzo.ragazzo}</h3>
+    <h3>
+  📊 {dettaglioPresenzeRagazzo.ragazzo}
+</h3>
 
     <p>
       Presenze totali: {dettaglioPresenzeRagazzo.totale}
@@ -2202,13 +2188,26 @@ function haAllenamentiInData(data){
       </p>
     ))}
 
-    <button onClick={() => setDettaglioPresenzeRagazzo(null)}>
-      CHIUDI DETTAGLIO
-    </button>
-
   </div>
 
 )}
+
+    {filtraStatisticheAllenamenti().map((s, index) => (
+
+      <div
+        className="mini-card"
+        key={index}
+        onClick={() => setDettaglioPresenzeRagazzo(s)}
+      >
+
+        <b>{s.ragazzo}</b>
+        <p>Gruppo: {s.gruppo}</p>
+        <p>Presenze totali: {s.totale}</p>
+        <p>Presenze settimana: {s.settimana}</p>
+
+      </div>
+
+    ))}
 
   </div>
 
