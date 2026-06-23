@@ -78,6 +78,9 @@ const [gruppoGestione, setGruppoGestione] = useState("");
 const [ragazziGruppoGestione, setRagazziGruppoGestione] = useState([]);
 const [ragazziSelezionati, setRagazziSelezionati] = useState({});
 const [nuovoGruppoGestione, setNuovoGruppoGestione] = useState("");
+const [statisticheAllenamenti, setStatisticheAllenamenti] = useState([]);
+const [gruppoStatisticheAllenamenti, setGruppoStatisticheAllenamenti] = useState("");
+const [dettaglioPresenzeRagazzo, setDettaglioPresenzeRagazzo] = useState(null);
 
 
   function login(){
@@ -153,6 +156,56 @@ function caricaAllenamenti(){
   };
 
   document.body.appendChild(script);
+
+}
+function caricaStatisticheAllenamenti(){
+
+  const callbackName = "callbackStatisticheAllenamenti";
+
+  window[callbackName] = function(data){
+
+    setStatisticheAllenamenti(data);
+    setGruppoStatisticheAllenamenti("");
+    setDettaglioPresenzeRagazzo(null);
+    setTabAllenamenti("statistiche");
+
+    var script = document.getElementById("jsonpStatisticheAllenamenti");
+    if(script){
+      script.remove();
+    }
+
+  };
+
+  var script = document.createElement("script");
+  script.id = "jsonpStatisticheAllenamenti";
+
+  script.src =
+    API_URL +
+    "?action=statisticheAllenamenti" +
+    "&id=" + encodeURIComponent(utente.id) +
+    "&ruolo=" + encodeURIComponent(utente.ruolo) +
+    "&callback=" + callbackName;
+
+  document.body.appendChild(script);
+
+}
+function getGruppiStatisticheAllenamenti(){
+
+  var gruppi = statisticheAllenamenti.map((s) => s.gruppo);
+
+  return [...new Set(gruppi)].filter(Boolean);
+
+}
+
+function filtraStatisticheAllenamenti(){
+
+  if(!gruppoStatisticheAllenamenti){
+    return statisticheAllenamenti;
+  }
+
+  return statisticheAllenamenti.filter(
+    (s) => s.gruppo === gruppoStatisticheAllenamenti
+  );
 
 }
 function caricaGruppiAllenamento(){
@@ -1838,6 +1891,13 @@ function haAllenamentiInData(data){
 </button>
 
 <button
+  className={tabAllenamenti === "statistiche" ? "active-folder" : ""}
+  onClick={caricaStatisticheAllenamenti}
+>
+  STATISTICHE ALLENAMENTI
+</button>
+
+<button
   className={tabAllenamenti === "calendario" ? "active-folder" : ""}
   onClick={() => setTabAllenamenti("calendario")}
 >
@@ -1848,7 +1908,8 @@ function haAllenamentiInData(data){
 
 {tabAllenamenti !== "" &&
  tabAllenamenti !== "nuovo" &&
- tabAllenamenti !== "calendario" && (
+ tabAllenamenti !== "calendario" &&
+ tabAllenamenti !== "statistiche" && (
 
   <div>
     {allenamenti
@@ -2081,6 +2142,49 @@ function haAllenamentiInData(data){
   </div>
 
 )}
+{tabAllenamenti === "statistiche" && (
+
+  <div>
+
+    <h3>Statistiche allenamenti</h3>
+
+    <select
+      value={gruppoStatisticheAllenamenti}
+      onChange={(e) =>
+        setGruppoStatisticheAllenamenti(e.target.value)
+      }
+    >
+      <option value="">Tutti i gruppi</option>
+
+      {getGruppiStatisticheAllenamenti().map((gruppo, index) => (
+        <option key={index} value={gruppo}>
+          {gruppo}
+        </option>
+      ))}
+
+    </select>
+
+    {filtraStatisticheAllenamenti().map((s, index) => (
+
+      <div
+        className="mini-card"
+        key={index}
+        onClick={() => setDettaglioPresenzeRagazzo(s)}
+      >
+
+        <b>{s.ragazzo}</b>
+        <p>Gruppo: {s.gruppo}</p>
+        <p>Presenze totali: {s.totale}</p>
+        <p>Presenze settimana: {s.settimana}</p>
+
+      </div>
+
+    ))}
+
+  </div>
+
+)}
+
 
       </div>
     </div>
