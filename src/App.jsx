@@ -2,6 +2,11 @@ import { useEffect, useState } from "react";
 import logo from "./assets/logo.png";
 import dashboardBg from "./assets/dashboard-bg.png";
 import cardAllenamenti from "./assets/card-allenamenti.png";
+import cardGare from "./assets/card-gare.png";
+import cardSchede from "./assets/card-schede.png";
+import cardStatistiche from "./assets/card-statistiche.png";
+import cardAllievi from "./assets/card-allievi.png";
+import cardGruppi from "./assets/card-gruppi.png";
 import "./App.css";
 
 const API_URL = "https://script.google.com/macros/s/AKfycbyokQ0HXWqPMtGzM7hyo5aOkUeY_NkEbIIXHSjZ8SL-jMwIDieUVVmqZXf85S3ahWY_/exec";
@@ -1722,6 +1727,35 @@ function BottoneIndietro(){
       onClick={tornaIndietro}
     >
       ←
+    </button>
+  );
+
+}
+function CardDashboard({
+  titolo,
+  descrizione,
+  immagine,
+  onClick
+}){
+
+  return (
+    <button
+      className="module-card module-card-image"
+      onClick={onClick}
+      style={{
+        backgroundImage: `url(${immagine})`
+      }}
+    >
+      <div className="module-overlay">
+
+        <div>
+          <h3>{titolo}</h3>
+          <p>{descrizione}</p>
+        </div>
+
+        <span>›</span>
+
+      </div>
     </button>
   );
 
@@ -3855,71 +3889,49 @@ if(pagina === "gruppi"){
 
     <div className="dash-modules">
 
-      <button
-  className="module-card module-card-image"
+     <CardDashboard
+  titolo="ALLENAMENTI"
+  descrizione="Presenze, calendario e statistiche"
+  immagine={cardAllenamenti}
   onClick={caricaAllenamenti}
-  style={{
-    backgroundImage: `url(${cardAllenamenti})`
-  }}
->
-  <div className="module-overlay">
+/>
 
-    <div>
-      <h3>ALLENAMENTI</h3>
-      <p>Presenze, calendario e statistiche</p>
-    </div>
+      <CardDashboard
+  titolo="GARE"
+  descrizione="Convocazioni, risultati e archivio"
+  immagine={cardGare}
+  onClick={caricaGare}
+/>
 
-    <span>›</span>
+     <CardDashboard
+  titolo="STATISTICHE"
+  descrizione="Statistiche squadra e giocatori"
+  immagine={cardStatistiche}
+  onClick={caricaStatistiche}
+/>
 
-  </div>
-</button>
-
-      <button className="module-card" onClick={caricaGare}>
-        <div className="module-icon">⚽</div>
-        <div>
-          <h3>GARE</h3>
-          <p>Convocazioni, risultati e archivio</p>
-        </div>
-        <span>›</span>
-      </button>
-
-      <button className="module-card" onClick={caricaStatistiche}>
-        <div className="module-icon">📊</div>
-        <div>
-          <h3>STATISTICHE</h3>
-          <p>Statistiche squadra e giocatori</p>
-        </div>
-        <span>›</span>
-      </button>
-
-      <button className="module-card" onClick={caricaSchedeGiocatori}>
-        <div className="module-icon">⭐</div>
-        <div>
-          <h3>SCHEDE</h3>
-          <p>Valutazioni giocatori stile FIFA</p>
-        </div>
-        <span>›</span>
-      </button>
+     <CardDashboard
+  titolo="SCHEDE"
+  descrizione="Valutazioni giocatori stile FIFA"
+  immagine={cardSchede}
+  onClick={caricaSchedeGiocatori}
+/>
 
       {utente.ruolo === "Admin" && (
         <>
-          <button className="module-card" onClick={caricaIscritti}>
-            <div className="module-icon">👥</div>
-            <div>
-              <h3>ALLIEVI</h3>
-              <p>Anagrafica ragazzi e dati societari</p>
-            </div>
-            <span>›</span>
-          </button>
+         <CardDashboard
+  titolo="ALLIEVI"
+  descrizione="Anagrafica ragazzi e dati societari"
+  immagine={cardAllievi}
+  onClick={caricaIscritti}
+/>
 
-          <button className="module-card" onClick={caricaGestioneGruppi}>
-            <div className="module-icon">🔁</div>
-            <div>
-              <h3>GRUPPI</h3>
-              <p>Spostamenti e gruppi multipli</p>
-            </div>
-            <span>›</span>
-          </button>
+          <CardDashboard
+  titolo="GRUPPI"
+  descrizione="Spostamenti e gruppi multipli"
+  immagine={cardGruppi}
+  onClick={caricaGestioneGruppi}
+/>
 
           <button className="module-card" onClick={caricaListaWeekend}>
             <div className="module-icon">📋</div>
