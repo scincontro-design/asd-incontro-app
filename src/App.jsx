@@ -168,6 +168,10 @@ function precaricaDati(utenteLogin){
   precaricaAllenamenti(utenteLogin);
   precaricaSchede(utenteLogin);
 
+  setTimeout(() => {
+    precaricaStatistiche(utenteLogin);
+  }, 3000);
+
 }
 function precaricaAllenamenti(utenteLogin){
 
@@ -194,6 +198,37 @@ function precaricaAllenamenti(utenteLogin){
   script.src =
     API_URL +
     "?action=allenamenti" +
+    "&id=" + encodeURIComponent(utenteLogin.id) +
+    "&callback=" + callbackName;
+
+  document.body.appendChild(script);
+
+}
+function precaricaStatistiche(utenteLogin){
+
+  if(statistiche){
+    return;
+  }
+
+  const callbackName = "callbackPrecaricaStatistiche";
+
+  window[callbackName] = function(data){
+
+    setStatistiche(data);
+
+    var script = document.getElementById("jsonpPrecaricaStatistiche");
+    if(script){
+      script.remove();
+    }
+
+  };
+
+  var script = document.createElement("script");
+  script.id = "jsonpPrecaricaStatistiche";
+
+  script.src =
+    API_URL +
+    "?action=statistiche" +
     "&id=" + encodeURIComponent(utenteLogin.id) +
     "&callback=" + callbackName;
 
