@@ -65,7 +65,11 @@ const [giocatoreSelezionato, setGiocatoreSelezionato] = useState(null);
 const [schedaModifica, setSchedaModifica] = useState(null);
 const [statistiche, setStatistiche] = useState(null);
 const [gruppoStatistiche, setGruppoStatistiche] = useState("");
+const [dashboardInfo, setDashboardInfo] = useState({
+  allievi: 0
+});
 const [nuovoIscritto, setNuovoIscritto] = useState({
+
   nome: "",
   gruppo: "",
   dataNascita: "",
@@ -273,6 +277,10 @@ function caricaBootstrap(utenteLogin){
   window[callbackName] = function(data){
 
     setGruppiAllenamento(data.gruppiUtente || []);
+
+    setDashboardInfo({
+  allievi: data.allievi || 0
+});
 
     if(utenteLogin.ruolo === "Admin"){
       setTuttiGruppi(data.tuttiGruppi || []);
@@ -3697,115 +3705,157 @@ if(pagina === "gruppi"){
 }
 
   return (
-    <div className="app">
+  <div className="app dashboard-dark">
 
-    <BottoneIndietro />
+    <div className="dash-hero">
 
-      <div className="dashboard-card">
-
-        <img src={logo} alt="Logo ASD Incontro" className="logo dashboard-logo" />
-
-        <h2>CIAO {utente.nome}</h2>
-
-        <p className="subtitle">
-          RUOLO: {utente.ruolo}
-        </p>
-
-        <div className="dashboard-grid">
-
-          <button onClick={caricaAllenamenti}>ALLENAMENTI</button>
-
-          <button onClick={caricaGare}>GARE</button>
-
-          <button onClick={caricaStatistiche}>
-  STATISTICHE
-</button>
-
-          <button onClick={caricaSchedeGiocatori}>
-  SCHEDE GIOCATORI
-</button>
-
-          {utente.ruolo === "Admin" && (
-            <>
-
-              <button onClick={caricaIscritti}>
-  GESTIONE ISCRITTI
-</button>
-
-             <button onClick={caricaGestioneGruppi}>
-  GESTIONE GRUPPI
-</button>
-
-              <button onClick={caricaListaWeekend}>
-  LISTA WEEKEND
-</button>
-
-            </>
-          )}
-
-        </div>
-
-        <button className="logout" onClick={() => setUtente(null)}>
-          ESCI
-        </button>
-
-      </div>
-    </div>
-  );
-  }
-  
-
-  return (
-
-    <div className="app">
-
-      <div className="login-card">
-
-        <div className="top-line"></div>
-
+      <div className="dash-top">
         <img
           src={logo}
           alt="Logo ASD Incontro"
-          className="logo"
+          className="dash-logo"
         />
 
-        <h1>ASD INCONTRO</h1>
+        <div>
+          <h1>
+            ASD <span>INCONTRO</span>
+          </h1>
+          <p>GESTIONE TECNICA</p>
+        </div>
+      </div>
 
-        <p className="subtitle">
-          AREA TECNICA SOCIETÀ
-        </p>
+      <div className="dash-welcome">
+        <h2>Ciao {utente.nome} 👋</h2>
+        <p>Benvenuto nella tua area di lavoro</p>
+      </div>
 
-        <input
-          type="text"
-          placeholder="ID ISTRUTTORE"
-          value={id}
-          onChange={(e) => setId(e.target.value)}
-        />
+      <div className="dash-summary">
 
-        <input
-          type="password"
-          placeholder="PASSWORD"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div className="summary-card">
+          <div className="summary-icon">📅</div>
+          <b>ALLENAMENTI</b>
+          <strong>
+            {allenamenti.filter(a => a.stato === "Programmato").length}
+          </strong>
+          <small>programmati</small>
+        </div>
 
-        {errore && (
-          <div className="errore">
-            {errore}
-          </div>
-        )}
+        <div className="summary-card">
+          <div className="summary-icon">⚽</div>
+          <b>GARE</b>
+          <strong>
+            {gare.filter(g => g.stato === "Programmato").length}
+          </strong>
+          <small>prossime</small>
+        </div>
 
-        <button
-          onClick={login}
-          disabled={loading}
-        >
-          {loading ? "ACCESSO..." : "ACCEDI"}
-        </button>
+        <div className="summary-card">
+          <div className="summary-icon">👥</div>
+          <b>
+            {utente.ruolo === "Admin"
+              ? "ALLIEVI TOTALI"
+              : "ALLIEVI"}
+          </b>
+          <strong>{dashboardInfo.allievi}</strong>
+          <small>
+            {utente.ruolo === "Admin"
+              ? "ASD Incontro"
+              : "nella tua gestione"}
+          </small>
+        </div>
 
       </div>
 
     </div>
 
-  );
+    <div className="dash-modules">
+
+      <button className="module-card" onClick={caricaAllenamenti}>
+        <div className="module-icon">📅</div>
+        <div>
+          <h3>ALLENAMENTI</h3>
+          <p>Presenze, calendario e statistiche</p>
+        </div>
+        <span>›</span>
+      </button>
+
+      <button className="module-card" onClick={caricaGare}>
+        <div className="module-icon">⚽</div>
+        <div>
+          <h3>GARE</h3>
+          <p>Convocazioni, risultati e archivio</p>
+        </div>
+        <span>›</span>
+      </button>
+
+      <button className="module-card" onClick={caricaStatistiche}>
+        <div className="module-icon">📊</div>
+        <div>
+          <h3>STATISTICHE</h3>
+          <p>Statistiche squadra e giocatori</p>
+        </div>
+        <span>›</span>
+      </button>
+
+      <button className="module-card" onClick={caricaSchedeGiocatori}>
+        <div className="module-icon">⭐</div>
+        <div>
+          <h3>SCHEDE</h3>
+          <p>Valutazioni giocatori stile FIFA</p>
+        </div>
+        <span>›</span>
+      </button>
+
+      {utente.ruolo === "Admin" && (
+        <>
+          <button className="module-card" onClick={caricaIscritti}>
+            <div className="module-icon">👥</div>
+            <div>
+              <h3>ALLIEVI</h3>
+              <p>Anagrafica ragazzi e dati societari</p>
+            </div>
+            <span>›</span>
+          </button>
+
+          <button className="module-card" onClick={caricaGestioneGruppi}>
+            <div className="module-icon">🔁</div>
+            <div>
+              <h3>GRUPPI</h3>
+              <p>Spostamenti e gruppi multipli</p>
+            </div>
+            <span>›</span>
+          </button>
+
+          <button className="module-card" onClick={caricaListaWeekend}>
+            <div className="module-icon">📋</div>
+            <div>
+              <h3>LISTA WEEKEND</h3>
+              <p>Riepilogo gare ed esportazione</p>
+            </div>
+            <span>›</span>
+          </button>
+        </>
+      )}
+
+      <button
+        className="logout module-card logout-card"
+        onClick={() => {
+          localStorage.removeItem("utente");
+          localStorage.removeItem("ultimoAccesso");
+          setUtente(null);
+        }}
+      >
+        <div className="module-icon">🚪</div>
+        <div>
+          <h3>ESCI</h3>
+          <p>Termina la sessione</p>
+        </div>
+        <span>›</span>
+      </button>
+
+    </div>
+
+  </div>
+);
 }
 
