@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import logo from "./assets/logo.png";
 import dashboardBg from "./assets/dashboard-bg.png";
+import cardAllenamenti from "./assets/card-allenamenti.png";
 import "./App.css";
 
 const API_URL = "https://script.google.com/macros/s/AKfycbyokQ0HXWqPMtGzM7hyo5aOkUeY_NkEbIIXHSjZ8SL-jMwIDieUVVmqZXf85S3ahWY_/exec";
@@ -3854,14 +3855,24 @@ if(pagina === "gruppi"){
 
     <div className="dash-modules">
 
-      <button className="module-card" onClick={caricaAllenamenti}>
-        <div className="module-icon">📅</div>
-        <div>
-          <h3>ALLENAMENTI</h3>
-          <p>Presenze, calendario e statistiche</p>
-        </div>
-        <span>›</span>
-      </button>
+      <button
+  className="module-card module-card-image"
+  onClick={caricaAllenamenti}
+  style={{
+    backgroundImage: `url(${cardAllenamenti})`
+  }}
+>
+  <div className="module-overlay">
+
+    <div>
+      <h3>ALLENAMENTI</h3>
+      <p>Presenze, calendario e statistiche</p>
+    </div>
+
+    <span>›</span>
+
+  </div>
+</button>
 
       <button className="module-card" onClick={caricaGare}>
         <div className="module-icon">⚽</div>
