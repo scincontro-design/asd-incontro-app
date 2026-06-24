@@ -3814,8 +3814,8 @@ if(pagina === "gruppi"){
   <div
     className="hero-header"
     style={{
-      backgroundImage: url($,{headerDashboard})
-    }}
+  backgroundImage: `url(${headerDashboard})`
+}}
   >
 
     <div className="hero-header-overlay">
