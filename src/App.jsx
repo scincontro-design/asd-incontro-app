@@ -3719,7 +3719,7 @@ if(pagina === "gruppi"){
 }
 
   return (
-  <div className="app dashboard-dark">
+  <div className="app">
 
     <div className="dash-hero">
 
