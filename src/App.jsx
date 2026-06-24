@@ -93,8 +93,9 @@ const [dettaglioPresenzeRagazzo, setDettaglioPresenzeRagazzo] = useState(null);
     setLoading(false);
 
     if(data.esito === "OK"){
-      setUtente(data);
-    }else{
+  setUtente(data);
+  caricaBootstrap(data);
+}else{
       setErrore("Dati errati");
     }
 
@@ -123,6 +124,38 @@ const [dettaglioPresenzeRagazzo, setDettaglioPresenzeRagazzo] = useState(null);
   document.body.appendChild(script);
 
 }
+function caricaBootstrap(utenteLogin){
+
+  const callbackName = "callbackBootstrap";
+
+  window[callbackName] = function(data){
+
+    setGruppiAllenamento(data.gruppiUtente || []);
+
+    if(utenteLogin.ruolo === "Admin"){
+      setTuttiGruppi(data.tuttiGruppi || []);
+    }
+
+    var script = document.getElementById("jsonpBootstrap");
+    if(script){
+      script.remove();
+    }
+
+  };
+
+  var script = document.createElement("script");
+  script.id = "jsonpBootstrap";
+
+  script.src =
+    API_URL +
+    "?action=bootstrapApp" +
+    "&id=" + encodeURIComponent(utenteLogin.id) +
+    "&ruolo=" + encodeURIComponent(utenteLogin.ruolo) +
+    "&callback=" + callbackName;
+
+  document.body.appendChild(script);
+
+}
 function caricaAllenamenti(){
 
   const callbackName = "callbackAllenamenti";
@@ -130,8 +163,6 @@ function caricaAllenamenti(){
  window[callbackName] = function(data){
 
   setAllenamenti(data);
-
-  caricaGruppiAllenamento();
 
   setPagina("allenamenti");
 
@@ -236,10 +267,6 @@ function caricaGruppiAllenamento(){
 
 }
 function caricaGare(){
-
-  if(utente.ruolo === "Admin"){
-    caricaTuttiGruppi();
-  }
 
   caricaGareIstruttore();
 
