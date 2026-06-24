@@ -95,6 +95,10 @@ const [dettaglioPresenzeRagazzo, setDettaglioPresenzeRagazzo] = useState(null);
     if(data.esito === "OK"){
   setUtente(data);
   caricaBootstrap(data);
+
+   setTimeout(() => {
+    precaricaDati(data);
+  }, 800);
 }else{
       setErrore("Dati errati");
     }
@@ -120,6 +124,74 @@ const [dettaglioPresenzeRagazzo, setDettaglioPresenzeRagazzo] = useState(null);
     setLoading(false);
     setErrore("Errore collegamento");
   };
+
+  document.body.appendChild(script);
+
+}
+function precaricaDati(utenteLogin){
+
+  precaricaAllenamenti(utenteLogin);
+  precaricaSchede(utenteLogin);
+
+}
+function precaricaAllenamenti(utenteLogin){
+
+  if(allenamenti.length > 0){
+    return;
+  }
+
+  const callbackName = "callbackPrecaricaAllenamenti";
+
+  window[callbackName] = function(data){
+
+    setAllenamenti(data);
+
+    var script = document.getElementById("jsonpPrecaricaAllenamenti");
+    if(script){
+      script.remove();
+    }
+
+  };
+
+  var script = document.createElement("script");
+  script.id = "jsonpPrecaricaAllenamenti";
+
+  script.src =
+    API_URL +
+    "?action=allenamenti" +
+    "&id=" + encodeURIComponent(utenteLogin.id) +
+    "&callback=" + callbackName;
+
+  document.body.appendChild(script);
+
+}
+function precaricaSchede(utenteLogin){
+
+  if(giocatoriSchede.length > 0){
+    return;
+  }
+
+  const callbackName = "callbackPrecaricaSchede";
+
+  window[callbackName] = function(data){
+
+    setGiocatoriSchede(data);
+
+    var script = document.getElementById("jsonpPrecaricaSchede");
+    if(script){
+      script.remove();
+    }
+
+  };
+
+  var script = document.createElement("script");
+  script.id = "jsonpPrecaricaSchede";
+
+  script.src =
+    API_URL +
+    "?action=giocatoriSchede" +
+    "&id=" + encodeURIComponent(utenteLogin.id) +
+    "&callback=" + callbackName;
 
   document.body.appendChild(script);
 
