@@ -642,3 +642,16 @@ font-size: 14px;
   }
 
 }
+
+/* LOGIN SEMPRE VISIBILE */
+.login-card,
+.dashboard-card{
+  position: relative;
+  z-index: 2;
+}
+
+.app:not(.dashboard-dark){
+  min-height: 100vh;
+  background: #f3f4f6;
+  color: #111;
+}
