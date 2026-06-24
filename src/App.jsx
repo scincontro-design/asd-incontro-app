@@ -66,8 +66,10 @@ const [schedaModifica, setSchedaModifica] = useState(null);
 const [statistiche, setStatistiche] = useState(null);
 const [gruppoStatistiche, setGruppoStatistiche] = useState("");
 const [dashboardInfo, setDashboardInfo] = useState({
-  allievi: 0
+  allievi: 0,
+  allieviTotali: 0
 });
+const [mostraTotali, setMostraTotali] = useState(false);
 const [nuovoIscritto, setNuovoIscritto] = useState({
 
   nome: "",
@@ -293,7 +295,8 @@ function caricaBootstrap(utenteLogin){
     setGruppiAllenamento(data.gruppiUtente || []);
 
     setDashboardInfo({
-  allievi: data.allievi || 0
+  allievi: data.allievi || 0,
+  allieviTotali: data.allieviTotali || data.allievi || 0
 });
 
     if(utenteLogin.ruolo === "Admin"){
@@ -3803,20 +3806,38 @@ if(pagina === "gruppi"){
           <small>prossime</small>
         </div>
 
-        <div className="summary-card">
-          <div className="summary-icon">👥</div>
-          <b>
-            {utente.ruolo === "Admin"
-              ? "ALLIEVI TOTALI"
-              : "ALLIEVI"}
-          </b>
-          <strong>{dashboardInfo.allievi}</strong>
-          <small>
-            {utente.ruolo === "Admin"
-              ? "ASD Incontro"
-              : "nella tua gestione"}
-          </small>
-        </div>
+        <div
+  className="summary-card"
+  onClick={() => {
+    if(utente.ruolo === "Admin"){
+      setMostraTotali(!mostraTotali);
+    }
+  }}
+>
+  <div className="summary-icon">👥</div>
+
+  <b>
+    {utente.ruolo === "Admin"
+      ? mostraTotali
+        ? "ALLIEVI TOTALI"
+        : "ALLIEVI MIEI"
+      : "ALLIEVI"}
+  </b>
+
+  <strong>
+    {utente.ruolo === "Admin"
+      ? mostraTotali
+        ? dashboardInfo.allieviTotali
+        : dashboardInfo.allievi
+      : dashboardInfo.allievi}
+  </strong>
+
+  <small>
+    {utente.ruolo === "Admin"
+      ? "tocca per cambiare"
+      : "nella tua gestione"}
+  </small>
+</div>
 
       </div>
 

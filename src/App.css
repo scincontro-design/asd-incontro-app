@@ -630,8 +630,31 @@ font-size: 14px;
   }
 
   .dash-summary{
-    grid-template-columns:1fr;
-  }
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+}
+
+.summary-card{
+  padding:8px 4px;
+}
+
+.summary-icon{
+  width:30px;
+  height:30px;
+  font-size:16px;
+}
+
+.summary-card strong{
+  font-size:20px;
+}
+
+.summary-card b{
+  font-size:9px;
+}
+
+.summary-card small{
+  font-size:8px;
+}
 
   .dash-modules{
     grid-template-columns:1fr;
