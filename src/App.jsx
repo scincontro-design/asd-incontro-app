@@ -88,34 +88,48 @@ const [dettaglioPresenzeRagazzo, setDettaglioPresenzeRagazzo] = useState(null);
 
 useEffect(() => {
 
-  var utenteSalvato = localStorage.getItem("utente");
-  var ultimoAccesso = localStorage.getItem("ultimoAccesso");
+  try {
 
-  if(!utenteSalvato || !ultimoAccesso){
-    return;
-  }
+    var utenteSalvato = localStorage.getItem("utente");
+    var ultimoAccesso = localStorage.getItem("ultimoAccesso");
 
-  var ora = new Date().getTime();
-  var durataSessione = 90 * 60 * 1000;
+    if(!utenteSalvato || !ultimoAccesso){
+      return;
+    }
 
-  if(ora - Number(ultimoAccesso) <= durataSessione){
+    var ora = new Date().getTime();
+    var durataSessione = 90 * 60 * 1000;
 
-    var utenteObj = JSON.parse(utenteSalvato);
+    if(ora - Number(ultimoAccesso) <= durataSessione){
 
-    setUtente(utenteObj);
-    caricaBootstrap(utenteObj);
+      var utenteObj = JSON.parse(utenteSalvato);
 
-    setTimeout(() => {
-      precaricaDati(utenteObj);
-    }, 800);
+      if(!utenteObj || !utenteObj.id){
+        localStorage.removeItem("utente");
+        localStorage.removeItem("ultimoAccesso");
+        return;
+      }
 
-  }else{
+      setUtente(utenteObj);
+      caricaBootstrap(utenteObj);
+
+      setTimeout(() => {
+        precaricaDati(utenteObj);
+      }, 800);
+
+    }else{
+      localStorage.removeItem("utente");
+      localStorage.removeItem("ultimoAccesso");
+    }
+
+  }catch(error){
+
     localStorage.removeItem("utente");
     localStorage.removeItem("ultimoAccesso");
+
   }
 
 }, []);
-
 
   function login(){
 
