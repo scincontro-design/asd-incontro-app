@@ -3812,47 +3812,45 @@ if(pagina === "gruppi"){
   <div className="dash-hero">
 
   <div
-    className="hero-header"
-    style={{
-  backgroundImage: `url(${headerDashboard})`
-}}
-  >
+  className="hero-header"
+  style={{
+    backgroundImage: `url(${headerDashboard})`
+  }}
+>
+  <div className="hero-header-overlay">
 
-    <div className="hero-header-overlay">
+    <div className="hero-header-top">
 
-      <div className="hero-header-content">
+      <img
+        src={logo}
+        alt="ASD Incontro"
+        className="hero-header-logo"
+      />
 
-        <img
-          src={logo}
-          alt="ASD Incontro"
-          className="hero-header-logo"
-        />
+      <div>
+        <h1 className="hero-main-title">
+          ASD INCONTRO
+        </h1>
 
-        <div>
-
-          <div className="hero-small-title">
-            GESTIONE TECNICA
-          </div>
-
-          <h1 className="hero-main-title">
-            ASD INCONTRO
-          </h1>
-
-          <h2 className="hero-user-title">
-            Ciao {utente.nome} 👋
-          </h2>
-
-          <p className="hero-subtitle">
-            Bentornato nella tua area di lavoro
-          </p>
-
+        <div className="hero-small-title">
+          GESTIONE TECNICA
         </div>
-
       </div>
 
     </div>
 
+    <div className="hero-user-block">
+      <h2 className="hero-user-title">
+        Ciao {utente.nome}
+      </h2>
+
+      <p className="hero-subtitle">
+        Bentornato nella tua area di lavoro
+      </p>
+    </div>
+
   </div>
+</div>
 
   <div className="dash-summary">
 

@@ -895,112 +895,105 @@ body,
 }
 
 .hero-header{
-
   width:100%;
-  min-height:220px;
-
+  aspect-ratio:1/1;
   border-radius:28px;
-
   overflow:hidden;
-
   background-size:cover;
   background-position:center;
-
-  border:1px solid rgba(224,0,0,.45);
-
-  box-shadow:
-    0 10px 25px rgba(0,0,0,.45);
-
+  border:1px solid rgba(224,0,0,.55);
+  box-shadow:0 12px 30px rgba(0,0,0,.45);
 }
 
 .hero-header-overlay{
-
-  min-height:220px;
-
+  width:100%;
+  height:100%;
+  padding:28px;
   display:flex;
-  align-items:center;
-
-  padding:24px;
-
-  background:
-    linear-gradient(
-      90deg,
-      rgba(0,0,0,.75) 0%,
-      rgba(0,0,0,.45) 45%,
-      rgba(0,0,0,.10) 100%
-    );
-
+  flex-direction:column;
+  justify-content:space-between;
+  background:linear-gradient(
+    90deg,
+    rgba(0,0,0,.82) 0%,
+    rgba(0,0,0,.50) 45%,
+    rgba(0,0,0,.08) 100%
+  );
 }
 
-.hero-header-content{
-
+.hero-header-top{
   display:flex;
   align-items:center;
-  gap:20px;
-
+  gap:16px;
 }
 
 .hero-header-logo{
-
-  width:90px;
+  width:82px;
   flex-shrink:0;
-
-}
-
-.hero-small-title{
-
-  color:#e00000;
-
-  font-size:14px;
-
-  font-weight:800;
-
-  letter-spacing:3px;
-
-  margin-bottom:6px;
-
 }
 
 .hero-main-title{
-
   margin:0;
-
   color:white;
-
-  font-size:52px;
-
-  font-weight:900;
-
-  letter-spacing:-1px;
-
-  line-height:1;
-
-  text-transform:uppercase;
   font-family:'Bebas Neue', sans-serif;
+  font-size:42px;
+  font-weight:900;
+  font-style:italic;
+  line-height:.95;
+  letter-spacing:1px;
+  text-align:left;
+}
 
+.hero-small-title{
+  margin-top:6px;
+  color:#e00000;
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:4px;
+}
+
+.hero-user-block{
+  max-width:70%;
 }
 
 .hero-user-title{
-
-  margin:16px 0 4px 0;
-
+  margin:0 0 6px 0;
   color:white;
-
-  text-align:left;
-
-  font-size:38px;
-
-  font-weight:900;
   font-family:'Bebas Neue', sans-serif;
-
+  font-size:42px;
+  font-style:italic;
+  text-align:left;
+  line-height:1;
 }
 
 .hero-subtitle{
-
   margin:0;
-
-  color:#d6d6d6;
-
+  color:#e5e5e5;
   font-size:18px;
+  line-height:1.25;
+}
 
+@media(max-width:700px){
+  .hero-header{
+    aspect-ratio:1/1;
+  }
+
+  .hero-header-overlay{
+    padding:22px;
+  }
+
+  .hero-header-logo{
+    width:70px;
+  }
+
+  .hero-main-title{
+    font-size:36px;
+  }
+
+  .hero-user-title{
+    font-size:36px;
+  }
+
+  .hero-subtitle{
+    font-size:15px;
+  }
 }
