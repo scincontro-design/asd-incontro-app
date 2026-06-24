@@ -396,6 +396,21 @@ font-size: 14px;
     radial-gradient(circle at top right, rgba(224,0,0,.35), transparent 28%),
     linear-gradient(180deg, #050505 0%, #111 55%, #050505 100%);
   overflow-x:hidden;
+  position:relative;
+}
+
+.dashboard-dark::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.65);
+  z-index:0;
+}
+
+.dash-hero,
+.dash-modules{
+  position:relative;
+  z-index:1;
 }
 
 .dash-hero{

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import logo from "./assets/logo.png";
+import dashboardBg from "./assets/dashboard-bg.png";
 import "./App.css";
 
 const API_URL = "https://script.google.com/macros/s/AKfycbyokQ0HXWqPMtGzM7hyo5aOkUeY_NkEbIIXHSjZ8SL-jMwIDieUVVmqZXf85S3ahWY_/exec";
@@ -3762,7 +3763,15 @@ if(pagina === "gruppi"){
 }
 
   return (
-  <div className="app dashboard-dark">
+  <div
+  className="app dashboard-dark"
+  style={{
+    backgroundImage: `url(${dashboardBg})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat"
+  }}
+>
 
     <div className="dash-hero">
 
