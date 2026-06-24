@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "./assets/logo.png";
 import "./App.css";
 
@@ -82,6 +82,36 @@ const [statisticheAllenamenti, setStatisticheAllenamenti] = useState([]);
 const [gruppoStatisticheAllenamenti, setGruppoStatisticheAllenamenti] = useState("");
 const [dettaglioPresenzeRagazzo, setDettaglioPresenzeRagazzo] = useState(null);
 
+useEffect(() => {
+
+  var utenteSalvato = localStorage.getItem("utente");
+  var ultimoAccesso = localStorage.getItem("ultimoAccesso");
+
+  if(!utenteSalvato || !ultimoAccesso){
+    return;
+  }
+
+  var ora = new Date().getTime();
+  var durataSessione = 90 * 60 * 1000;
+
+  if(ora - Number(ultimoAccesso) <= durataSessione){
+
+    var utenteObj = JSON.parse(utenteSalvato);
+
+    setUtente(utenteObj);
+    caricaBootstrap(utenteObj);
+
+    setTimeout(() => {
+      precaricaDati(utenteObj);
+    }, 800);
+
+  }else{
+    localStorage.removeItem("utente");
+    localStorage.removeItem("ultimoAccesso");
+  }
+
+}, []);
+
 
   function login(){
 
@@ -93,12 +123,17 @@ const [dettaglioPresenzeRagazzo, setDettaglioPresenzeRagazzo] = useState(null);
     setLoading(false);
 
     if(data.esito === "OK"){
+
+  localStorage.setItem("utente", JSON.stringify(data));
+  localStorage.setItem("ultimoAccesso", new Date().getTime());
+
   setUtente(data);
   caricaBootstrap(data);
 
-   setTimeout(() => {
+  setTimeout(() => {
     precaricaDati(data);
   }, 800);
+
 }else{
       setErrore("Dati errati");
     }
