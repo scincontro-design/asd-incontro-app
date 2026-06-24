@@ -158,6 +158,11 @@ function caricaBootstrap(utenteLogin){
 }
 function caricaAllenamenti(){
 
+  if(allenamenti.length > 0){
+  setPagina("allenamenti");
+  return;
+}
+
   const callbackName = "callbackAllenamenti";
 
  window[callbackName] = function(data){
@@ -268,6 +273,11 @@ function caricaGruppiAllenamento(){
 }
 function caricaGare(){
 
+ if(gare.length > 0){
+  setPagina("gare");
+  return;
+} 
+
   caricaGareIstruttore();
 
   setTabGare("");
@@ -332,6 +342,11 @@ function esportaListaWeekend(){
 
 }
 function caricaIscritti(){
+
+  if(listaIscritti.length > 0){
+  setPagina("iscritti");
+  return;
+}
 
   if(utente.ruolo === "Admin"){
     caricaTuttiGruppi();
@@ -662,6 +677,11 @@ function eliminaIscritto(iscritto){
 }
 function caricaSchedeGiocatori(){
 
+  if(giocatoriSchede.length > 0){
+  setPagina("schede");
+  return;
+}
+
   const callbackName = "callbackGiocatoriSchede";
 
   window[callbackName] = function(data){
@@ -689,6 +709,11 @@ function caricaSchedeGiocatori(){
 
 }
 function caricaStatistiche(){
+
+  if(statistiche){
+  setPagina("statistiche");
+  return;
+}
 
   const callbackName = "callbackStatistiche";
 
