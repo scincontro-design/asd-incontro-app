@@ -3810,27 +3810,24 @@ if(pagina === "gruppi"){
 
     <div className="dash-hero">
 
-      <div className="dash-top">
-        <img
-          src={logo}
-          alt="Logo ASD Incontro"
-          className="dash-logo"
-        />
+  <div className="dash-brand">
+    <img src={logo} alt="ASD Incontro" className="dash-logo" />
 
-        <div>
-          <h1>
-            ASD <span>INCONTRO</span>
-          </h1>
-          <p>GESTIONE TECNICA</p>
-        </div>
-      </div>
+    <div>
+      <h1>ASD INCONTRO</h1>
+      <p>GESTIONE TECNICA</p>
+    </div>
+  </div>
 
-      <div className="dash-welcome">
-        <h2>Ciao {utente.nome} 👋</h2>
-        <p>Benvenuto nella tua area di lavoro</p>
-      </div>
+  <div className="dash-user-panel">
+    <div>
+      <span>BENTORNATO</span>
+      <h2>{utente.nome}</h2>
+      <p>La tua area operativa per allenamenti, gare e giocatori.</p>
+    </div>
+  </div>
 
-      <div className="dash-summary">
+  <div className="dash-summary">
 
         <div className="summary-card">
           <div className="summary-icon">📅</div>

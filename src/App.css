@@ -840,3 +840,56 @@ body,
   }
 
 }
+.dash-hero{
+  background:linear-gradient(135deg, rgba(0,0,0,.82), rgba(40,0,0,.55));
+  border:1px solid rgba(224,0,0,.45);
+  box-shadow:0 14px 35px rgba(0,0,0,.45);
+}
+
+.dash-brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.dash-brand h1{
+  color:white;
+  font-size:28px;
+  margin:0;
+  letter-spacing:1px;
+}
+
+.dash-brand p{
+  color:#e00000;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:2px;
+  margin:4px 0 0;
+}
+
+.dash-user-panel{
+  margin-top:20px;
+  padding:16px;
+  border-radius:20px;
+  background:rgba(0,0,0,.45);
+  border-left:4px solid #e00000;
+}
+
+.dash-user-panel span{
+  color:#e00000;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:2px;
+}
+
+.dash-user-panel h2{
+  color:white;
+  text-align:left;
+  font-size:32px;
+  margin:4px 0;
+}
+
+.dash-user-panel p{
+  color:#ddd;
+  margin:0;
+}
