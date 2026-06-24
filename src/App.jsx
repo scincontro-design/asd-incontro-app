@@ -7,6 +7,7 @@ import cardSchede from "./assets/card-schede.png";
 import cardStatistiche from "./assets/card-statistiche.png";
 import cardAllievi from "./assets/card-allievi.png";
 import cardGruppi from "./assets/card-gruppi.png";
+import headerDashboard from "./assets/header-dashboard.png";
 import "./App.css";
 
 const API_URL = "https://script.google.com/macros/s/AKfycbyokQ0HXWqPMtGzM7hyo5aOkUeY_NkEbIIXHSjZ8SL-jMwIDieUVVmqZXf85S3ahWY_/exec";
@@ -3808,81 +3809,107 @@ if(pagina === "gruppi"){
   }}
 >
 
-    <div className="dash-hero">
+  <div className="dash-hero">
 
-  <div className="dash-brand">
-    <img src={logo} alt="ASD Incontro" className="dash-logo" />
+  <div
+    className="hero-header"
+    style={{
+      backgroundImage: url($,{headerDashboard})
+    }}
+  >
 
-    <div>
-      <h1>ASD INCONTRO</h1>
-      <p>GESTIONE TECNICA</p>
-    </div>
-  </div>
+    <div className="hero-header-overlay">
 
-  <div className="dash-user-panel">
-    <div>
-      <span>BENTORNATO</span>
-      <h2>{utente.nome}</h2>
-      <p>La tua area operativa per allenamenti, gare e giocatori.</p>
-    </div>
-  </div>
+      <div className="hero-header-content">
 
-  <div className="dash-summary">
+        <img
+          src={logo}
+          alt="ASD Incontro"
+          className="hero-header-logo"
+        />
 
-        <div className="summary-card">
-          <div className="summary-icon">📅</div>
-          <b>ALLENAMENTI</b>
-          <strong>
-            {allenamenti.filter(a => a.stato === "Programmato").length}
-          </strong>
-          <small>programmati</small>
+        <div>
+
+          <div className="hero-small-title">
+            GESTIONE TECNICA
+          </div>
+
+          <h1 className="hero-main-title">
+            ASD INCONTRO
+          </h1>
+
+          <h2 className="hero-user-title">
+            Ciao {utente.nome} 👋
+          </h2>
+
+          <p className="hero-subtitle">
+            Bentornato nella tua area di lavoro
+          </p>
+
         </div>
-
-        <div className="summary-card">
-          <div className="summary-icon">⚽</div>
-          <b>GARE</b>
-          <strong>
-            {gare.filter(g => g.stato === "Programmato").length}
-          </strong>
-          <small>prossime</small>
-        </div>
-
-        <div
-  className="summary-card"
-  onClick={() => {
-    if(utente.ruolo === "Admin"){
-      setMostraTotali(!mostraTotali);
-    }
-  }}
->
-  <div className="summary-icon">👥</div>
-
-  <b>
-    {utente.ruolo === "Admin"
-      ? mostraTotali
-        ? "ALLIEVI TOTALI"
-        : "ALLIEVI MIEI"
-      : "ALLIEVI"}
-  </b>
-
-  <strong>
-    {utente.ruolo === "Admin"
-      ? mostraTotali
-        ? dashboardInfo.allieviTotali
-        : dashboardInfo.allievi
-      : dashboardInfo.allievi}
-  </strong>
-
-  <small>
-    {utente.ruolo === "Admin"
-      ? "tocca per cambiare"
-      : "nella tua gestione"}
-  </small>
-</div>
 
       </div>
 
     </div>
+
+  </div>
+
+  <div className="dash-summary">
+
+    <div className="summary-card">
+      <div className="summary-icon">📅</div>
+      <b>ALLENAMENTI</b>
+      <strong>
+        {allenamenti.filter(a => a.stato === "Programmato").length}
+      </strong>
+      <small>programmati</small>
+    </div>
+
+    <div className="summary-card">
+      <div className="summary-icon">⚽</div>
+      <b>GARE</b>
+      <strong>
+        {gare.filter(g => g.stato === "Programmato").length}
+      </strong>
+      <small>prossime</small>
+    </div>
+
+    <div
+      className="summary-card"
+      onClick={() => {
+        if(utente.ruolo === "Admin"){
+          setMostraTotali(!mostraTotali);
+        }
+      }}
+    >
+      <div className="summary-icon">👥</div>
+
+      <b>
+        {utente.ruolo === "Admin"
+          ? mostraTotali
+            ? "ALLIEVI TOTALI"
+            : "ALLIEVI MIEI"
+          : "ALLIEVI"}
+      </b>
+
+      <strong>
+        {utente.ruolo === "Admin"
+          ? mostraTotali
+            ? dashboardInfo.allieviTotali
+            : dashboardInfo.allievi
+          : dashboardInfo.allievi}
+      </strong>
+
+      <small>
+        {utente.ruolo === "Admin"
+          ? "tocca per cambiare"
+          : "nella tua gestione"}
+      </small>
+    </div>
+
+  </div>
+
+</div>
 
     <div className="dash-modules">
 
