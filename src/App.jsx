@@ -1248,6 +1248,46 @@ setSalvataggio(true);
   document.body.appendChild(script);
 
 }
+if(!utente){
+  return (
+    <div className="app">
+      <div className="login-card">
+
+        <div className="top-line"></div>
+
+        <img src={logo} className="logo" />
+
+        <h1>ASD<br />INCONTRO</h1>
+
+        <p className="subtitle">Accesso area tecnica</p>
+
+        {errore && (
+          <div className="errore">{errore}</div>
+        )}
+
+        <input
+          type="text"
+          placeholder="ID Istruttore"
+          value={id}
+          onChange={(e) => setId(e.target.value)}
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        <button onClick={login} disabled={loading}>
+          {loading ? "ACCESSO..." : "ACCEDI"}
+        </button>
+
+      </div>
+    </div>
+  );
+}
+
   if(utente){
    if(
   pagina === "compilaAllenamento" &&
@@ -3719,7 +3759,7 @@ if(pagina === "gruppi"){
 }
 
   return (
-  <div className="app">
+  <div className="app dashboard-dark">
 
     <div className="dash-hero">
 
