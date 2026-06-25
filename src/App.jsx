@@ -12,6 +12,11 @@ import miniCardAllenamenti from "./assets/minicard-allenamenti.png";
 import miniCardGare from "./assets/minicard-gare.png";
 import miniCardAllievi from "./assets/minicard-allievi.png";
 import sfondoLogin from "./assets/sfondo-login.png";
+import allenamentiHero from "./assets/allenamenti-hero.png";
+import allenamentiNuovo from "./assets/allenamenti-nuovo.png";
+import allenamentiProgrammati from "./assets/allenamenti-programmati.png";
+import allenamentiArchivio from "./assets/allenamenti-archivio.png";
+import allenamentiStatistiche from "./assets/allenamenti-statistiche.png";
 import "./App.css";
 
 const API_URL = "https://script.google.com/macros/s/AKfycbyokQ0HXWqPMtGzM7hyo5aOkUeY_NkEbIIXHSjZ8SL-jMwIDieUVVmqZXf85S3ahWY_/exec";
@@ -2208,51 +2213,86 @@ function haAllenamentiInData(data){
 
       <div className="dashboard-card">
 
-        <h2>ALLENAMENTI</h2>
+        <div
+  className="hero-card"
+  style={{
+    backgroundImage: `url(${allenamentiHero})`
+  }}
+>
+  <div className="hero-overlay">
+    <h1>ALLENAMENTI</h1>
 
-        {allenamenti.length === 0 && (
-          <p className="subtitle">
-            Nessun allenamento trovato
-          </p>
-        )}
+    <p>Programmazione e gestione sedute</p>
+
+    <div className="hero-info">
+      <div>
+        <span>
+          {allenamenti.filter(a => a.stato === "Programmato").length}
+        </span>
+        Allenamenti programmati
+      </div>
+
+      <div>
+        <span>📅</span>
+        Prossimo allenamento
+      </div>
+    </div>
+  </div>
+</div>
+
+{allenamenti.length === 0 && (
+  <p className="subtitle">
+    Nessun allenamento trovato
+  </p>
+)}
 
 <div className="dashboard-grid">
 
   <button
-  className={tabAllenamenti === "nuovo" ? "active-folder" : ""}
-  onClick={() => setTabAllenamenti("nuovo")}
->
-  NUOVO ALLENAMENTO
-</button>
+    className={`action-card ${tabAllenamenti === "nuovo" ? "active-folder" : ""}`}
+    onClick={() => setTabAllenamenti("nuovo")}
+    style={{ backgroundImage: `url(${allenamentiNuovo})` }}
+  >
+    <div className="action-overlay">
+      <h3>NUOVO</h3>
+      <p>Crea una nuova seduta</p>
+    </div>
+  </button>
 
   <button
-  className={
-    tabAllenamenti === "prossimi"
-      ? "active-folder"
-      : ""
-  }
-  onClick={() => setTabAllenamenti("prossimi")}
->
-  PROSSIMI ALLENAMENTI
-</button>
+    className={`action-card ${tabAllenamenti === "prossimi" ? "active-folder" : ""}`}
+    onClick={() => setTabAllenamenti("prossimi")}
+    style={{ backgroundImage: `url(${allenamentiProgrammati})` }}
+  >
+    <div className="action-overlay">
+      <h3>PROGRAMMATI</h3>
+      <p>Allenamenti futuri</p>
+    </div>
+  </button>
 
-<button
-  className={
-    tabAllenamenti === "archivio"
-      ? "active-folder"
-      : ""
-  }
-  onClick={() => setTabAllenamenti("archivio")}
->
-  ARCHIVIO ALLENAMENTI
-</button>
+  <button
+    className={`action-card ${tabAllenamenti === "archivio" ? "active-folder" : ""}`}
+    onClick={() => setTabAllenamenti("archivio")}
+    style={{ backgroundImage: `url(${allenamentiArchivio})` }}
+  >
+    <div className="action-overlay">
+      <h3>ARCHIVIO</h3>
+      <p>Sedute completate</p>
+    </div>
+  </button>
 
-<button
-  className={tabAllenamenti === "statistiche" ? "active-folder" : ""}
-  onClick={caricaStatisticheAllenamenti}
->
-  STATISTICHE ALLENAMENTI
-</button>
+  <button
+    className="action-card"
+    onClick={caricaStatisticheAllenamenti}
+    style={{ backgroundImage: `url(${allenamentiStatistiche})` }}
+  >
+    <div className="action-overlay">
+      <h3>STATISTICHE</h3>
+      <p>Presenze e andamento</p>
+    </div>
+  </button>
+
+</div>
 
 <button
   className={tabAllenamenti === "calendario" ? "active-folder" : ""}
@@ -2260,8 +2300,6 @@ function haAllenamentiInData(data){
 >
   CALENDARIO
 </button>
-
-</div>
 
 {tabAllenamenti !== "" &&
  tabAllenamenti !== "nuovo" &&
