@@ -78,7 +78,9 @@ const [statistiche, setStatistiche] = useState(null);
 const [gruppoStatistiche, setGruppoStatistiche] = useState("");
 const [dashboardInfo, setDashboardInfo] = useState({
   allievi: 0,
-  allieviTotali: 0
+  allieviTotali: 0,
+  allenamentiProgrammati: 0,
+  gareProgrammate: 0
 });
 const [mostraTotali, setMostraTotali] = useState(false);
 const [nuovoIscritto, setNuovoIscritto] = useState({
@@ -306,9 +308,11 @@ function caricaBootstrap(utenteLogin){
 
     setGruppiAllenamento(data.gruppiUtente || []);
 
-    setDashboardInfo({
+   setDashboardInfo({
   allievi: data.allievi || 0,
-  allieviTotali: data.allieviTotali || data.allievi || 0
+  allieviTotali: data.allieviTotali || data.allievi || 0,
+  allenamentiProgrammati: data.allenamentiProgrammati || 0,
+  gareProgrammate: data.gareProgrammate || 0
 });
 
     if(utenteLogin.ruolo === "Admin"){
@@ -3889,7 +3893,7 @@ if(pagina === "gruppi"){
 >
       <b>ALLENAMENTI</b>
       <strong>
-        {allenamenti.filter(a => a.stato === "Programmato").length}
+        {dashboardInfo.allenamentiProgrammati}
       </strong>
       <small>programmati</small>
     </div>
@@ -3902,7 +3906,7 @@ if(pagina === "gruppi"){
 >
       <b>GARE</b>
       <strong>
-        {gare.filter(g => g.stato === "Programmato").length}
+        {dashboardInfo.gareProgrammate}
       </strong>
       <small>prossime</small>
     </div>
