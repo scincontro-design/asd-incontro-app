@@ -8,6 +8,9 @@ import cardStatistiche from "./assets/card-statistiche.png";
 import cardAllievi from "./assets/card-allievi.png";
 import cardGruppi from "./assets/card-gruppi.png";
 import headerDashboard from "./assets/header-dashboard.png";
+import miniCardAllenamenti from "./assets/minicard-allenamenti.png";
+import miniCardGare from "./assets/minicard-gare.png";
+import miniCardAllievi from "./assets/minicard-allievi.png";
 import "./App.css";
 
 const API_URL = "https://script.google.com/macros/s/AKfycbyokQ0HXWqPMtGzM7hyo5aOkUeY_NkEbIIXHSjZ8SL-jMwIDieUVVmqZXf85S3ahWY_/exec";
@@ -3854,7 +3857,12 @@ if(pagina === "gruppi"){
 
   <div className="dash-summary">
 
-    <div className="summary-card">
+    <div
+  className="summary-card summary-card-image"
+  style={{
+    backgroundImage: `url(${miniCardAllenamenti})`
+  }}
+>
       <div className="summary-icon">📅</div>
       <b>ALLENAMENTI</b>
       <strong>
@@ -3863,7 +3871,12 @@ if(pagina === "gruppi"){
       <small>programmati</small>
     </div>
 
-    <div className="summary-card">
+   <div
+  className="summary-card summary-card-image"
+  style={{
+    backgroundImage: `url(${miniCardGare})`
+  }}
+>
       <div className="summary-icon">⚽</div>
       <b>GARE</b>
       <strong>
@@ -3873,7 +3886,10 @@ if(pagina === "gruppi"){
     </div>
 
     <div
-      className="summary-card"
+  className="summary-card summary-card-image"
+  style={{
+    backgroundImage: `url(${miniCardAllievi})`
+  }}
       onClick={() => {
         if(utente.ruolo === "Admin"){
           setMostraTotali(!mostraTotali);

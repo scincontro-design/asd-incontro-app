@@ -1023,3 +1023,37 @@ body,
     font-size:15px;
   }
 }
+
+.summary-card-image{
+  position:relative;
+  overflow:hidden;
+  min-height:118px;
+  background-size:cover !important;
+  background-position:center !important;
+  background-repeat:no-repeat !important;
+  border:1px solid rgba(224,0,0,.55);
+}
+
+.summary-card-image::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    180deg,
+    rgba(0,0,0,.25) 0%,
+    rgba(0,0,0,.72) 100%
+  );
+  z-index:0;
+}
+
+.summary-card-image .summary-icon,
+.summary-card-image b,
+.summary-card-image strong,
+.summary-card-image small{
+  position:relative;
+  z-index:1;
+}
+
+.summary-card-image .summary-icon{
+  background:rgba(224,0,0,.88);
+}
