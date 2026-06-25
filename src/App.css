@@ -1074,3 +1074,42 @@ body,
     color:#ededed;
     font-size:10px;
 }
+
+.login-background{
+  min-height:100vh;
+  position:relative;
+}
+
+.login-background::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.68);
+  z-index:0;
+}
+
+.login-background .login-card{
+  position:relative;
+  z-index:1;
+  background:rgba(8,8,8,.88);
+  color:white;
+  border:1px solid rgba(224,0,0,.55);
+  box-shadow:0 18px 45px rgba(0,0,0,.55);
+}
+
+.login-background .login-card h1{
+  color:white;
+}
+
+.login-background .subtitle{
+  color:#ddd;
+}
+
+.login-background input{
+  background:rgba(255,255,255,.95);
+  color:#111;
+}
+
+.login-background .logo{
+  width:130px;
+}
