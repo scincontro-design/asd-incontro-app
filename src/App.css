@@ -1540,3 +1540,18 @@ height:150px;
   border:2px solid #e00000 !important;
   background-color:transparent !important;
 }
+
+.dashboard-card .mini-card{
+  background:rgba(8,8,8,.72);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 10px 25px rgba(0,0,0,.35);
+}
+
+.dashboard-card .mini-card p,
+.dashboard-card .mini-card b,
+.dashboard-card .mini-card h3,
+.dashboard-card .mini-card h4,
+.dashboard-card label{
+  color:#fff;
+}
