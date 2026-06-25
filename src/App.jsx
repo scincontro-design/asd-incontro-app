@@ -2213,30 +2213,18 @@ function haAllenamentiInData(data){
 
       <div className="dashboard-card">
 
-        <div
+       <div
   className="hero-card"
   style={{
     backgroundImage: `url(${allenamentiHero})`
   }}
 >
   <div className="hero-overlay">
+
     <h1>ALLENAMENTI</h1>
 
     <p>Programmazione e gestione sedute</p>
 
-    <div className="hero-info">
-      <div>
-        <span>
-          {allenamenti.filter(a => a.stato === "Programmato").length}
-        </span>
-        Allenamenti programmati
-      </div>
-
-      <div>
-        <span>📅</span>
-        Prossimo allenamento
-      </div>
-    </div>
   </div>
 </div>
 
