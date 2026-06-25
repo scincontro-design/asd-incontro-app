@@ -1113,3 +1113,112 @@ body,
 .login-background .logo{
   width:130px;
 }
+
+.login-background{
+  min-height:100vh;
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  position:relative;
+}
+
+.login-background::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  z-index:0;
+}
+
+.login-card-new{
+  position:relative;
+  z-index:1;
+  max-width:420px;
+  padding:30px;
+  border-radius:28px;
+  background:rgba(10,10,10,.78);
+  border:1px solid rgba(224,0,0,.7);
+  box-shadow:0 18px 50px rgba(0,0,0,.75);
+  backdrop-filter:blur(8px);
+  color:white;
+  animation:loginFade .55s ease both;
+}
+
+.login-logo-new{
+  width:135px;
+  display:block;
+  margin:0 auto 18px auto;
+  filter:drop-shadow(0 8px 18px rgba(0,0,0,.7));
+}
+
+.login-title{
+  color:white !important;
+  font-size:38px;
+  text-align:center;
+  margin:0;
+  line-height:1;
+  font-style:italic;
+  letter-spacing:.5px;
+}
+
+.login-title span{
+  color:#e00000;
+}
+
+.login-subtitle{
+  color:#dcdcdc;
+  text-align:center;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:5px;
+  margin:12px 0 0;
+}
+
+.login-divider{
+  width:70px;
+  height:3px;
+  background:#e00000;
+  margin:22px auto;
+  border-radius:10px;
+}
+
+.login-card-new input{
+  height:58px;
+  border-radius:14px;
+  background:rgba(255,255,255,.92);
+  border:1px solid rgba(255,255,255,.25);
+  font-size:16px;
+}
+
+.login-card-new button{
+  width:100%;
+  height:60px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#ff1a1a,#b60000);
+  font-size:18px;
+  letter-spacing:3px;
+  font-weight:900;
+}
+
+.login-card-new button:hover{
+  background:#111;
+}
+
+.login-quote{
+  margin:24px 0 0;
+  color:#e6e6e6;
+  font-size:14px;
+  text-align:center;
+  font-style:italic;
+}
+
+@keyframes loginFade{
+  from{
+    opacity:0;
+    transform:translateY(20px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}

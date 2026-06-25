@@ -11,6 +11,7 @@ import headerDashboard from "./assets/header-dashboard.png";
 import miniCardAllenamenti from "./assets/minicard-allenamenti.png";
 import miniCardGare from "./assets/minicard-gare.png";
 import miniCardAllievi from "./assets/minicard-allievi.png";
+import sfondoLogin from "./assets/sfondo-login.png";
 import "./App.css";
 
 const API_URL = "https://script.google.com/macros/s/AKfycbyokQ0HXWqPMtGzM7hyo5aOkUeY_NkEbIIXHSjZ8SL-jMwIDieUVVmqZXf85S3ahWY_/exec";
@@ -1307,45 +1308,52 @@ if(!utente){
     <div
       className="app login-background"
       style={{
-        backgroundImage: `url(${dashboardBg})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat"
+        backgroundImage: `url(${sfondoLogin})`
       }}
     >
-      <div className="login-card">
+     <div className="login-card login-card-new">
 
-        <div className="top-line"></div>
+  <div className="top-line"></div>
 
-        <img src={logo} className="logo" />
+  <img src={logo} className="login-logo-new" />
 
-        <h1>ASD<br />INCONTRO</h1>
+  <h1 className="login-title">
+    <span>ASD</span> Incontro
+  </h1>
 
-        <p className="subtitle">Accesso area tecnica</p>
+  <p className="login-subtitle">
+    GESTIONE TECNICA
+  </p>
 
-        {errore && (
-          <div className="errore">{errore}</div>
-        )}
+  <div className="login-divider"></div>
 
-        <input
-          type="text"
-          placeholder="ID Istruttore"
-          value={id}
-          onChange={(e) => setId(e.target.value)}
-        />
+  {errore && (
+    <div className="errore">{errore}</div>
+  )}
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+  <input
+    type="text"
+    placeholder="👤  ID Istruttore"
+    value={id}
+    onChange={(e) => setId(e.target.value)}
+  />
 
-        <button onClick={login} disabled={loading}>
-          {loading ? "ACCESSO..." : "ACCEDI"}
-        </button>
+  <input
+    type="password"
+    placeholder="🔒  Password"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+  />
 
-      </div>
+  <button onClick={login} disabled={loading}>
+    {loading ? "ACCESSO..." : "ACCEDI  →"}
+  </button>
+
+  <p className="login-quote">
+    “Ogni allenamento costruisce la partita.”
+  </p>
+
+</div>
     </div>
   );
 }
