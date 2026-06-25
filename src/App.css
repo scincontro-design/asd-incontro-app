@@ -1116,7 +1116,7 @@ body,
 
 .login-background{
   min-height:100vh;
-  background-size:cover;
+  background-size: contain;
   background-position:70% center;
   background-repeat:no-repeat;
   position:relative;
