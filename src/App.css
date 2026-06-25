@@ -1057,3 +1057,25 @@ body,
 .summary-card-image .summary-icon{
   background:rgba(224,0,0,.88);
 }
+
+.summary-card-image{
+    justify-content:flex-end;
+    display:flex;
+    flex-direction:column;
+    text-align:left;
+    padding:14px;
+}
+
+.summary-card-image b{
+    font-size:11px;
+    color:#ffffff;
+}
+
+.summary-card-image strong{
+    font-size:32px;
+    color:#ffffff;
+}
+
+.summary-card-image small{
+    color:#e5e5e5;
+}

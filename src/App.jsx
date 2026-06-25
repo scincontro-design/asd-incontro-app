@@ -3863,7 +3863,6 @@ if(pagina === "gruppi"){
     backgroundImage: `url(${miniCardAllenamenti})`
   }}
 >
-      <div className="summary-icon">📅</div>
       <b>ALLENAMENTI</b>
       <strong>
         {allenamenti.filter(a => a.stato === "Programmato").length}
@@ -3877,7 +3876,6 @@ if(pagina === "gruppi"){
     backgroundImage: `url(${miniCardGare})`
   }}
 >
-      <div className="summary-icon">⚽</div>
       <b>GARE</b>
       <strong>
         {gare.filter(g => g.stato === "Programmato").length}
@@ -3896,7 +3894,6 @@ if(pagina === "gruppi"){
         }
       }}
     >
-      <div className="summary-icon">👥</div>
 
       <b>
         {utente.ruolo === "Admin"
