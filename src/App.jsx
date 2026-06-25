@@ -1305,12 +1305,14 @@ setSalvataggio(true);
 }
 if(!utente){
   return (
-    <div
-      className="app login-background"
-      style={{
-        backgroundImage: `url(${sfondoLogin})`
-      }}
-    >
+    <div className="app login-background">
+
+      <img
+    src={sfondoLogin}
+    className="login-bg-image"
+    alt=""
+/>
+
      <div className="login-card login-card-new">
 
   <div className="top-line"></div>
