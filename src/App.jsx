@@ -78,9 +78,7 @@ const [statistiche, setStatistiche] = useState(null);
 const [gruppoStatistiche, setGruppoStatistiche] = useState("");
 const [dashboardInfo, setDashboardInfo] = useState({
   allievi: 0,
-  allieviTotali: 0,
-  allenamentiProgrammati: 0,
-  gareProgrammate: 0
+  allieviTotali: 0
 });
 const [mostraTotali, setMostraTotali] = useState(false);
 const [nuovoIscritto, setNuovoIscritto] = useState({
@@ -101,6 +99,10 @@ const [statisticheAllenamenti, setStatisticheAllenamenti] = useState([]);
 const [gruppoStatisticheAllenamenti, setGruppoStatisticheAllenamenti] = useState("");
 const [dettaglioPresenzeRagazzo, setDettaglioPresenzeRagazzo] = useState(null);
 const [loadingGare, setLoadingGare] = useState(false);
+const [dashboardContatori, setDashboardContatori] = useState({
+  allenamentiProgrammati: 0,
+  gareProgrammate: 0
+});
 
 useEffect(() => {
 
@@ -128,6 +130,7 @@ useEffect(() => {
 
       setUtente(utenteObj);
       caricaBootstrap(utenteObj);
+      caricaDashboardContatori(utenteObj);
 
       setTimeout(() => {
         precaricaDati(utenteObj);
@@ -163,6 +166,7 @@ useEffect(() => {
 
   setUtente(data);
   caricaBootstrap(data);
+  caricaDashboardContatori(data);
 
   setTimeout(() => {
     precaricaDati(data);
@@ -193,6 +197,37 @@ useEffect(() => {
     setLoading(false);
     setErrore("Errore collegamento");
   };
+
+  document.body.appendChild(script);
+
+}
+function caricaDashboardContatori(utenteLogin){
+
+  const callbackName = "callbackDashboardContatori";
+
+  window[callbackName] = function(data){
+
+    setDashboardContatori({
+      allenamentiProgrammati: data.allenamentiProgrammati || 0,
+      gareProgrammate: data.gareProgrammate || 0
+    });
+
+    var script = document.getElementById("jsonpDashboardContatori");
+    if(script){
+      script.remove();
+    }
+
+  };
+
+  var script = document.createElement("script");
+  script.id = "jsonpDashboardContatori";
+
+  script.src =
+    API_URL +
+    "?action=dashboardContatori" +
+    "&id=" + encodeURIComponent(utenteLogin.id) +
+    "&ruolo=" + encodeURIComponent(utenteLogin.ruolo) +
+    "&callback=" + callbackName;
 
   document.body.appendChild(script);
 
@@ -310,9 +345,7 @@ function caricaBootstrap(utenteLogin){
 
    setDashboardInfo({
   allievi: data.allievi || 0,
-  allieviTotali: data.allieviTotali || data.allievi || 0,
-  allenamentiProgrammati: data.allenamentiProgrammati || 0,
-  gareProgrammate: data.gareProgrammate || 0
+  allieviTotali: data.allieviTotali || data.allievi || 0
 });
 
     if(utenteLogin.ruolo === "Admin"){
@@ -3893,7 +3926,7 @@ if(pagina === "gruppi"){
 >
       <b>ALLENAMENTI</b>
       <strong>
-        {dashboardInfo.allenamentiProgrammati}
+        {dashboardContatori.allenamentiProgrammati}
       </strong>
       <small>programmati</small>
     </div>
@@ -3906,7 +3939,7 @@ if(pagina === "gruppi"){
 >
       <b>GARE</b>
       <strong>
-        {dashboardInfo.gareProgrammate}
+        {dashboardContatori.gareProgrammate}
       </strong>
       <small>prossime</small>
     </div>
