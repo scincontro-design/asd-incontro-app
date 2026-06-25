@@ -98,6 +98,7 @@ const [nuovoGruppoGestione, setNuovoGruppoGestione] = useState("");
 const [statisticheAllenamenti, setStatisticheAllenamenti] = useState([]);
 const [gruppoStatisticheAllenamenti, setGruppoStatisticheAllenamenti] = useState("");
 const [dettaglioPresenzeRagazzo, setDettaglioPresenzeRagazzo] = useState(null);
+const [loadingGare, setLoadingGare] = useState(false);
 
 useEffect(() => {
 
@@ -1104,6 +1105,7 @@ function caricaGareIstruttore(){
   window[callbackName] = function(data){
 
     setGare(data);
+    setLoadingGare(false);
 
     var script = document.getElementById("jsonpGare");
 
@@ -1133,6 +1135,7 @@ function caricaArchivioGare(){
   window[callbackName] = function(data){
 
     setGare(data);
+    setLoadingGare(false);
 
     var script = document.getElementById("jsonpArchivioGare");
     if(script){
@@ -2539,7 +2542,8 @@ if(pagina === "gare"){
           <button
             className={tabGare === "prossime" ? "active-folder" : ""}
             onClick={() => {
-            setTabGare("prossime");
+  setTabGare("prossime");
+  setLoadingGare(true);
   setGare([]);
   caricaGareIstruttore();
 }}
@@ -2551,6 +2555,7 @@ if(pagina === "gare"){
             className={tabGare === "archivio" ? "active-folder" : ""}
             onClick={() => {
   setTabGare("archivio");
+  setLoadingGare(true);
   setGare([]);
   caricaArchivioGare();
 }}
@@ -2563,27 +2568,34 @@ if(pagina === "gare"){
 
   <div>
 
-    {gare.map((g, index) => (
+    {loadingGare ? (
 
-      <div
-  className="mini-card"
-  key={index}
-  onClick={() => apriDettaglioGara(g)}
->
-
-        <b>{g.gruppo}</b>
-
-        <p>📅 {g.data}</p>
-
-        <p>⚽ {g.avversario}</p>
-
-        <p>🕒 {g.orario}</p>
-
-        <p>🏟️ {g.campo}</p>
-
+      <div className="mini-card loading-card">
+        ⏳ Caricamento gare...
       </div>
 
-    ))}
+    ) : (
+
+      gare.map((g, index) => (
+
+        <div
+          className="mini-card"
+          key={index}
+          onClick={() => apriDettaglioGara(g)}
+        >
+
+          <b>{g.gruppo}</b>
+
+          <p>📅 {g.data}</p>
+          <p>⚽ {g.avversario}</p>
+          <p>🕒 {g.orario}</p>
+          <p>🏟️ {g.campo}</p>
+
+        </div>
+
+      ))
+
+    )}
 
   </div>
 
@@ -2592,32 +2604,42 @@ if(pagina === "gare"){
 
   <div>
 
-    {gare.map((g, index) => (
+    {loadingGare ? (
 
-      <div
-  className="mini-card"
-  key={index}
-  onClick={() => apriDettaglioGara(g)}
->
-
-        <b>{g.gruppo}</b>
-
-        <p>📅 {g.data}</p>
-        <p>⚽ {g.avversario}</p>
-        <p>🕒 {g.orario}</p>
-        <p>🏟️ {g.campo}</p>
-
-        <p>
-          Risultato: {g.golFatti} - {g.golSubiti}
-        </p>
-
-        {g.noteRisultato && (
-          <p>📝 {g.noteRisultato}</p>
-        )}
-
+      <div className="mini-card loading-card">
+        ⏳ Caricamento gare...
       </div>
 
-    ))}
+    ) : (
+
+      gare.map((g, index) => (
+
+        <div
+          className="mini-card"
+          key={index}
+          onClick={() => apriDettaglioGara(g)}
+        >
+
+          <b>{g.gruppo}</b>
+
+          <p>📅 {g.data}</p>
+          <p>⚽ {g.avversario}</p>
+          <p>🕒 {g.orario}</p>
+          <p>🏟️ {g.campo}</p>
+
+          <p>
+            Risultato: {g.golFatti} - {g.golSubiti}
+          </p>
+
+          {g.noteRisultato && (
+            <p>📝 {g.noteRisultato}</p>
+          )}
+
+        </div>
+
+      ))
+
+    )}
 
   </div>
 
