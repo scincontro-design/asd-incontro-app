@@ -1117,7 +1117,7 @@ body,
 .login-background{
   min-height:100vh;
   background-size:cover;
-  background-position:center;
+  background-position:70% center;
   background-repeat:no-repeat;
   position:relative;
 }
@@ -1221,4 +1221,14 @@ body,
     opacity:1;
     transform:translateY(0);
   }
+}
+
+.login-background{
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:25px;
 }
