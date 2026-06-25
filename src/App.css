@@ -1075,18 +1075,6 @@ body,
     font-size:10px;
 }
 
-.login-background{
-  min-height:100vh;
-  position:relative;
-}
-
-.login-background::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,.68);
-  z-index:0;
-}
 
 .login-background .login-card{
   position:relative;
@@ -1112,22 +1100,6 @@ body,
 
 .login-background .logo{
   width:130px;
-}
-
-.login-background{
-  min-height:100vh;
-  background-size: contain;
-  background-position:70% center;
-  background-repeat:no-repeat;
-  position:relative;
-}
-
-.login-background::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,.45);
-  z-index:0;
 }
 
 .login-card-new{
@@ -1224,11 +1196,25 @@ body,
 }
 
 .login-background{
-    min-height:100vh;
+  min-height:100vh;
+  position:relative;
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 
-    padding:25px;
+  padding:25px;
+
+  background-size:contain;
+  background-position:center center;
+  background-repeat:no-repeat;
+  background-color:#050505;
+}
+
+.login-background::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.25);
+  z-index:0;
 }
