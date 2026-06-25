@@ -2303,7 +2303,7 @@ function haAllenamentiInData(data){
       )
       .map((a, index) => (
         <div
-          className="mini-card"
+          className="training-list-card"
           key={index}
           onClick={() => apriCompilaAllenamento(a)}
         >
@@ -2311,7 +2311,15 @@ function haAllenamentiInData(data){
           <p>📅 {a.data}</p>
           <p>🕒 {a.orario}</p>
           <p>🏟️ {a.campo}</p>
-          <p>{a.stato === "Svolto" ? "✅" : "📌"} {a.stato}</p>
+          <div
+  className={`training-status ${
+    a.stato === "Svolto"
+      ? "svolto"
+      : "programmato"
+  }`}
+>
+  {a.stato.toUpperCase()}
+</div>
         </div>
       ))}
   </div>

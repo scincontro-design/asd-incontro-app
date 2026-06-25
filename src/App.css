@@ -1555,3 +1555,124 @@ height:150px;
 .dashboard-card label{
   color:#fff;
 }
+
+/* ===========================
+   CARD LISTA ALLENAMENTI
+=========================== */
+
+.training-list-card{
+  position:relative;
+
+  background:rgba(12,12,12,.82);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+
+  border:1px solid rgba(224,0,0,.35);
+  border-radius:18px;
+
+  padding:18px;
+  margin-bottom:14px;
+
+  color:#fff;
+
+  box-shadow:0 10px 25px rgba(0,0,0,.35);
+
+  transition:.25s;
+  cursor:pointer;
+}
+
+.training-list-card:hover{
+
+  transform:translateY(-3px);
+
+  border-color:#e00000;
+
+  box-shadow:0 16px 30px rgba(0,0,0,.45);
+
+}
+
+.training-list-card b{
+
+  display:block;
+
+  font-size:21px;
+
+  font-weight:800;
+
+  margin-bottom:14px;
+
+  color:#fff;
+
+  letter-spacing:.5px;
+
+}
+
+.training-list-card p{
+
+  margin:6px 0;
+
+  color:#e5e5e5;
+
+  font-size:15px;
+
+  display:flex;
+
+  align-items:center;
+
+  gap:8px;
+
+}
+
+.training-list-card::after{
+
+  content:"Apri  →";
+
+  display:block;
+
+  text-align:right;
+
+  margin-top:16px;
+
+  color:#e00000;
+
+  font-weight:800;
+
+  font-size:14px;
+
+  letter-spacing:1px;
+
+}
+
+.training-status{
+
+  display:inline-block;
+
+  margin-top:12px;
+
+  padding:6px 14px;
+
+  border-radius:999px;
+
+  font-size:12px;
+
+  font-weight:700;
+
+  letter-spacing:1px;
+
+}
+
+.training-status.programmato{
+
+  background:#e00000;
+
+  color:#fff;
+
+}
+
+.training-status.svolto{
+
+  background:#18a558;
+
+  color:#fff;
+
+}
