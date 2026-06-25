@@ -2540,7 +2540,8 @@ if(pagina === "gare"){
             className={tabGare === "prossime" ? "active-folder" : ""}
             onClick={() => {
             setTabGare("prossime");
-            caricaGareIstruttore();
+  setGare([]);
+  caricaGareIstruttore();
 }}
           >
             PROSSIME GARE
@@ -2550,6 +2551,7 @@ if(pagina === "gare"){
             className={tabGare === "archivio" ? "active-folder" : ""}
             onClick={() => {
   setTabGare("archivio");
+  setGare([]);
   caricaArchivioGare();
 }}
           >
