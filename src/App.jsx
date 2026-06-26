@@ -22,7 +22,7 @@ import garaNuova from "./assets/gare-nuova.png";
 import gareProssime from "./assets/gare-prossime.png";
 import gareArchivio from "./assets/gare-archivio.png";
 import schedeHero from "./assets/schede-hero.png";
-import playerCardBg from "./assets/player-card-bg.png";
+import playerCardBg from "./assets/player-card.png";
 import "./App.css";
 
 const API_URL = "https://script.google.com/macros/s/AKfycbyokQ0HXWqPMtGzM7hyo5aOkUeY_NkEbIIXHSjZ8SL-jMwIDieUVVmqZXf85S3ahWY_/exec";
