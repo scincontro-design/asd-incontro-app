@@ -969,10 +969,13 @@ function caricaStatistiche(){
 }
 function getSiglaSquadra(nome) {
 
-  if (!nome) return "?";
+  if (nome === undefined || nome === null) return "?";
 
-  const parole = nome
-    .trim()
+  const testo = String(nome).trim();
+
+  if (testo === "") return "?";
+
+  const parole = testo
     .split(" ")
     .filter(p => p.length > 0);
 
@@ -980,10 +983,7 @@ function getSiglaSquadra(nome) {
     return parole[0].substring(0, 2).toUpperCase();
   }
 
-  return (
-    parole[0][0] +
-    parole[1][0]
-  ).toUpperCase();
+  return (parole[0][0] + parole[1][0]).toUpperCase();
 
 }
 function apriSchedaGiocatore(giocatore){
