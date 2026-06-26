@@ -21,6 +21,8 @@ import gareHero from "./assets/gare-hero.png";
 import garaNuova from "./assets/gare-nuova.png";
 import gareProssime from "./assets/gare-prossime.png";
 import gareArchivio from "./assets/gare-archivio.png";
+import schedeHero from "./assets/schede-hero.png";
+import playerCardBg from "./assets/player-card-bg.png";
 import "./App.css";
 
 const API_URL = "https://script.google.com/macros/s/AKfycbyokQ0HXWqPMtGzM7hyo5aOkUeY_NkEbIIXHSjZ8SL-jMwIDieUVVmqZXf85S3ahWY_/exec";
@@ -1079,6 +1081,86 @@ function sliderScheda(campo, label){
     </div>
   );
 
+}
+function mediaValori(lista) {
+  const valori = lista.map(v => Number(v) || 0).filter(v => v > 0);
+
+  if (valori.length === 0) return 0;
+
+  return Math.round(
+    valori.reduce((tot, v) => tot + v, 0) / valori.length
+  );
+}
+
+function getValoreCard(campo) {
+  return Number(schedaModifica?.[campo]) || 0;
+}
+
+function getAtt() {
+  return mediaValori([
+    getValoreCard("tiro"),
+    getValoreCard("dribbling"),
+    getValoreCard("movimentoSenzaPalla"),
+    getValoreCard("colpoTesta")
+  ]);
+}
+
+function getTec() {
+  return mediaValori([
+    getValoreCard("controllo"),
+    getValoreCard("passaggio"),
+    getValoreCard("visioneGioco"),
+    getValoreCard("cross"),
+    getValoreCard("calcioPiazzato")
+  ]);
+}
+
+function getVel() {
+  return mediaValori([
+    getValoreCard("velocita"),
+    getValoreCard("accelerazione"),
+    getValoreCard("agilita")
+  ]);
+}
+
+function getFor() {
+  return mediaValori([
+    getValoreCard("forza"),
+    getValoreCard("equilibrio"),
+    getValoreCard("resistenza")
+  ]);
+}
+
+function getDif() {
+  return mediaValori([
+    getValoreCard("difesa"),
+    getValoreCard("marcatura"),
+    getValoreCard("posizionamento")
+  ]);
+}
+
+function getPas() {
+  return mediaValori([
+    getValoreCard("passaggio"),
+    getValoreCard("visioneGioco"),
+    getValoreCard("cross")
+  ]);
+}
+
+function getInt() {
+  return mediaValori([
+    getValoreCard("letturaGioco"),
+    getValoreCard("concentrazione"),
+    getValoreCard("decisionMaking")
+  ]);
+}
+
+function getRes() {
+  return mediaValori([
+    getValoreCard("resistenza"),
+    getValoreCard("impegno"),
+    getValoreCard("disciplina")
+  ]);
 }
 function calcolaOverall(){
 
@@ -3431,7 +3513,17 @@ if(pagina === "schede"){
 
       <div className="dashboard-card">
 
-        <h2>SCHEDE GIOCATORI</h2>
+        <div
+  className="hero-card"
+  style={{
+    backgroundImage: `url(${schedeHero})`
+  }}
+>
+  <div className="hero-overlay">
+    <h1>SCHEDE</h1>
+    <p>Profilo tecnico dei giocatori</p>
+  </div>
+</div>
 
         {giocatoriSchede.map((g, index) => (
 
@@ -3460,15 +3552,71 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
 
       <div className="dashboard-card">
 
-        <h2>SCHEDA GIOCATORE</h2>
+        <div className="player-card">
 
-        <div className="mini-card">
+  <img
+    src={playerCardBg}
+    className="player-card-bg"
+    alt=""
+  />
 
-  <h3>{schedaModifica.nome}</h3>
+  <div className="pc-overall">
+    <span>OVR</span>
+    <b>{calcolaOverall()}</b>
+  </div>
 
-  <h2>
-  OVERALL {calcolaOverall()}
-</h2>
+  <div className="pc-flag">
+    🇮🇹
+    <span>ITA</span>
+  </div>
+
+  <div className="pc-photo-placeholder">
+    FOTO
+  </div>
+
+  <div className="pc-name-row">
+    <span>{schedaModifica.nome}</span>
+    <b>{schedaModifica.numero || "-"}</b>
+  </div>
+
+  <div className="pc-role-row">
+    <span>{schedaModifica.ruolo || "RUOLO"}</span>
+    <span>{schedaModifica.piede || "PIEDE"}</span>
+  </div>
+
+  <div className="pc-stats">
+    <div><span>ATT</span><b>{getAtt()}</b></div>
+    <div><span>TEC</span><b>{getTec()}</b></div>
+    <div><span>VEL</span><b>{getVel()}</b></div>
+    <div><span>FOR</span><b>{getFor()}</b></div>
+    <div><span>DIF</span><b>{getDif()}</b></div>
+    <div><span>PAS</span><b>{getPas()}</b></div>
+    <div><span>INT</span><b>{getInt()}</b></div>
+    <div><span>RES</span><b>{getRes()}</b></div>
+  </div>
+
+  <div className="pc-bottom">
+    <div>
+      <span>DATA DI NASCITA</span>
+      <b>{schedaModifica.dataNascita || "-"}</b>
+    </div>
+
+    <div>
+      <span>ALTEZZA</span>
+      <b>{schedaModifica.altezza ? schedaModifica.altezza + " cm" : "-"}</b>
+    </div>
+
+    <div>
+      <span>PESO</span>
+      <b>{schedaModifica.peso ? schedaModifica.peso + " kg" : "-"}</b>
+    </div>
+  </div>
+
+</div>
+
+<div className="mini-card">
+
+  <h3>Dati giocatore</h3>
 
   <p>Gruppo: {schedaModifica.gruppo}</p>
 

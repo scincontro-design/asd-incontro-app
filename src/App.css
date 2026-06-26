@@ -1916,3 +1916,154 @@ height:150px;
     color:#ccc;
 
 }
+
+.player-card{
+  position:relative;
+  width:100%;
+  max-width:390px;
+  margin:0 auto 25px;
+  aspect-ratio:680 / 960;
+  color:white;
+}
+
+.player-card-bg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  z-index:0;
+}
+
+.player-card > div{
+  position:absolute;
+  z-index:1;
+}
+
+.pc-overall{
+  top:9%;
+  left:13%;
+  text-align:center;
+}
+
+.pc-overall span{
+  display:block;
+  color:#d8b25c;
+  font-weight:900;
+  font-size:20px;
+}
+
+.pc-overall b{
+  display:block;
+  color:#d8b25c;
+  font-size:42px;
+  line-height:1;
+}
+
+.pc-flag{
+  top:25%;
+  left:15%;
+  font-size:28px;
+  text-align:center;
+}
+
+.pc-flag span{
+  display:block;
+  font-size:15px;
+  font-weight:800;
+}
+
+.pc-photo-placeholder{
+  top:16%;
+  left:36%;
+  width:42%;
+  height:27%;
+  border:1px dashed rgba(255,255,255,.25);
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:rgba(255,255,255,.35);
+  font-weight:900;
+}
+
+.pc-name-row{
+  top:47%;
+  left:18%;
+  width:64%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:18px;
+}
+
+.pc-name-row span{
+  font-size:24px;
+  font-weight:900;
+  text-align:center;
+}
+
+.pc-name-row b{
+  color:#d8b25c;
+  font-size:30px;
+}
+
+.pc-role-row{
+  top:55%;
+  left:20%;
+  width:60%;
+  display:flex;
+  justify-content:center;
+  gap:18px;
+  color:#e9d6a2;
+  font-weight:800;
+  font-size:14px;
+}
+
+.pc-stats{
+  top:64%;
+  left:18%;
+  width:64%;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  row-gap:28px;
+  text-align:center;
+}
+
+.pc-stats span{
+  display:block;
+  color:#e9d6a2;
+  font-size:15px;
+  font-weight:800;
+}
+
+.pc-stats b{
+  display:block;
+  color:#d8b25c;
+  font-size:26px;
+  line-height:1;
+}
+
+.pc-bottom{
+  bottom:10%;
+  left:17%;
+  width:66%;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  text-align:center;
+  gap:6px;
+}
+
+.pc-bottom span{
+  display:block;
+  font-size:9px;
+  color:#e9d6a2;
+  font-weight:800;
+}
+
+.pc-bottom b{
+  display:block;
+  font-size:12px;
+  color:white;
+  margin-top:4px;
+}
