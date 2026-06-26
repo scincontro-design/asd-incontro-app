@@ -17,6 +17,10 @@ import allenamentiNuovo from "./assets/allenamenti-nuovo.png";
 import allenamentiProgrammati from "./assets/allenamenti-programmati.png";
 import allenamentiArchivio from "./assets/allenamenti-archivio.png";
 import allenamentiStatistiche from "./assets/allenamenti-statistiche.png";
+import gareHero from "./assets/gare-hero.png";
+import garaNuova from "./assets/gare-nuova.png";
+import gareProssime from "./assets/gare-prossime.png";
+import gareArchivio from "./assets/gare-archivio.png";
 import "./App.css";
 
 const API_URL = "https://script.google.com/macros/s/AKfycbyokQ0HXWqPMtGzM7hyo5aOkUeY_NkEbIIXHSjZ8SL-jMwIDieUVVmqZXf85S3ahWY_/exec";
@@ -961,6 +965,25 @@ function caricaStatistiche(){
     "&callback=" + callbackName;
 
   document.body.appendChild(script);
+
+}
+function getSiglaSquadra(nome) {
+
+  if (!nome) return "?";
+
+  const parole = nome
+    .trim()
+    .split(" ")
+    .filter(p => p.length > 0);
+
+  if (parole.length === 1) {
+    return parole[0].substring(0, 2).toUpperCase();
+  }
+
+  return (
+    parole[0][0] +
+    parole[1][0]
+  ).toUpperCase();
 
 }
 function apriSchedaGiocatore(giocatore){
@@ -2617,120 +2640,217 @@ if(pagina === "gare"){
 
       <div className="dashboard-card">
 
-        <h2>GARE</h2>
+        <div
+  className="hero-card"
+  style={{
+    backgroundImage:`url(${gareHero})`
+  }}
+>
+
+  <div className="hero-overlay">
+
+    <h1>GARE</h1>
+
+    <p>
+      Organizzazione e gestione delle partite
+    </p>
+
+  </div>
+
+</div>
 
         <div className="dashboard-grid">
 
-          <button
-            className={tabGare === "nuova" ? "active-folder" : ""}
-            onClick={() => setTabGare("nuova")}
-          >
-            NUOVA GARA
-          </button>
+  <button
+    className={`action-card ${tabGare === "nuova" ? "active-folder" : ""}`}
+    style={{ backgroundImage:`url(${garaNuova})` }}
+    onClick={() => setTabGare("nuova")}
+  >
+    <div className="action-overlay">
+      <h3>NUOVA</h3>
+      <p>Crea una nuova partita</p>
+    </div>
+  </button>
 
-          <button
-            className={tabGare === "prossime" ? "active-folder" : ""}
-            onClick={() => {
-  setTabGare("prossime");
-  setLoadingGare(true);
-  setGare([]);
-  caricaGareIstruttore();
-}}
-          >
-            PROSSIME GARE
-          </button>
+  <button
+    className={`action-card ${tabGare === "prossime" ? "active-folder" : ""}`}
+    style={{ backgroundImage:`url(${gareProssime})` }}
+    onClick={() => {
+      setTabGare("prossime");
+      setLoadingGare(true);
+      setGare([]);
+      caricaGareIstruttore();
+    }}
+  >
+    <div className="action-overlay">
+      <h3>PROSSIME</h3>
+      <p>Partite da disputare</p>
+    </div>
+  </button>
 
-          <button
-            className={tabGare === "archivio" ? "active-folder" : ""}
-            onClick={() => {
-  setTabGare("archivio");
-  setLoadingGare(true);
-  setGare([]);
-  caricaArchivioGare();
-}}
-          >
-            ARCHIVIO GARE
-          </button>
+  <button
+    className={`action-card ${tabGare === "archivio" ? "active-folder" : ""}`}
+    style={{ backgroundImage:`url(${gareArchivio})` }}
+    onClick={() => {
+      setTabGare("archivio");
+      setLoadingGare(true);
+      setGare([]);
+      caricaArchivioGare();
+    }}
+  >
+    <div className="action-overlay">
+      <h3>ARCHIVIO</h3>
+      <p>Partite concluse</p>
+    </div>
+  </button>
 
-        </div>
+</div>
         {tabGare === "prossime" && (
 
   <div>
 
-    {loadingGare ? (
+  {loadingGare ? (
 
-      <div className="mini-card loading-card">
-        ⏳ Caricamento gare...
-      </div>
+    <div className="mini-card loading-card">
+      ⏳ Caricamento gare...
+    </div>
 
-    ) : (
+  ) : (
 
-      gare.map((g, index) => (
+    gare.map((g, index) => (
 
-        <div
-          className="mini-card"
-          key={index}
-          onClick={() => apriDettaglioGara(g)}
-        >
+      <div
+        className="match-card"
+        key={index}
+        onClick={() => apriDettaglioGara(g)}
+      >
 
-          <b>{g.gruppo}</b>
+        <div className="match-group">
+          ⚽ {g.gruppo}
+        </div>
+
+        <div className="match-vs">
+
+  <div className="team-side">
+    <img
+      src={logo}
+      className="team-logo"
+      alt="ASD Incontro"
+    />
+    <span>ASD INCONTRO</span>
+  </div>
+
+  <b>VS</b>
+
+  <div className="team-side">
+
+    <span className="opponent-badge">
+  {getSiglaSquadra(g.avversario)}
+</span>
+
+    <span>{g.avversario}</span>
+
+  </div>
+
+</div>
+
+        <div className="match-info-row">
 
           <p>📅 {g.data}</p>
-          <p>⚽ {g.avversario}</p>
+
           <p>🕒 {g.orario}</p>
-          <p>🏟️ {g.campo}</p>
 
         </div>
 
-      ))
+        <p className="match-field">
+          🏟️ {g.campo}
+        </p>
 
-    )}
+      </div>
 
-  </div>
+    ))
+
+  )}
+
+</div>
 
 )}
 {tabGare === "archivio" && (
 
   <div>
 
-    {loadingGare ? (
+  {loadingGare ? (
 
-      <div className="mini-card loading-card">
-        ⏳ Caricamento gare...
-      </div>
+    <div className="mini-card loading-card">
+      ⏳ Caricamento gare...
+    </div>
 
-    ) : (
+  ) : (
 
-      gare.map((g, index) => (
+    gare.map((g, index) => (
 
-        <div
-          className="mini-card"
-          key={index}
-          onClick={() => apriDettaglioGara(g)}
-        >
+      <div
+        className="match-card"
+        key={index}
+        onClick={() => apriDettaglioGara(g)}
+      >
 
-          <b>{g.gruppo}</b>
+        <div className="match-group">
+          ⚽ {g.gruppo}
+        </div>
 
-          <p>📅 {g.data}</p>
-          <p>⚽ {g.avversario}</p>
-          <p>🕒 {g.orario}</p>
-          <p>🏟️ {g.campo}</p>
+        <div className="match-result">
 
-          <p>
-            Risultato: {g.golFatti} - {g.golSubiti}
-          </p>
+          <div className="team-side">
+            <img
+              src={logo}
+              className="team-logo"
+              alt="ASD Incontro"
+            />
+            <span>ASD INCONTRO</span>
+          </div>
 
-          {g.noteRisultato && (
-            <p>📝 {g.noteRisultato}</p>
-          )}
+          <div className="score-box">
+            {g.golFatti} - {g.golSubiti}
+          </div>
+
+          <div className="team-side">
+
+            <span className="opponent-badge">
+  {getSiglaSquadra(g.avversario)}
+</span>
+
+            <span>{g.avversario}</span>
+
+          </div>
 
         </div>
 
-      ))
+        <div className="match-info-row">
 
-    )}
+          <p>📅 {g.data}</p>
 
-  </div>
+          <p>🕒 {g.orario}</p>
+
+        </div>
+
+        <p className="match-field">
+          🏟️ {g.campo}
+        </p>
+
+        {g.noteRisultato && (
+          <p className="match-note">
+            📝 {g.noteRisultato}
+          </p>
+        )}
+
+      </div>
+
+    ))
+
+  )}
+
+</div>
 
 )}
         {tabGare === "nuova" && (
