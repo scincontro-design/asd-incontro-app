@@ -2729,28 +2729,41 @@ if(pagina === "gare"){
           ⚽ {g.gruppo}
         </div>
 
-        <div className="match-vs">
+       <div className="match-vs">
 
-  <div className="team-side">
-    <img
-      src={logo}
-      className="team-logo"
-      alt="ASD Incontro"
-    />
-    <span>ASD INCONTRO</span>
-  </div>
+  {g.casaTrasferta === "Trasferta" ? (
+    <>
+      <div className="team-side">
+        <span className="opponent-badge">
+          {getSiglaSquadra(g.avversario)}
+        </span>
+        <span>{g.avversario}</span>
+      </div>
 
-  <b>VS</b>
+      <b>VS</b>
 
-  <div className="team-side">
+      <div className="team-side">
+        <img src={logo} className="team-logo" alt="ASD Incontro" />
+        <span>ASD INCONTRO</span>
+      </div>
+    </>
+  ) : (
+    <>
+      <div className="team-side">
+        <img src={logo} className="team-logo" alt="ASD Incontro" />
+        <span>ASD INCONTRO</span>
+      </div>
 
-    <span className="opponent-badge">
-  {getSiglaSquadra(g.avversario)}
-</span>
+      <b>VS</b>
 
-    <span>{g.avversario}</span>
-
-  </div>
+      <div className="team-side">
+        <span className="opponent-badge">
+          {getSiglaSquadra(g.avversario)}
+        </span>
+        <span>{g.avversario}</span>
+      </div>
+    </>
+  )}
 
 </div>
 
@@ -2801,30 +2814,45 @@ if(pagina === "gare"){
 
         <div className="match-result">
 
-          <div className="team-side">
-            <img
-              src={logo}
-              className="team-logo"
-              alt="ASD Incontro"
-            />
-            <span>ASD INCONTRO</span>
-          </div>
+  {g.casaTrasferta === "Trasferta" ? (
+    <>
+      <div className="team-side">
+        <span className="opponent-badge">
+          {getSiglaSquadra(g.avversario)}
+        </span>
+        <span>{g.avversario}</span>
+      </div>
 
-          <div className="score-box">
-            {g.golFatti} - {g.golSubiti}
-          </div>
+      <div className="score-box">
+        {g.golSubiti} - {g.golFatti}
+      </div>
 
-          <div className="team-side">
+      <div className="team-side">
+        <img src={logo} className="team-logo" alt="ASD Incontro" />
+        <span>ASD INCONTRO</span>
+      </div>
+    </>
+  ) : (
+    <>
+      <div className="team-side">
+        <img src={logo} className="team-logo" alt="ASD Incontro" />
+        <span>ASD INCONTRO</span>
+      </div>
 
-            <span className="opponent-badge">
-  {getSiglaSquadra(g.avversario)}
-</span>
+      <div className="score-box">
+        {g.golFatti} - {g.golSubiti}
+      </div>
 
-            <span>{g.avversario}</span>
+      <div className="team-side">
+        <span className="opponent-badge">
+          {getSiglaSquadra(g.avversario)}
+        </span>
+        <span>{g.avversario}</span>
+      </div>
+    </>
+  )}
 
-          </div>
-
-        </div>
+</div>
 
         <div className="match-info-row">
 
