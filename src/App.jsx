@@ -3570,8 +3570,8 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
   </div>
 
   <div className="pc-name-row">
-    <span>{schedaModifica.nome}</span>
-    <b>{schedaModifica.numero || "-"}</b>
+   <span>{schedaModifica.nome}</span>
+<b>{schedaModifica.numero || ""}</b>
   </div>
 
   <div className="pc-role-row">
