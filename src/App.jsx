@@ -3560,16 +3560,11 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
     alt=""
   />
 
-  <div className="pc-overall">
-    <span>OVR</span>
-    <b>{calcolaOverall()}</b>
-  </div>
+  <div className="pc-overall-value">
+  {calcolaOverall()}
+</div>
 
-  <div className="pc-flag">
-    🇮🇹
-    <span>ITA</span>
-  </div>
-
+  
   <div className="pc-photo-placeholder">
     FOTO
   </div>
@@ -3585,32 +3580,29 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
   </div>
 
   <div className="pc-stats">
-    <div><span>ATT</span><b>{getAtt()}</b></div>
-    <div><span>TEC</span><b>{getTec()}</b></div>
-    <div><span>VEL</span><b>{getVel()}</b></div>
-    <div><span>FOR</span><b>{getFor()}</b></div>
-    <div><span>DIF</span><b>{getDif()}</b></div>
-    <div><span>PAS</span><b>{getPas()}</b></div>
-    <div><span>INT</span><b>{getInt()}</b></div>
-    <div><span>RES</span><b>{getRes()}</b></div>
-  </div>
+  <div><b>{getAtt()}</b></div>
+  <div><b>{getTec()}</b></div>
+  <div><b>{getVel()}</b></div>
+  <div><b>{getFor()}</b></div>
+  <div><b>{getDif()}</b></div>
+  <div><b>{getPas()}</b></div>
+  <div><b>{getInt()}</b></div>
+  <div><b>{getRes()}</b></div>
+</div>
 
   <div className="pc-bottom">
-    <div>
-      <span>DATA DI NASCITA</span>
-      <b>{schedaModifica.dataNascita || "-"}</b>
-    </div>
-
-    <div>
-      <span>ALTEZZA</span>
-      <b>{schedaModifica.altezza ? schedaModifica.altezza + " cm" : "-"}</b>
-    </div>
-
-    <div>
-      <span>PESO</span>
-      <b>{schedaModifica.peso ? schedaModifica.peso + " kg" : "-"}</b>
-    </div>
+  <div>
+    <b>{schedaModifica.dataNascita || "-"}</b>
   </div>
+
+  <div>
+    <b>{schedaModifica.altezza ? schedaModifica.altezza + " cm" : "-"}</b>
+  </div>
+
+  <div>
+    <b>{schedaModifica.peso ? schedaModifica.peso + " kg" : "-"}</b>
+  </div>
+</div>
 
 </div>
 
