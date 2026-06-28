@@ -1087,6 +1087,56 @@ function salvaScheda(){
   document.body.appendChild(script);
 
 }
+function caricaFotoGiocatore(file){
+
+  if(!file){
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(){
+
+    const callbackName = "callbackSalvaFotoGiocatore";
+
+    window[callbackName] = function(data){
+
+      if(data && data.esito === "OK"){
+
+        aggiornaScheda("foto", data.url);
+
+        alert("Foto caricata");
+
+      }else{
+
+        alert("Errore caricamento foto");
+
+      }
+
+      var script = document.getElementById("jsonpSalvaFotoGiocatore");
+      if(script){
+        script.remove();
+      }
+
+    };
+
+    var script = document.createElement("script");
+    script.id = "jsonpSalvaFotoGiocatore";
+
+    script.src =
+      API_URL +
+      "?action=salvaFotoGiocatore" +
+      "&id=" + encodeURIComponent(schedaModifica.id) +
+      "&foto=" + encodeURIComponent(reader.result) +
+      "&callback=" + callbackName;
+
+    document.body.appendChild(script);
+
+  };
+
+  reader.readAsDataURL(file);
+
+}
 function sliderScheda(campo, label){
 
   return (
@@ -3745,19 +3795,7 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
 <input
   type="file"
   accept="image/*"
-  onChange={(e) => {
-    const file = e.target.files[0];
-
-    if (!file) return;
-
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      aggiornaScheda("foto", reader.result);
-    };
-
-    reader.readAsDataURL(file);
-  }}
+  onChange={(e) => caricaFotoGiocatore(e.target.files[0])}
 />
 
 <h3>Posizione foto</h3>
