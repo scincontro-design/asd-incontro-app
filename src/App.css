@@ -2095,3 +2095,16 @@ height:150px;
   user-select:none;
   pointer-events:none;
 }
+
+.pc-logo{
+    position:absolute;
+    z-index:5;
+
+    top:35%;
+    left:15%;
+
+    width:48px;
+    height:auto;
+
+    pointer-events:none;
+}

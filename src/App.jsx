@@ -3831,6 +3831,12 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
     onChange={(e) => aggiornaScheda("numero", e.target.value)}
   />
 
+  <img
+  src={logo}
+  className="pc-logo"
+  alt="Logo ASD Incontro"
+/>
+
   <select
     value={schedaModifica.ruoloBase || ""}
     onChange={(e) => aggiornaScheda("ruoloBase", e.target.value)}
