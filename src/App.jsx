@@ -3887,7 +3887,7 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
 />
 
 <label>
-  Zoom: {schedaModifica.zoom || 1}
+  Zoom: {Math.round((schedaModifica.zoom || 1) * 100)}%
 </label>
 
 <input
@@ -3917,32 +3917,6 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
   value={schedaModifica.zoom || 1}
   onChange={(e) =>
     aggiornaScheda("zoom", Number(e.target.value))
-  }
-/>
-
-<label>Sposta Orizzontale</label>
-
-<input
-  type="range"
-  min="-50"
-  max="50"
-  step="1"
-  value={schedaModifica.offsetX || 0}
-  onChange={(e)=>
-    aggiornaScheda("offsetX", Number(e.target.value))
-  }
-/>
-
-<label>Sposta Verticale</label>
-
-<input
-  type="range"
-  min="-50"
-  max="50"
-  step="1"
-  value={schedaModifica.offsetY || 0}
-  onChange={(e)=>
-    aggiornaScheda("offsetY", Number(e.target.value))
   }
 />
 
