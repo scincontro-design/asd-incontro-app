@@ -2098,9 +2098,9 @@ height:150px;
 
 .pc-logo{
   position:absolute;
-  top:24%;
-  right:18%;
-  width:80px;
+  top:22%;
+  right:15%;
+  width:100px;
   height:48px;
   object-fit:contain;
   z-index:6;
