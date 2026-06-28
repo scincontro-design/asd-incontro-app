@@ -1101,7 +1101,7 @@ function caricaFotoGiocatore(file){
 
       const canvas = document.createElement("canvas");
 
-      const maxWidth = 500;
+      const maxWidth = 600;
       const scale = maxWidth / img.width;
 
       canvas.width = maxWidth;
@@ -1110,46 +1110,22 @@ function caricaFotoGiocatore(file){
       const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-      const fotoCompressa = canvas.toDataURL("image/jpeg", 0.55);
+      const fotoCompressa = canvas.toDataURL("image/jpeg", 0.65);
 
       aggiornaScheda("fotoAnteprima", fotoCompressa);
 
-      const callbackName = "callbackSalvaFotoGiocatore";
+      const formData = new FormData();
+      formData.append("action", "salvaFotoGiocatore");
+      formData.append("id", schedaModifica.id);
+      formData.append("foto", fotoCompressa);
 
-      window[callbackName] = function(data){
+      fetch(API_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: formData
+      });
 
-        if(data && data.esito === "OK"){
-
-          setSchedaModifica({
-            ...schedaModifica,
-            foto: data.url,
-            fotoAnteprima: ""
-          });
-
-          alert("Foto salvata");
-
-        }else{
-          alert("Errore salvataggio foto");
-        }
-
-        var script = document.getElementById("jsonpSalvaFotoGiocatore");
-        if(script){
-          script.remove();
-        }
-
-      };
-
-      var script = document.createElement("script");
-      script.id = "jsonpSalvaFotoGiocatore";
-
-      script.src =
-        API_URL +
-        "?action=salvaFotoGiocatore" +
-        "&id=" + encodeURIComponent(schedaModifica.id) +
-        "&foto=" + encodeURIComponent(fotoCompressa) +
-        "&callback=" + callbackName;
-
-      document.body.appendChild(script);
+      alert("Foto inviata. Attendi qualche secondo, poi premi SALVA SCHEDA.");
 
     };
 
