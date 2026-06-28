@@ -2022,8 +2022,8 @@ height:150px;
 }
 
 .pc-stats{
-  top:63%;
-  left:18%;
+  top:65%;
+  left:17.5%;
   width:69%;
   display:grid;
   grid-template-columns:repeat(4,1fr);
