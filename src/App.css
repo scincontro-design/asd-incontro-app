@@ -1961,11 +1961,32 @@ height:150px;
 }
 
 .pc-photo-placeholder{
-  top:17%;
-  left:41%;
-  width:34%;
-  height:22%;
-  font-size:22px;
+  display:none;
+}
+
+.pc-photo-box{
+  position:absolute;
+  z-index:2;
+  top:15%;
+  left:37%;
+  width:40%;
+  height:27%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.pc-photo-box span{
+  color:rgba(255,255,255,.35);
+  font-weight:900;
+}
+
+.pc-player-photo{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center top;
 }
 
 .pc-name-row{

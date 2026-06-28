@@ -3591,9 +3591,17 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
 </div>
 
   
-  <div className="pc-photo-placeholder">
-    FOTO
-  </div>
+  <div className="pc-photo-box">
+  {schedaModifica.foto ? (
+    <img
+      src={schedaModifica.foto}
+      className="pc-player-photo"
+      alt={schedaModifica.nome}
+    />
+  ) : (
+    <span>FOTO</span>
+  )}
+</div>
 
   <div className="pc-name-row">
    <span>{formattaNomeCard(schedaModifica.nome)}</span>
@@ -3721,6 +3729,26 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
     <option value="Sinistro">Sinistro</option>
     <option value="Entrambi">Entrambi</option>
   </select>
+
+<label>Foto giocatore</label>
+
+<input
+  type="file"
+  accept="image/*"
+  onChange={(e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      aggiornaScheda("foto", reader.result);
+    };
+
+    reader.readAsDataURL(file);
+  }}
+/>
 
 </div>
 
