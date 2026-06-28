@@ -2042,7 +2042,7 @@ height:150px;
 .pc-bottom{
     position:absolute;
     bottom:13%;
-    left:18%;
+    left:21%;
     width:57%;
     display:grid;
     grid-template-columns:repeat(3,1fr);
@@ -2051,6 +2051,6 @@ height:150px;
 
 .pc-bottom b{
     color:white;
-    font-size:11px;
+    font-size:9px;
     font-weight:800;
 }
