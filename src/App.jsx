@@ -1095,42 +1095,45 @@ function caricaFotoGiocatore(file){
 
   const reader = new FileReader();
 
-  reader.onload = function(){
+  reader.onload = async function(){
 
-    const callbackName = "callbackSalvaFotoGiocatore";
+    // Anteprima immediata
+    aggiornaScheda("fotoAnteprima", reader.result);
 
-    window[callbackName] = function(data){
+    try{
+
+      const response = await fetch(
+        API_URL + "?action=salvaFotoGiocatore",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            id: schedaModifica.id,
+            foto: reader.result
+          })
+        }
+      );
+
+      const data = await response.json();
 
       if(data && data.esito === "OK"){
 
-        aggiornaScheda("foto", data.url);
+        setSchedaModifica({
+          ...schedaModifica,
+          foto: data.url,
+          fotoAnteprima: ""
+        });
 
-        alert("Foto caricata");
+        alert("Foto salvata");
 
       }else{
-
-        alert("Errore caricamento foto");
-
+        alert("Errore salvataggio foto");
       }
 
-      var script = document.getElementById("jsonpSalvaFotoGiocatore");
-      if(script){
-        script.remove();
-      }
+    }catch(error){
 
-    };
+      alert("Errore caricamento foto");
 
-    var script = document.createElement("script");
-    script.id = "jsonpSalvaFotoGiocatore";
-
-    script.src =
-      API_URL +
-      "?action=salvaFotoGiocatore" +
-      "&id=" + encodeURIComponent(schedaModifica.id) +
-      "&foto=" + encodeURIComponent(reader.result) +
-      "&callback=" + callbackName;
-
-    document.body.appendChild(script);
+    }
 
   };
 
@@ -3644,7 +3647,7 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
   <div className="pc-photo-box">
   {schedaModifica.foto ? (
     <img
-  src={schedaModifica.foto}
+  src={schedaModifica.fotoAnteprima || schedaModifica.foto}
   className="pc-player-photo"
   alt={schedaModifica.nome}
   style={{
