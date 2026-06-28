@@ -1080,7 +1080,10 @@ function salvaScheda(){
     API_URL +
     "?action=salvaScheda" +
     "&scheda=" +
-    encodeURIComponent(JSON.stringify(schedaModifica)) +
+    encodeURIComponent(JSON.stringify({
+  ...schedaModifica,
+  fotoAnteprima: ""
+})) +
     "&callback=" +
     callbackName;
 
@@ -1114,18 +1117,45 @@ function caricaFotoGiocatore(file){
 
       aggiornaScheda("fotoAnteprima", fotoCompressa);
 
-      const formData = new FormData();
-      formData.append("action", "salvaFotoGiocatore");
-      formData.append("id", schedaModifica.id);
-      formData.append("foto", fotoCompressa);
+      const iframeName = "uploadFotoIframe";
 
-      fetch(API_URL, {
-        method: "POST",
-        mode: "no-cors",
-        body: formData
-      });
+      let iframe = document.getElementById(iframeName);
 
-      alert("Foto inviata. Attendi qualche secondo, poi premi SALVA SCHEDA.");
+      if(!iframe){
+        iframe = document.createElement("iframe");
+        iframe.name = iframeName;
+        iframe.id = iframeName;
+        iframe.style.display = "none";
+        document.body.appendChild(iframe);
+      }
+
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = API_URL;
+      form.target = iframeName;
+      form.style.display = "none";
+
+      const actionInput = document.createElement("input");
+      actionInput.name = "action";
+      actionInput.value = "salvaFotoGiocatore";
+
+      const idInput = document.createElement("input");
+      idInput.name = "id";
+      idInput.value = schedaModifica.id;
+
+      const fotoInput = document.createElement("input");
+      fotoInput.name = "foto";
+      fotoInput.value = fotoCompressa;
+
+      form.appendChild(actionInput);
+      form.appendChild(idInput);
+      form.appendChild(fotoInput);
+
+      document.body.appendChild(form);
+      form.submit();
+      form.remove();
+
+      alert("Foto caricata. Ora premi SALVA SCHEDA.");
 
     };
 
@@ -3641,7 +3671,7 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
 
   
   <div className="pc-photo-box">
-  {schedaModifica.foto ? (
+  {(schedaModifica.fotoAnteprima || schedaModifica.foto) ? (
     <img
   src={schedaModifica.fotoAnteprima || schedaModifica.foto}
   className="pc-player-photo"
