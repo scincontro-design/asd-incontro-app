@@ -3594,10 +3594,20 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
   <div className="pc-photo-box">
   {schedaModifica.foto ? (
     <img
-      src={schedaModifica.foto}
-      className="pc-player-photo"
-      alt={schedaModifica.nome}
-    />
+  src={schedaModifica.foto}
+  className="pc-player-photo"
+  alt={schedaModifica.nome}
+  style={{
+    transform: `
+      translate(
+        ${schedaModifica.offsetX || 0}px,
+        ${schedaModifica.offsetY || 0}px
+      )
+      scale(${schedaModifica.zoom || 1})
+    `
+  }}
+/>
+
   ) : (
     <span>FOTO</span>
   )}
@@ -3748,6 +3758,47 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
 
     reader.readAsDataURL(file);
   }}
+/>
+
+<h3>Posizione foto</h3>
+
+<label>Zoom</label>
+
+<input
+  type="range"
+  min="0.8"
+  max="2"
+  step="0.05"
+  value={schedaModifica.zoom || 1}
+  onChange={(e)=>
+    aggiornaScheda("zoom", Number(e.target.value))
+  }
+/>
+
+<label>Sposta Orizzontale</label>
+
+<input
+  type="range"
+  min="-100"
+  max="100"
+  step="1"
+  value={schedaModifica.offsetX || 0}
+  onChange={(e)=>
+    aggiornaScheda("offsetX", Number(e.target.value))
+  }
+/>
+
+<label>Sposta Verticale</label>
+
+<input
+  type="range"
+  min="-100"
+  max="100"
+  step="1"
+  value={schedaModifica.offsetY || 0}
+  onChange={(e)=>
+    aggiornaScheda("offsetY", Number(e.target.value))
+  }
 />
 
 </div>
