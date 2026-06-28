@@ -2043,7 +2043,7 @@ height:150px;
     position:absolute;
     bottom:14.5%;
     left:23%;
-    width:54.5%;
+    width:53%;
     display:grid;
     grid-template-columns:repeat(3,1fr);
     text-align:center;
