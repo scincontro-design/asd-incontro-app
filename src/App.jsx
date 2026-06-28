@@ -3767,10 +3767,10 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
 <input
   type="range"
   min="0.8"
-  max="2"
-  step="0.05"
+  max="1.8"
+  step="0.01"
   value={schedaModifica.zoom || 1}
-  onChange={(e)=>
+  onChange={(e) =>
     aggiornaScheda("zoom", Number(e.target.value))
   }
 />
@@ -3779,8 +3779,8 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
 
 <input
   type="range"
-  min="-100"
-  max="100"
+  min="-50"
+  max="50"
   step="1"
   value={schedaModifica.offsetX || 0}
   onChange={(e)=>
@@ -3792,8 +3792,8 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
 
 <input
   type="range"
-  min="-100"
-  max="100"
+  min="-50"
+  max="50"
   step="1"
   value={schedaModifica.offsetY || 0}
   onChange={(e)=>
