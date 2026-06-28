@@ -1089,52 +1089,71 @@ function salvaScheda(){
 }
 function caricaFotoGiocatore(file){
 
-  if(!file){
-    return;
-  }
+  if(!file) return;
 
   const reader = new FileReader();
 
-  reader.onload = async function(){
+  reader.onload = function(event){
 
-    // Anteprima immediata
-    aggiornaScheda("fotoAnteprima", reader.result);
+    const img = new Image();
 
-    try{
+    img.onload = function(){
 
-      const response = await fetch(
-        API_URL + "?action=salvaFotoGiocatore",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            id: schedaModifica.id,
-            foto: reader.result
-          })
+      const canvas = document.createElement("canvas");
+
+      const maxWidth = 500;
+      const scale = maxWidth / img.width;
+
+      canvas.width = maxWidth;
+      canvas.height = img.height * scale;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      const fotoCompressa = canvas.toDataURL("image/jpeg", 0.55);
+
+      aggiornaScheda("fotoAnteprima", fotoCompressa);
+
+      const callbackName = "callbackSalvaFotoGiocatore";
+
+      window[callbackName] = function(data){
+
+        if(data && data.esito === "OK"){
+
+          setSchedaModifica({
+            ...schedaModifica,
+            foto: data.url,
+            fotoAnteprima: ""
+          });
+
+          alert("Foto salvata");
+
+        }else{
+          alert("Errore salvataggio foto");
         }
-      );
 
-      const data = await response.json();
+        var script = document.getElementById("jsonpSalvaFotoGiocatore");
+        if(script){
+          script.remove();
+        }
 
-      if(data && data.esito === "OK"){
+      };
 
-        setSchedaModifica({
-          ...schedaModifica,
-          foto: data.url,
-          fotoAnteprima: ""
-        });
+      var script = document.createElement("script");
+      script.id = "jsonpSalvaFotoGiocatore";
 
-        alert("Foto salvata");
+      script.src =
+        API_URL +
+        "?action=salvaFotoGiocatore" +
+        "&id=" + encodeURIComponent(schedaModifica.id) +
+        "&foto=" + encodeURIComponent(fotoCompressa) +
+        "&callback=" + callbackName;
 
-      }else{
-        alert("Errore salvataggio foto");
-      }
+      document.body.appendChild(script);
 
-    }catch(error){
+    };
 
-  console.log("ERRORE FOTO:", error);
-  alert("Errore caricamento foto: " + error.message);
-
-}
+    img.src = event.target.result;
 
   };
 
