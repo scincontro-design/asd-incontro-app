@@ -2032,7 +2032,10 @@ height:150px;
 }
 
 .pc-stats b{
-  font-size:25px;
+    color:#d8b25c;
+    font-size:19px;
+    font-weight:900;
+    line-height:1;
 }
 
 .pc-bottom{
