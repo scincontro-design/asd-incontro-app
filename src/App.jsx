@@ -3709,6 +3709,11 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
   {calcolaOverall()}
 </div>
 
+ <img
+  src={logo}
+  className="pc-logo"
+  alt="Logo ASD Incontro"
+/>
   
   <div
   className="pc-photo-box"
@@ -3830,12 +3835,6 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
     value={schedaModifica.numero || ""}
     onChange={(e) => aggiornaScheda("numero", e.target.value)}
   />
-
-  <img
-  src={logo}
-  className="pc-logo"
-  alt="Logo ASD Incontro"
-/>
 
   <select
     value={schedaModifica.ruoloBase || ""}

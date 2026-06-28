@@ -2097,14 +2097,12 @@ height:150px;
 }
 
 .pc-logo{
-    position:absolute;
-    z-index:5;
-
-    top:35%;
-    left:15%;
-
-    width:48px;
-    height:auto;
-
-    pointer-events:none;
+  position:absolute;
+  top:17%;
+  right:12%;
+  width:48px;
+  height:48px;
+  object-fit:contain;
+  z-index:6;
+  pointer-events:none;
 }
