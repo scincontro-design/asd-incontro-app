@@ -1993,11 +1993,30 @@ height:150px;
   top:55.6%;
   left:22%;
   width:56%;
+
   display:grid;
   grid-template-columns:1fr 1fr;
-  text-align:center;
-  gap:6px;
-  font-size:15px;
+  align-items:center;
+
+  gap:10px;
+
+  color:#e9d6a2;
+  font-weight:800;
+  font-size:14px;
+}
+
+.pc-role-item{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  white-space:nowrap;
+}
+
+.pc-role-icon{
+  font-size:18px;
+  line-height:1;
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.6));
 }
 
 .pc-stats{

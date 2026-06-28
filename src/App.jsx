@@ -3575,9 +3575,18 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
   </div>
 
   <div className="pc-role-row">
-    <span>{schedaModifica.ruolo || "RUOLO"}</span>
-    <span>{schedaModifica.piede || "PIEDE"}</span>
+
+  <div className="pc-role-item">
+    <span className="pc-role-icon">⚽</span>
+    <span>{schedaModifica.ruolo || "Ruolo"}</span>
   </div>
+
+  <div className="pc-role-item">
+    <span className="pc-role-icon">👟</span>
+    <span>{schedaModifica.piede || "Piede"}</span>
+  </div>
+
+</div>
 
   <div className="pc-stats">
   <div><b>{getAtt()}</b></div>
