@@ -2023,8 +2023,8 @@ height:150px;
 
 .pc-stats{
   top:65.2%;
-  left:22.4%;
-  width:57%;
+  left:22.3%;
+  width:55.5%;
     display:grid;
     grid-template-columns:repeat(4,28px);
     justify-content:space-between;
