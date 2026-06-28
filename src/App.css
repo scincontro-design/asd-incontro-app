@@ -2041,9 +2041,9 @@ height:150px;
 
 .pc-bottom{
     position:absolute;
-    bottom:13%;
-    left:21%;
-    width:57%;
+    bottom:15%;
+    left:23%;
+    width:56%;
     display:grid;
     grid-template-columns:repeat(3,1fr);
     text-align:center;
