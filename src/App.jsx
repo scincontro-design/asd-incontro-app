@@ -1130,80 +1130,109 @@ function salvaScheda(){
   document.body.appendChild(script);
 
 }
-function caricaFotoGiocatore(file){
+async function caricaFotoGiocatore(file){
 
   if(!file) return;
 
-  const reader = new FileReader();
+  try{
 
-  reader.onload = function(event){
+    aggiornaScheda("fotoAnteprima", "");
 
-    const img = new Image();
+    const formDataAI = new FormData();
+    formDataAI.append("file", file);
 
-    img.onload = function(){
-
-      const canvas = document.createElement("canvas");
-
-      const maxWidth = 600;
-      const scale = maxWidth / img.width;
-
-      canvas.width = maxWidth;
-      canvas.height = img.height * scale;
-
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-      const fotoCompressa = canvas.toDataURL("image/jpeg", 0.65);
-
-      aggiornaScheda("fotoAnteprima", fotoCompressa);
-
-      const iframeName = "uploadFotoIframe";
-
-      let iframe = document.getElementById(iframeName);
-
-      if(!iframe){
-        iframe = document.createElement("iframe");
-        iframe.name = iframeName;
-        iframe.id = iframeName;
-        iframe.style.display = "none";
-        document.body.appendChild(iframe);
+    const rispostaAI = await fetch(
+      "http://127.0.0.1:8000/remove-bg",
+      {
+        method: "POST",
+        body: formDataAI
       }
+    );
 
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action = API_URL;
-      form.target = iframeName;
-      form.style.display = "none";
+    if(!rispostaAI.ok){
+      alert("Errore rimozione sfondo");
+      return;
+    }
 
-      const actionInput = document.createElement("input");
-      actionInput.name = "action";
-      actionInput.value = "salvaFotoGiocatore";
+    const blobSenzaSfondo = await rispostaAI.blob();
 
-      const idInput = document.createElement("input");
-      idInput.name = "id";
-      idInput.value = schedaModifica.id;
+    const reader = new FileReader();
 
-      const fotoInput = document.createElement("input");
-      fotoInput.name = "foto";
-      fotoInput.value = fotoCompressa;
+    reader.onload = function(event){
 
-      form.appendChild(actionInput);
-      form.appendChild(idInput);
-      form.appendChild(fotoInput);
+      const img = new Image();
 
-      document.body.appendChild(form);
-      form.submit();
-      form.remove();
+      img.onload = function(){
 
-      alert("Foto caricata. Ora premi SALVA SCHEDA.");
+        const canvas = document.createElement("canvas");
+
+        const maxWidth = 600;
+        const scale = maxWidth / img.width;
+
+        canvas.width = maxWidth;
+        canvas.height = img.height * scale;
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const fotoFinale = canvas.toDataURL("image/png");
+
+        aggiornaScheda("fotoAnteprima", fotoFinale);
+
+        const iframeName = "uploadFotoIframe";
+
+        let iframe = document.getElementById(iframeName);
+
+        if(!iframe){
+          iframe = document.createElement("iframe");
+          iframe.name = iframeName;
+          iframe.id = iframeName;
+          iframe.style.display = "none";
+          document.body.appendChild(iframe);
+        }
+
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = API_URL;
+        form.target = iframeName;
+        form.style.display = "none";
+
+        const actionInput = document.createElement("input");
+        actionInput.name = "action";
+        actionInput.value = "salvaFotoGiocatore";
+
+        const idInput = document.createElement("input");
+        idInput.name = "id";
+        idInput.value = schedaModifica.id;
+
+        const fotoInput = document.createElement("input");
+        fotoInput.name = "foto";
+        fotoInput.value = fotoFinale;
+
+        form.appendChild(actionInput);
+        form.appendChild(idInput);
+        form.appendChild(fotoInput);
+
+        document.body.appendChild(form);
+        form.submit();
+        form.remove();
+
+        alert("Foto ritagliata e caricata. Ora premi SALVA SCHEDA.");
+
+      };
+
+      img.src = event.target.result;
 
     };
 
-    img.src = event.target.result;
+    reader.readAsDataURL(blobSenzaSfondo);
 
-  };
+  }catch(error){
 
-  reader.readAsDataURL(file);
+    console.log(error);
+    alert("Errore collegamento con il servizio IA");
+
+  }
 
 }
 function sliderScheda(campo, label){
