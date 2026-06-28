@@ -1027,6 +1027,21 @@ function aggiornaScheda(campo, valore){
   });
 
 }
+function formattaNomeCard(nomeCompleto) {
+
+  if (!nomeCompleto) return "";
+
+  const parti = nomeCompleto.trim().split(" ");
+
+  if (parti.length === 1) return parti[0];
+
+  const nome = parti[0];
+
+  const cognome = parti.slice(1).join(" ");
+
+  return `${cognome} ${nome.charAt(0)}.`;
+
+}
 function salvaScheda(){
 
   const callbackName = "callbackSalvaScheda";
@@ -3570,7 +3585,7 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
   </div>
 
   <div className="pc-name-row">
-   <span>{schedaModifica.nome}</span>
+   <span>{formattaNomeCard(schedaModifica.nome)}</span>
 <b>{schedaModifica.numero || ""}</b>
   </div>
 
@@ -3658,12 +3673,33 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
     <option value="Portiere">Portiere</option>
   </select>
 
-  <input
-    type="text"
-    placeholder="Ruolo"
-    value={schedaModifica.ruolo || ""}
-    onChange={(e) => aggiornaScheda("ruolo", e.target.value)}
-  />
+  <select
+  value={schedaModifica.ruolo || ""}
+  onChange={(e) => aggiornaScheda("ruolo", e.target.value)}
+>
+  <option value="">Ruolo</option>
+
+  <option value="POR">POR</option>
+
+  <option value="TD">TD</option>
+  <option value="DC">DC</option>
+  <option value="TS">TS</option>
+
+  <option value="ED">ED</option>
+  <option value="ES">ES</option>
+
+  <option value="MED">MED</option>
+  <option value="CCD">CCD</option>
+  <option value="CC">CC</option>
+  <option value="CCS">CCS</option>
+  <option value="COC">COC</option>
+
+  <option value="AD">AD</option>
+  <option value="AS">AS</option>
+  <option value="ATD">ATD</option>
+  <option value="ATS">ATS</option>
+  <option value="ATT">ATT</option>
+</select>
 
   <select
     value={schedaModifica.piede || ""}

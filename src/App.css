@@ -1984,9 +1984,11 @@ height:150px;
   white-space:nowrap;
 }
 
-.pc-name-row b{
-  font-size:24px;
-  text-align:center;
+.pc-name-row span{
+    font-size:22px;
+    font-weight:900;
+    letter-spacing:.5px;
+    text-transform:uppercase;
 }
 
 .pc-role-row{
