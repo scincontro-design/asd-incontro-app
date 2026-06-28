@@ -1042,6 +1042,17 @@ function formattaNomeCard(nomeCompleto) {
   return `${cognome} ${nome.charAt(0)}.`;
 
 }
+function formattaDataCard(data) {
+
+  if (!data) return "-";
+
+  const parti = data.split("-");
+
+  if (parti.length !== 3) return data;
+
+  return `${parti[2]}/${parti[1]}/${parti[0]}`;
+
+}
 function salvaScheda(){
 
   const callbackName = "callbackSalvaScheda";
@@ -3616,15 +3627,15 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
 
   <div className="pc-bottom">
   <div>
-    <b>{schedaModifica.dataNascita || "-"}</b>
+    <b>{formattaDataCard(schedaModifica.dataNascita)}</b>
   </div>
 
   <div>
-    <b>{schedaModifica.altezza ? schedaModifica.altezza + " cm" : "-"}</b>
+    <b>{schedaModifica.altezza || "-"}</b>
   </div>
 
   <div>
-    <b>{schedaModifica.peso ? schedaModifica.peso + " kg" : "-"}</b>
+    <b>{schedaModifica.peso || "-"}</b>
   </div>
 </div>
 
