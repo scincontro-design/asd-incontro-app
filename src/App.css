@@ -2028,7 +2028,7 @@ height:150px;
     display:grid;
     grid-template-columns:repeat(4,28px);
     justify-content:space-between;
-    row-gap:24px;
+    row-gap:14px;
     text-align:center;
 }
 
