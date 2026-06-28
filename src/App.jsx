@@ -1142,7 +1142,7 @@ async function caricaFotoGiocatore(file){
     formDataAI.append("file", file);
 
     const rispostaAI = await fetch(
-      "http://127.0.0.1:8000/remove-bg",
+      "http://localhost:8000/remove-bg",
       {
         method: "POST",
         body: formDataAI
@@ -1230,7 +1230,7 @@ async function caricaFotoGiocatore(file){
   }catch(error){
 
     console.log(error);
-    alert("Errore collegamento con il servizio IA");
+    alert("Errore IA: " + error.message);
 
   }
 
