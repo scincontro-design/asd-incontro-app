@@ -1967,7 +1967,7 @@ height:150px;
 .pc-photo-box{
   position:absolute;
   z-index:2;
-  top:15%;
+  top:20%;
   left:37%;
   width:40%;
   height:27%;
@@ -1985,8 +1985,8 @@ height:150px;
 .pc-player-photo{
   width:100%;
   height:100%;
-  object-fit:cover;
-  object-position:center top;
+  object-fit:contain;
+  object-position:center bottom;
 }
 
 .pc-name-row{
