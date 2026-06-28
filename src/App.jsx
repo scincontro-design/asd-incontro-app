@@ -1035,9 +1035,9 @@ function formattaNomeCard(nomeCompleto) {
 
   if (parti.length === 1) return parti[0];
 
-  const nome = parti[0];
+  const cognome = parti[0];
 
-  const cognome = parti.slice(1).join(" ");
+  const nome = parti.slice(1).join(" ");
 
   return `${cognome} ${nome.charAt(0)}.`;
 
