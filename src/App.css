@@ -2024,11 +2024,12 @@ height:150px;
 .pc-stats{
   top:65.2%;
   left:17.6%;
-  width:69%;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  row-gap:34px;
-  text-align:center;
+  width:64%;
+    display:grid;
+    grid-template-columns:repeat(4,28px);
+    justify-content:space-between;
+    row-gap:34px;
+    text-align:center;
 }
 
 .pc-stats b{
