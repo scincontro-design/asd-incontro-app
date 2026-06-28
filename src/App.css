@@ -2081,3 +2081,17 @@ height:150px;
     font-size:9px;
     font-weight:800;
 }
+
+.pc-photo-box{
+  cursor:grab;
+  touch-action:none;
+}
+
+.pc-photo-box:active{
+  cursor:grabbing;
+}
+
+.pc-player-photo{
+  user-select:none;
+  pointer-events:none;
+}

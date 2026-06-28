@@ -115,6 +115,13 @@ const [dashboardContatori, setDashboardContatori] = useState({
   allenamentiProgrammati: 0,
   gareProgrammate: 0
 });
+const [dragFoto, setDragFoto] = useState(false);
+const [startDragFoto, setStartDragFoto] = useState({
+  x: 0,
+  y: 0,
+  offsetX: 0,
+  offsetY: 0
+});
 
 useEffect(() => {
 
@@ -421,6 +428,39 @@ function caricaAllenamenti(){
 
   document.body.appendChild(script);
 
+}
+function iniziaDragFoto(x, y){
+
+  setDragFoto(true);
+
+  setStartDragFoto({
+    x: x,
+    y: y,
+    offsetX: Number(schedaModifica.offsetX || 0),
+    offsetY: Number(schedaModifica.offsetY || 0)
+  });
+
+}
+
+function muoviDragFoto(x, y){
+
+  if(!dragFoto){
+    return;
+  }
+
+  const nuovoX = startDragFoto.offsetX + (x - startDragFoto.x);
+  const nuovoY = startDragFoto.offsetY + (y - startDragFoto.y);
+
+  setSchedaModifica({
+    ...schedaModifica,
+    offsetX: nuovoX,
+    offsetY: nuovoY
+  });
+
+}
+
+function fineDragFoto(){
+  setDragFoto(false);
 }
 function caricaStatisticheAllenamenti(){
 
@@ -3670,23 +3710,42 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
 </div>
 
   
-  <div className="pc-photo-box">
+  <div
+  className="pc-photo-box"
+  onMouseDown={(e) => iniziaDragFoto(e.clientX, e.clientY)}
+  onMouseMove={(e) => muoviDragFoto(e.clientX, e.clientY)}
+  onMouseUp={fineDragFoto}
+  onMouseLeave={fineDragFoto}
+  onTouchStart={(e) =>
+    iniziaDragFoto(
+      e.touches[0].clientX,
+      e.touches[0].clientY
+    )
+  }
+  onTouchMove={(e) =>
+    muoviDragFoto(
+      e.touches[0].clientX,
+      e.touches[0].clientY
+    )
+  }
+  onTouchEnd={fineDragFoto}
+>
   {(schedaModifica.fotoAnteprima || schedaModifica.foto) ? (
     <img
-  src={schedaModifica.fotoAnteprima || schedaModifica.foto}
-  className="pc-player-photo"
-  alt={schedaModifica.nome}
-  style={{
-    transform: `
-      translate(
-        ${schedaModifica.offsetX || 0}px,
-        ${schedaModifica.offsetY || 0}px
-      )
-      scale(${schedaModifica.zoom || 1})
-    `
-  }}
-/>
-
+      src={schedaModifica.fotoAnteprima || schedaModifica.foto}
+      className="pc-player-photo"
+      alt={schedaModifica.nome}
+      draggable="false"
+      style={{
+        transform: `
+          translate(
+            ${schedaModifica.offsetX || 0}px,
+            ${schedaModifica.offsetY || 0}px
+          )
+          scale(${schedaModifica.zoom || 1})
+        `
+      }}
+    />
   ) : (
     <span>FOTO</span>
   )}
@@ -3826,6 +3885,25 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
   accept="image/*"
   onChange={(e) => caricaFotoGiocatore(e.target.files[0])}
 />
+
+<label>
+  Zoom: {schedaModifica.zoom || 1}
+</label>
+
+<input
+  type="range"
+  min="0.8"
+  max="2"
+  step="0.01"
+  value={schedaModifica.zoom || 1}
+  onChange={(e) =>
+    aggiornaScheda("zoom", Number(e.target.value))
+  }
+/>
+
+<p className="photo-help">
+  Trascina la foto direttamente sulla card per centrarla.
+</p>
 
 <h3>Posizione foto</h3>
 
