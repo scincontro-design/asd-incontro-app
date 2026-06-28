@@ -1131,9 +1131,10 @@ function caricaFotoGiocatore(file){
 
     }catch(error){
 
-      alert("Errore caricamento foto");
+  console.log("ERRORE FOTO:", error);
+  alert("Errore caricamento foto: " + error.message);
 
-    }
+}
 
   };
 
