@@ -3907,19 +3907,6 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
 
 <h3>Posizione foto</h3>
 
-<label>Zoom</label>
-
-<input
-  type="range"
-  min="0.8"
-  max="1.8"
-  step="0.01"
-  value={schedaModifica.zoom || 1}
-  onChange={(e) =>
-    aggiornaScheda("zoom", Number(e.target.value))
-  }
-/>
-
 </div>
 
 {schedaModifica.ruoloBase === "Giocatore" && (
