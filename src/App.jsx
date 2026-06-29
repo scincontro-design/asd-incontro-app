@@ -1034,6 +1034,9 @@ function apriSchedaGiocatore(giocatore){
 
   window[callbackName] = function(data){
 
+    console.log("SCHEDA CARICATA:", data);
+    console.log("FOTO:", data.foto);
+
     setGiocatoreSelezionato(data);
     setSchedaModifica(data);
     setPagina("schedaGiocatore");
@@ -1142,7 +1145,7 @@ async function caricaFotoGiocatore(file){
     formDataAI.append("file", file);
 
     const rispostaAI = await fetch(
-      "http://localhost:8000/remove-bg",
+      "https://asdincontro-asd-incontro-bg-remover.hf.space/remove-bg",
       {
         method: "POST",
         body: formDataAI
