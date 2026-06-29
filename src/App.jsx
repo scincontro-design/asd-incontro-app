@@ -1125,6 +1125,7 @@ function salvaScheda(){
     "&scheda=" +
     encodeURIComponent(JSON.stringify({
   ...schedaModifica,
+  foto: "",
   fotoAnteprima: ""
 })) +
     "&callback=" +
