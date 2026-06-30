@@ -122,6 +122,7 @@ const [startDragFoto, setStartDragFoto] = useState({
   offsetX: 0,
   offsetY: 0
 });
+const [fotoInCaricamento, setFotoInCaricamento] = useState(false);
 
 useEffect(() => {
 
@@ -1041,6 +1042,8 @@ function apriSchedaGiocatore(giocatore){
     setSchedaModifica(data);
     setPagina("schedaGiocatore");
 
+    caricaFotoScheda(data.id);
+
     var script = document.getElementById("jsonpSchedaGiocatore");
     if(script){
       script.remove();
@@ -1057,6 +1060,40 @@ function apriSchedaGiocatore(giocatore){
     "&id=" + encodeURIComponent(giocatore.id) +
     "&nome=" + encodeURIComponent(giocatore.nome) +
     "&gruppo=" + encodeURIComponent(giocatore.gruppo) +
+    "&callback=" + callbackName;
+
+  document.body.appendChild(script);
+
+}
+function caricaFotoScheda(id){
+
+  setFotoInCaricamento(true);
+
+  const callbackName = "callbackFotoScheda";
+
+  window[callbackName] = function(data){
+
+    setFotoInCaricamento(false);
+
+    setSchedaModifica((prev) => ({
+      ...prev,
+      foto: data.foto || ""
+    }));
+
+    var script = document.getElementById("jsonpFotoScheda");
+    if(script){
+      script.remove();
+    }
+
+  };
+
+  var script = document.createElement("script");
+  script.id = "jsonpFotoScheda";
+
+  script.src =
+    API_URL +
+    "?action=fotoGiocatore" +
+    "&id=" + encodeURIComponent(id) +
     "&callback=" + callbackName;
 
   document.body.appendChild(script);
@@ -3768,25 +3805,36 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
   }
   onTouchEnd={fineDragFoto}
 >
-  {(schedaModifica.fotoAnteprima || schedaModifica.foto) ? (
-    <img
-      src={schedaModifica.fotoAnteprima || schedaModifica.foto}
-      className="pc-player-photo"
-      alt={schedaModifica.nome}
-      draggable="false"
-      style={{
-        transform: `
-          translate(
-            ${schedaModifica.offsetX || 0}px,
-            ${schedaModifica.offsetY || 0}px
-          )
-          scale(${schedaModifica.zoom || 1})
-        `
-      }}
-    />
-  ) : (
-    <span>FOTO</span>
-  )}
+  {fotoInCaricamento ? (
+
+  <div className="foto-loading">
+    <div className="spinner"></div>
+    <div>Preparazione foto...</div>
+  </div>
+
+) : (schedaModifica.fotoAnteprima || schedaModifica.foto) ? (
+
+  <img
+    src={schedaModifica.fotoAnteprima || schedaModifica.foto}
+    className="pc-player-photo"
+    alt={schedaModifica.nome}
+    draggable="false"
+    style={{
+      transform: `
+        translate(
+          ${schedaModifica.offsetX || 0}px,
+          ${schedaModifica.offsetY || 0}px
+        )
+        scale(${schedaModifica.zoom || 1})
+      `
+    }}
+  />
+
+) : (
+
+  <span>FOTO</span>
+
+)}
 </div>
 
   <div className="pc-name-row">
