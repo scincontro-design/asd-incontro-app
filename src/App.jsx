@@ -1171,6 +1171,86 @@ function salvaScheda(){
   document.body.appendChild(script);
 
 }
+function preparaFotoCard(blob){
+
+  return new Promise((resolve) => {
+
+    const img = new Image();
+
+    img.onload = function(){
+
+      const temp = document.createElement("canvas");
+      temp.width = img.width;
+      temp.height = img.height;
+
+      const ctx = temp.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+
+      const data = ctx.getImageData(0, 0, temp.width, temp.height).data;
+
+      let minX = temp.width;
+      let minY = temp.height;
+      let maxX = 0;
+      let maxY = 0;
+
+      for(let y = 0; y < temp.height; y++){
+        for(let x = 0; x < temp.width; x++){
+
+          const alpha = data[(y * temp.width + x) * 4 + 3];
+
+          if(alpha > 20){
+            minX = Math.min(minX, x);
+            minY = Math.min(minY, y);
+            maxX = Math.max(maxX, x);
+            maxY = Math.max(maxY, y);
+          }
+
+        }
+      }
+
+      const soggettoW = maxX - minX;
+      const soggettoH = maxY - minY;
+
+      const finale = document.createElement("canvas");
+      finale.width = 600;
+      finale.height = 800;
+
+      const ctxFinale = finale.getContext("2d");
+
+      const targetW = 470;
+      const targetH = 720;
+
+      const scala = Math.min(
+        targetW / soggettoW,
+        targetH / soggettoH
+      );
+
+      const nuovoW = soggettoW * scala;
+
+      const xFinale = (600 - nuovoW) / 2;
+      const yFinale = 45;
+
+      ctxFinale.drawImage(
+        img,
+        minX,
+        minY,
+        soggettoW,
+        soggettoH,
+        xFinale,
+        yFinale,
+        soggettoW * scala,
+        soggettoH * scala
+      );
+
+      resolve(finale.toDataURL("image/png"));
+
+    };
+
+    img.src = URL.createObjectURL(blob);
+
+  });
+
+}
 async function caricaFotoGiocatore(file){
 
   if(!file) return;
@@ -1197,80 +1277,59 @@ async function caricaFotoGiocatore(file){
 
     const blobSenzaSfondo = await rispostaAI.blob();
 
-    const reader = new FileReader();
+    // Centratura automatica
+    const fotoFinale = await preparaFotoCard(blobSenzaSfondo);
 
-    reader.onload = function(event){
+    // Aggiorna subito l'anteprima
+    aggiornaScheda("fotoAnteprima", fotoFinale);
+    aggiornaScheda("zoom", 1);
+    aggiornaScheda("offsetX", 0);
+    aggiornaScheda("offsetY", 0);
 
-      const img = new Image();
+    // Upload su Apps Script
+    const iframeName = "uploadFotoIframe";
 
-      img.onload = function(){
+    let iframe = document.getElementById(iframeName);
 
-        const canvas = document.createElement("canvas");
+    if(!iframe){
+      iframe = document.createElement("iframe");
+      iframe.name = iframeName;
+      iframe.id = iframeName;
+      iframe.style.display = "none";
+      document.body.appendChild(iframe);
+    }
 
-        const maxWidth = 600;
-        const scale = maxWidth / img.width;
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = API_URL;
+    form.target = iframeName;
+    form.style.display = "none";
 
-        canvas.width = maxWidth;
-        canvas.height = img.height * scale;
+    const actionInput = document.createElement("input");
+    actionInput.name = "action";
+    actionInput.value = "salvaFotoGiocatore";
 
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    const idInput = document.createElement("input");
+    idInput.name = "id";
+    idInput.value = schedaModifica.id;
 
-        const fotoFinale = canvas.toDataURL("image/png");
+    const fotoInput = document.createElement("input");
+    fotoInput.name = "foto";
+    fotoInput.value = fotoFinale;
 
-        aggiornaScheda("fotoAnteprima", fotoFinale);
+    form.appendChild(actionInput);
+    form.appendChild(idInput);
+    form.appendChild(fotoInput);
 
-        const iframeName = "uploadFotoIframe";
+    document.body.appendChild(form);
+    form.submit();
+    form.remove();
 
-        let iframe = document.getElementById(iframeName);
-
-        if(!iframe){
-          iframe = document.createElement("iframe");
-          iframe.name = iframeName;
-          iframe.id = iframeName;
-          iframe.style.display = "none";
-          document.body.appendChild(iframe);
-        }
-
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = API_URL;
-        form.target = iframeName;
-        form.style.display = "none";
-
-        const actionInput = document.createElement("input");
-        actionInput.name = "action";
-        actionInput.value = "salvaFotoGiocatore";
-
-        const idInput = document.createElement("input");
-        idInput.name = "id";
-        idInput.value = schedaModifica.id;
-
-        const fotoInput = document.createElement("input");
-        fotoInput.name = "foto";
-        fotoInput.value = fotoFinale;
-
-        form.appendChild(actionInput);
-        form.appendChild(idInput);
-        form.appendChild(fotoInput);
-
-        document.body.appendChild(form);
-        form.submit();
-        form.remove();
-
-        alert("Foto ritagliata e caricata. Ora premi SALVA SCHEDA.");
-
-      };
-
-      img.src = event.target.result;
-
-    };
-
-    reader.readAsDataURL(blobSenzaSfondo);
+    alert("Foto elaborata. Attendi qualche secondo e poi premi SALVA SCHEDA.");
 
   }catch(error){
 
-    console.log(error);
+    console.error(error);
     alert("Errore IA: " + error.message);
 
   }

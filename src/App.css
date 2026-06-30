@@ -1967,10 +1967,10 @@ height:150px;
 .pc-photo-box{
   position:absolute;
   z-index:2;
-  top:20%;
-  left:37%;
-  width:40%;
-  height:27%;
+  top:17%;
+  left:35%;
+  width:44%;
+  height:30%;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -2094,6 +2094,7 @@ height:150px;
 .pc-player-photo{
   user-select:none;
   pointer-events:none;
+  filter: drop-shadow(0 10px 14px rgba(0,0,0,.55));
 }
 
 .pc-logo{
