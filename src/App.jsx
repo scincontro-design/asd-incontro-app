@@ -395,9 +395,9 @@ function caricaBootstrap(utenteLogin){
 function caricaAllenamenti(){
 
   if(allenamenti.length > 0){
-  setPagina("allenamenti");
-  return;
-}
+    setPagina("allenamenti");
+    return;
+  }
 
   const callbackName = "callbackAllenamenti";
 
@@ -1583,6 +1583,7 @@ function apriCompilaAllenamento(a){
 
   setAllenamentoSelezionato(a);
   setDettaglioAllenamento(null);
+  setPagina("compilaAllenamento");
 
   const callbackName = "callbackDettaglioAllenamento";
 
@@ -1624,6 +1625,7 @@ setReportAllenamento({
     "?action=datiCompilaAllenamento" +
     "&gruppo=" + encodeURIComponent(a.gruppo) +
     "&data=" + encodeURIComponent(a.data) +
+    "&stato=" + encodeURIComponent(a.stato) +
     "&callback=" + callbackName;
 
   script.onerror = function(){
@@ -1745,6 +1747,26 @@ if(!utente){
 }
 
   if(utente){
+
+    if(
+  pagina === "compilaAllenamento" &&
+  allenamentoSelezionato &&
+  !dettaglioAllenamento
+){
+  return (
+    <div className="app">
+      <BottoneIndietro />
+
+      <div className="dashboard-card">
+        <h2>APERTURA ALLENAMENTO</h2>
+        <p className="subtitle">
+          Caricamento dati in corso...
+        </p>
+      </div>
+    </div>
+  );
+}
+
    if(
   pagina === "compilaAllenamento" &&
   allenamentoSelezionato &&
@@ -1882,7 +1904,20 @@ function eliminaAllenamentoSelezionato(){
 
     if(data && data.esito === "OK"){
       alert("Allenamento eliminato");
-      caricaAllenamenti();
+
+      setAllenamenti((prev) =>
+  prev.filter((a) =>
+    !(
+      a.gruppo === allenamentoSelezionato.gruppo &&
+      a.data === allenamentoSelezionato.data &&
+      a.orario === allenamentoSelezionato.orario &&
+      a.campo === allenamentoSelezionato.campo
+    )
+  )
+);
+
+setPagina("allenamenti");
+
     }else{
       alert("Errore eliminazione");
     }
@@ -1912,6 +1947,9 @@ function eliminaAllenamentoSelezionato(){
 
 function creaAllenamento(){
 
+  console.log("CLICK CREA ALLENAMENTO");
+console.log("nuovoAllenamento:", nuovoAllenamento);
+
   if(
     !nuovoAllenamento.gruppo ||
     !nuovoAllenamento.data ||
@@ -1937,7 +1975,18 @@ function creaAllenamento(){
         campo: ""
       });
 
-      caricaAllenamenti();
+     const nuovo = {
+  data: nuovoAllenamento.data.split("-").reverse().join("/"),
+  gruppo: nuovoAllenamento.gruppo,
+  orario: nuovoAllenamento.orario,
+  campo: nuovoAllenamento.campo,
+  stato: "Programmato"
+};
+
+setAllenamenti((prev) => [...prev, nuovo]);
+
+setPagina("allenamenti");
+setTabAllenamenti("prossimi");
 
     }else{
 
