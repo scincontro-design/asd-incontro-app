@@ -21,6 +21,7 @@ import gareHero from "./assets/gare-hero.png";
 import garaNuova from "./assets/gare-nuova.png";
 import gareProssime from "./assets/gare-prossime.png";
 import gareArchivio from "./assets/gare-archivio.png";
+import weekendHero from "./assets/weekend-hero.png";
 import schedeHero from "./assets/schede-hero.png";
 import playerCardBg from "./assets/player-card.png";
 import "./App.css";
@@ -4402,47 +4403,105 @@ if(pagina === "weekend"){
   return (
     <div className="app">
 
-    <BottoneIndietro />
+      <BottoneIndietro />
 
       <div className="dashboard-card">
 
-        <h2>LISTA WEEKEND</h2>
-
-        <button onClick={esportaListaWeekend}>
-  ESPORTA LISTA WEEKEND
-</button>
-
-        {gare.map((g, index) => (
-
-          <div
-            className="mini-card"
-            key={index}
-            onClick={() => apriDettaglioGara(g)}
-          >
-
-            <b>{g.gruppo}</b>
-
-            <p>📅 {g.data}</p>
-            <p>⚽ {g.avversario}</p>
-            <p>🕒 {g.orario}</p>
-            <p>🏟️ {g.campo}</p>
-
-            <p>
-              Convocazioni: {g.haConvocati ? "✅ Fatte" : "❌ Mancanti"}
-            </p>
-
-            <p>
-              Risultato: {
-                g.golFatti !== "" && g.golFatti != null &&
-                g.golSubiti !== "" && g.golSubiti != null
-                  ? "✅ Inserito"
-                  : "⚠️ Mancante"
-              }
-            </p>
-
+        <div
+          className="hero-card"
+          style={{
+            backgroundImage: `url(${weekendHero})`
+          }}
+        >
+          <div className="hero-overlay">
+            <h1>LISTA WEEKEND</h1>
+            <p>Panoramica completa delle gare del fine settimana</p>
           </div>
+        </div>
 
-        ))}
+        <div
+  className="module-card export-card"
+  onClick={esportaListaWeekend}
+>
+  <div className="module-icon">📋</div>
+
+  <div>
+    <h3>ESPORTA LISTA</h3>
+    <p>Copia il riepilogo del weekend</p>
+  </div>
+
+  <span>›</span>
+</div>
+
+{gare.length === 0 && (
+  <p className="subtitle">
+    Nessuna gara trovata per il weekend
+  </p>
+)}
+
+        {gare.map((g, index) => {
+
+  const risultatoInserito =
+    g.golFatti !== "" && g.golFatti != null &&
+    g.golSubiti !== "" && g.golSubiti != null;
+
+  const siglaAvversario = getSiglaSquadra(g.avversario);
+
+  return (
+    <div
+      className="weekend-match-card"
+      key={index}
+      onClick={() => apriDettaglioGara(g)}
+    >
+
+      <div className="match-top">
+        <span>📅 {g.data}</span>
+        <span>🕒 {g.orario}</span>
+      </div>
+
+      <div className="match-clubs">
+
+        <div className="club-box">
+          <div className="club-logo asd-logo">
+            <img src={logo} alt="ASD Incontro" />
+          </div>
+          <b>{g.gruppo}</b>
+          <small>ASD INCONTRO</small>
+        </div>
+
+        <div className="match-vs-circle">
+          VS
+        </div>
+
+        <div className="club-box">
+          <div className="club-logo opponent-logo">
+            {siglaAvversario}
+          </div>
+          <b>{g.avversario}</b>
+          <small>AVVERSARIO</small>
+        </div>
+
+      </div>
+
+      <div className="match-info">
+        <span>🏟️ {g.campo}</span>
+        <span>{g.casaTrasferta === "Casa" ? "🏠 Casa" : "🚌 Trasferta"}</span>
+      </div>
+
+      <div className="match-status-row">
+        <span className={g.haConvocati ? "match-pill ok" : "match-pill alert"}>
+          {g.haConvocati ? "Convocazioni OK" : "Convocazioni mancanti"}
+        </span>
+
+        <span className={risultatoInserito ? "match-pill ok" : "match-pill warn"}>
+          {risultatoInserito ? "Risultato OK" : "Risultato da inserire"}
+        </span>
+      </div>
+
+    </div>
+  );
+
+})}
 
       </div>
     </div>
