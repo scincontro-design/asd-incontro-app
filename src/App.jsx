@@ -24,6 +24,7 @@ import gareArchivio from "./assets/gare-archivio.png";
 import schedeHero from "./assets/schede-hero.png";
 import playerCardBg from "./assets/player-card.png";
 import "./App.css";
+import Toast from "./components/Toast";
 
 const API_URL = "https://script.google.com/macros/s/AKfycbyokQ0HXWqPMtGzM7hyo5aOkUeY_NkEbIIXHSjZ8SL-jMwIDieUVVmqZXf85S3ahWY_/exec";
 
@@ -123,6 +124,11 @@ const [startDragFoto, setStartDragFoto] = useState({
   offsetY: 0
 });
 const [fotoInCaricamento, setFotoInCaricamento] = useState(false);
+const [notifica, setNotifica] = useState({
+  visibile: false,
+  testo: "",
+  tipo: "success"
+});
 
 useEffect(() => {
 
@@ -291,6 +297,23 @@ function precaricaAllenamenti(utenteLogin){
     "&callback=" + callbackName;
 
   document.body.appendChild(script);
+
+}
+function mostraNotifica(testo, tipo = "success"){
+
+  setNotifica({
+    visibile: true,
+    testo,
+    tipo
+  });
+
+  setTimeout(() => {
+    setNotifica({
+      visibile:false,
+      testo:"",
+      tipo:"success"
+    });
+  },2500);
 
 }
 function precaricaStatistiche(utenteLogin){
@@ -1746,6 +1769,7 @@ if(!utente){
   );
 }
 
+
   if(utente){
 
     if(
@@ -1763,6 +1787,7 @@ if(!utente){
           Caricamento dati in corso...
         </p>
       </div>
+      
     </div>
   );
 }
@@ -4832,7 +4857,7 @@ if(pagina === "gruppi"){
       </button>
 
     </div>
-
+<Toast notifica={notifica} />
   </div>
 );
         }}
