@@ -25,6 +25,7 @@ import weekendHero from "./assets/weekend-hero.png";
 import schedeHero from "./assets/schede-hero.png";
 import playerCardBg from "./assets/player-card.png";
 import "./App.css";
+import jsPDF from "jspdf";
 import Toast from "./components/Toast";
 
 const API_URL = "https://script.google.com/macros/s/AKfycbyokQ0HXWqPMtGzM7hyo5aOkUeY_NkEbIIXHSjZ8SL-jMwIDieUVVmqZXf85S3ahWY_/exec";
@@ -606,32 +607,64 @@ function caricaListaWeekend(){
 }
 function esportaListaWeekend(){
 
-  var testo = "📋 LISTA WEEKEND\n\n";
+  const doc = new jsPDF();
 
-  gare.forEach((g) => {
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(18);
+  doc.text("ASD INCONTRO - LISTA WEEKEND", 15, 18);
 
-    testo +=
-      "⚽ " + g.gruppo + " vs " + g.avversario + "\n" +
-      "📅 " + g.data + "\n" +
-      "🕒 " + g.orario + "\n" +
-      "🏟️ " + g.campo + "\n" +
-      "📌 " + g.casaTrasferta + "\n" +
-      "Convocazioni: " + (g.haConvocati ? "✅ Fatte" : "❌ Mancanti") + "\n" +
-      "Risultato: " +
-      (
-        g.golFatti !== "" &&
-        g.golFatti != null &&
-        g.golSubiti !== "" &&
-        g.golSubiti != null
-          ? "✅ Inserito"
-          : "⚠️ Mancante"
-      ) +
-      "\n\n";
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.text("Riepilogo gare del weekend", 15, 25);
+
+  let y = 38;
+
+  gare.forEach((g, index) => {
+
+    const risultatoInserito =
+      g.golFatti !== "" &&
+      g.golFatti != null &&
+      g.golSubiti !== "" &&
+      g.golSubiti != null;
+
+    if(y > 260){
+      doc.addPage();
+      y = 20;
+    }
+
+    doc.setDrawColor(180, 0, 0);
+    doc.setLineWidth(0.5);
+    doc.roundedRect(12, y - 6, 186, 42, 3, 3);
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(13);
+    doc.text(g.gruppo + "  VS  " + g.avversario, 16, y);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+
+    doc.text("Data: " + g.data, 16, y + 8);
+    doc.text("Ora: " + g.orario, 70, y + 8);
+    doc.text("Campo: " + g.campo, 16, y + 16);
+    doc.text("Casa/Trasferta: " + (g.casaTrasferta || ""), 16, y + 24);
+
+    doc.text(
+      "Convocazioni: " + (g.haConvocati ? "Fatte" : "Mancanti"),
+      110,
+      y + 16
+    );
+
+    doc.text(
+      "Risultato: " + (risultatoInserito ? "Inserito" : "Mancante"),
+      110,
+      y + 24
+    );
+
+    y += 50;
+
   });
 
-  navigator.clipboard.writeText(testo);
-
-  alert("Lista weekend copiata negli appunti");
+  doc.save("lista-weekend-asd-incontro.pdf");
 
 }
 function caricaIscritti(){
@@ -4426,8 +4459,8 @@ if(pagina === "weekend"){
   <div className="module-icon">📋</div>
 
   <div>
-    <h3>ESPORTA LISTA</h3>
-    <p>Copia il riepilogo del weekend</p>
+    <h3>ESPORTA PDF</h3>
+<p>Scarica il riepilogo gare</p>
   </div>
 
   <span>›</span>
