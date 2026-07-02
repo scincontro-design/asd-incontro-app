@@ -2307,3 +2307,18 @@ height:150px;
   color:#ffd36b;
   border:1px solid rgba(255,211,107,.35);
 }
+
+.login-link{
+  margin-top:18px;
+  text-align:center;
+  font-size:14px;
+  color:#888;
+  cursor:pointer;
+  transition:.2s;
+  user-select:none;
+}
+
+.login-link:hover{
+  color:#d50000;
+  text-decoration:underline;
+}

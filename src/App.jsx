@@ -131,6 +131,17 @@ const [notifica, setNotifica] = useState({
   testo: "",
   tipo: "success"
 });
+const [mostraRegistrazione, setMostraRegistrazione] = useState(false);
+const [registrazione, setRegistrazione] = useState({
+  nome: "",
+  cognome: "",
+  dataNascita: "",
+  codiceGruppo: "",
+  idAccesso: "",
+  password: "",
+  confermaPassword: ""
+});
+const [messaggioRegistrazione, setMessaggioRegistrazione] = useState("");
 
 useEffect(() => {
 
@@ -789,6 +800,75 @@ function spostaRagazziGruppo(){
 
   document.body.appendChild(script);
 
+}
+function handleRegistrazioneRagazzo() {
+setMessaggioRegistrazione("");
+
+  if (
+    !registrazione.nome ||
+    !registrazione.cognome ||
+    !registrazione.dataNascita ||
+    !registrazione.codiceGruppo ||
+    !registrazione.idAccesso ||
+    !registrazione.password ||
+    !registrazione.confermaPassword
+  ) {
+    setMessaggioRegistrazione("⚠️ Compila tutti i campi");
+    return;
+  }
+
+  const callbackName = "callbackRegistrazioneRagazzo";
+
+  window[callbackName] = function(data) {
+    if (data && data.ok) {
+      setMessaggioRegistrazione("✅ " + data.messaggio);
+
+      setRegistrazione({
+        nome: "",
+        cognome: "",
+        dataNascita: "",
+        codiceGruppo: "",
+        idAccesso: "",
+        password: "",
+        confermaPassword: ""
+      });
+
+      setTimeout(() => {
+  setMostraRegistrazione(false);
+}, 2000);
+
+    } else {
+      setMessaggioRegistrazione("❌ " + (data?.messaggio || "Errore registrazione"));
+    }
+
+    var script = document.getElementById("jsonpRegistrazioneRagazzo");
+    if (script) {
+      script.remove();
+    }
+  };
+
+  var script = document.createElement("script");
+  script.id = "jsonpRegistrazioneRagazzo";
+
+  script.src =
+    API_URL +
+    "?action=registraRagazzo" +
+    "&nome=" + encodeURIComponent(registrazione.nome) +
+    "&cognome=" + encodeURIComponent(registrazione.cognome) +
+    "&dataNascita=" + encodeURIComponent(registrazione.dataNascita) +
+    "&codiceGruppo=" + encodeURIComponent(registrazione.codiceGruppo) +
+    "&idAccesso=" + encodeURIComponent(registrazione.idAccesso) +
+    "&password=" + encodeURIComponent(registrazione.password) +
+    "&confermaPassword=" + encodeURIComponent(registrazione.confermaPassword) +
+    "&callback=" + callbackName;
+
+    console.log("URL REGISTRAZIONE:", script.src);
+
+  script.onerror = function() {
+    setMessaggioRegistrazione("❌ Errore collegamento registrazione");
+  };
+
+  document.body.appendChild(script);
 }
 function aggiungiGruppoRagazzi(){
 
@@ -1746,6 +1826,124 @@ setSalvataggio(true);
   document.body.appendChild(script);
 
 }
+if(mostraRegistrazione){
+  return (
+    <div className="app login-background">
+
+      <img
+        src={sfondoLogin}
+        className="login-bg-image"
+        alt=""
+      />
+
+      <div className="login-card login-card-new">
+
+        <div className="top-line"></div>
+
+        <img src={logo} className="login-logo-new" />
+
+        <h1 className="login-title">
+          <span>Registrazione</span>
+        </h1>
+
+        <p className="login-subtitle">
+          CREA ACCOUNT RAGAZZO
+        </p>
+
+        <div className="login-divider"></div>
+
+        {messaggioRegistrazione && (
+  <div className="errore">
+    {messaggioRegistrazione}
+  </div>
+)}
+
+        {notifica.visibile && (
+  <div className="errore">
+    {notifica.testo}
+  </div>
+)}
+
+        <input
+          type="text"
+          placeholder="Nome"
+          value={registrazione.nome}
+          onChange={(e) =>
+            setRegistrazione({ ...registrazione, nome: e.target.value })
+          }
+        />
+
+        <input
+          type="text"
+          placeholder="Cognome"
+          value={registrazione.cognome}
+          onChange={(e) =>
+            setRegistrazione({ ...registrazione, cognome: e.target.value })
+          }
+        />
+
+        <input
+          type="date"
+          value={registrazione.dataNascita}
+          onChange={(e) =>
+            setRegistrazione({ ...registrazione, dataNascita: e.target.value })
+          }
+        />
+
+        <input
+          type="text"
+          placeholder="Codice gruppo"
+          value={registrazione.codiceGruppo}
+          onChange={(e) =>
+            setRegistrazione({ ...registrazione, codiceGruppo: e.target.value })
+          }
+        />
+
+        <input
+          type="text"
+          placeholder="ID accesso desiderato"
+          value={registrazione.idAccesso}
+          onChange={(e) =>
+            setRegistrazione({ ...registrazione, idAccesso: e.target.value })
+          }
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          value={registrazione.password}
+          onChange={(e) =>
+            setRegistrazione({ ...registrazione, password: e.target.value })
+          }
+        />
+
+        <input
+          type="password"
+          placeholder="Conferma password"
+          value={registrazione.confermaPassword}
+          onChange={(e) =>
+            setRegistrazione({
+              ...registrazione,
+              confermaPassword: e.target.value
+            })
+          }
+        />
+
+        <button onClick={handleRegistrazioneRagazzo}>
+          CREA ACCOUNT
+        </button>
+
+        <p
+  className="login-link"
+  onClick={() => setMostraRegistrazione(false)}
+>
+  Torna al login
+</p>
+
+      </div>
+    </div>
+  );
+}
 if(!utente){
   return (
     <div className="app login-background">
@@ -1793,6 +1991,13 @@ if(!utente){
   <button onClick={login} disabled={loading}>
     {loading ? "ACCESSO..." : "ACCEDI  →"}
   </button>
+
+  <p
+  className="login-link"
+  onClick={() => setMostraRegistrazione(true)}
+>
+  Registrati come ragazzo
+</p>
 
   <p className="login-quote">
     “Ogni allenamento costruisce la partita.”
