@@ -142,6 +142,7 @@ const [registrazione, setRegistrazione] = useState({
   confermaPassword: ""
 });
 const [messaggioRegistrazione, setMessaggioRegistrazione] = useState("");
+const [accountCreato, setAccountCreato] = useState(null);
 
 useEffect(() => {
 
@@ -821,7 +822,9 @@ setMessaggioRegistrazione("");
 
   window[callbackName] = function(data) {
     if (data && data.ok) {
-      setMessaggioRegistrazione("✅ " + data.messaggio);
+      setAccountCreato({
+  idAccesso: registrazione.idAccesso
+});
 
       setRegistrazione({
         nome: "",
@@ -832,10 +835,6 @@ setMessaggioRegistrazione("");
         password: "",
         confermaPassword: ""
       });
-
-      setTimeout(() => {
-  setMostraRegistrazione(false);
-}, 2000);
 
     } else {
       setMessaggioRegistrazione("❌ " + (data?.messaggio || "Errore registrazione"));
@@ -1852,93 +1851,119 @@ if(mostraRegistrazione){
 
         <div className="login-divider"></div>
 
-        {messaggioRegistrazione && (
-  <div className="errore">
-    {messaggioRegistrazione}
-  </div>
-)}
+        {accountCreato ? (
+          <>
+            <div className="registrazione-success">
+              <h2>✅ Account creato!</h2>
 
-        {notifica.visibile && (
-  <div className="errore">
-    {notifica.testo}
-  </div>
-)}
+              <p>Il tuo account è stato creato correttamente.</p>
 
-        <input
-          type="text"
-          placeholder="Nome"
-          value={registrazione.nome}
-          onChange={(e) =>
-            setRegistrazione({ ...registrazione, nome: e.target.value })
-          }
-        />
+              <p>Da ora puoi accedere con questo ID:</p>
 
-        <input
-          type="text"
-          placeholder="Cognome"
-          value={registrazione.cognome}
-          onChange={(e) =>
-            setRegistrazione({ ...registrazione, cognome: e.target.value })
-          }
-        />
+              <div className="id-creato">
+                {accountCreato.idAccesso}
+              </div>
 
-        <input
-          type="date"
-          value={registrazione.dataNascita}
-          onChange={(e) =>
-            setRegistrazione({ ...registrazione, dataNascita: e.target.value })
-          }
-        />
+              <p className="small-note">
+                Conserva questo ID. La password non viene mostrata per sicurezza.
+              </p>
+            </div>
 
-        <input
-          type="text"
-          placeholder="Codice gruppo"
-          value={registrazione.codiceGruppo}
-          onChange={(e) =>
-            setRegistrazione({ ...registrazione, codiceGruppo: e.target.value })
-          }
-        />
+            <button
+              onClick={() => {
+                setMostraRegistrazione(false);
+                setAccountCreato(null);
+                setMessaggioRegistrazione("");
+              }}
+            >
+              VAI AL LOGIN
+            </button>
+          </>
+        ) : (
+          <>
+            {messaggioRegistrazione && (
+              <div className="registrazione-msg">
+                {messaggioRegistrazione}
+              </div>
+            )}
 
-        <input
-          type="text"
-          placeholder="ID accesso desiderato"
-          value={registrazione.idAccesso}
-          onChange={(e) =>
-            setRegistrazione({ ...registrazione, idAccesso: e.target.value })
-          }
-        />
+            <input
+              type="text"
+              placeholder="Nome"
+              value={registrazione.nome}
+              onChange={(e) =>
+                setRegistrazione({ ...registrazione, nome: e.target.value })
+              }
+            />
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={registrazione.password}
-          onChange={(e) =>
-            setRegistrazione({ ...registrazione, password: e.target.value })
-          }
-        />
+            <input
+              type="text"
+              placeholder="Cognome"
+              value={registrazione.cognome}
+              onChange={(e) =>
+                setRegistrazione({ ...registrazione, cognome: e.target.value })
+              }
+            />
 
-        <input
-          type="password"
-          placeholder="Conferma password"
-          value={registrazione.confermaPassword}
-          onChange={(e) =>
-            setRegistrazione({
-              ...registrazione,
-              confermaPassword: e.target.value
-            })
-          }
-        />
+            <input
+              type="date"
+              value={registrazione.dataNascita}
+              onChange={(e) =>
+                setRegistrazione({ ...registrazione, dataNascita: e.target.value })
+              }
+            />
 
-        <button onClick={handleRegistrazioneRagazzo}>
-          CREA ACCOUNT
-        </button>
+            <input
+              type="text"
+              placeholder="Codice gruppo"
+              value={registrazione.codiceGruppo}
+              onChange={(e) =>
+                setRegistrazione({ ...registrazione, codiceGruppo: e.target.value })
+              }
+            />
 
-        <p
-  className="login-link"
-  onClick={() => setMostraRegistrazione(false)}
->
-  Torna al login
-</p>
+            <input
+              type="text"
+              placeholder="ID accesso desiderato"
+              value={registrazione.idAccesso}
+              onChange={(e) =>
+                setRegistrazione({ ...registrazione, idAccesso: e.target.value })
+              }
+            />
+
+            <input
+              type="password"
+              placeholder="Password"
+              value={registrazione.password}
+              onChange={(e) =>
+                setRegistrazione({ ...registrazione, password: e.target.value })
+              }
+            />
+
+            <input
+              type="password"
+              placeholder="Conferma password"
+              value={registrazione.confermaPassword}
+              onChange={(e) =>
+                setRegistrazione({
+                  ...registrazione,
+                  confermaPassword: e.target.value
+                })
+              }
+            />
+
+            <button onClick={handleRegistrazioneRagazzo}>
+              CREA ACCOUNT
+            </button>
+
+            <p
+              className="login-link"
+              onClick={() => setMostraRegistrazione(false)}
+            >
+              Torna al login
+            </p>
+          </>
+        )}
 
       </div>
     </div>
