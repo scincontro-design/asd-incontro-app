@@ -127,6 +127,7 @@ const [startDragFoto, setStartDragFoto] = useState({
   offsetY: 0
 });
 const [fotoInCaricamento, setFotoInCaricamento] = useState(false);
+const [fotoInElaborazione, setFotoInElaborazione] = useState(false);
 const [notifica, setNotifica] = useState({
   visibile: false,
   testo: "",
@@ -144,6 +145,7 @@ const [registrazione, setRegistrazione] = useState({
 });
 const [messaggioRegistrazione, setMessaggioRegistrazione] = useState("");
 const [accountCreato, setAccountCreato] = useState(null);
+const [messaggioFoto, setMessaggioFoto] = useState("");
 
 useEffect(() => {
 
@@ -1418,6 +1420,9 @@ async function caricaFotoGiocatore(file){
 
   if(!file) return;
 
+ setFotoInElaborazione(true);
+setMessaggioFoto("📸 Foto ricevuta. La foto è in elaborazione e sarà pronta entro circa 2 minuti.");
+
   try{
 
     aggiornaScheda("fotoAnteprima", "");
@@ -1488,7 +1493,8 @@ async function caricaFotoGiocatore(file){
     form.submit();
     form.remove();
 
-    alert("Foto elaborata. Attendi qualche secondo e poi premi SALVA SCHEDA.");
+    setFotoInElaborazione(false);
+setMessaggioFoto("✅ Foto elaborata. Ora puoi premere SALVA SCHEDA.");
 
   }catch(error){
 
@@ -4215,12 +4221,16 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
   }
   onTouchEnd={fineDragFoto}
 >
-  {fotoInCaricamento ? (
+  {fotoInElaborazione ? (
 
-  <div className="foto-loading">
-    <div className="spinner"></div>
-    <div>Preparazione foto...</div>
+    <div className="foto-loading">
+  <div>📸</div>
+  <div>
+    FOTO IN ELABORAZIONE
+    <br />
+    ≈ 2 MIN
   </div>
+</div>
 
 ) : (schedaModifica.fotoAnteprima || schedaModifica.foto) ? (
 
