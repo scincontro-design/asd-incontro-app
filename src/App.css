@@ -2363,3 +2363,164 @@ height:150px;
   font-size:13px;
   color:#777;
 }
+
+.pc-stats{
+  top:59.7%;
+  left:12.5%;
+  width:75%;
+  height:25%;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-template-rows:repeat(2,1fr);
+}
+
+.pc-stat-box{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+
+.pc-stat-box span{
+  display:block !important;
+  color:#e9d6a2;
+  font-size:18px;
+  font-weight:900;
+  line-height:1;
+}
+
+.pc-stat-box b{
+  color:white;
+  font-size:22px;
+  font-weight:900;
+  line-height:1;
+}
+
+.pc-bottom{
+  bottom:10.8%;
+  left:13%;
+  width:74%;
+}
+
+.pc-bottom b{
+  color:white;
+  font-size:13px;
+  font-weight:900;
+}
+
+.pc-overall-value{
+  top:18%;
+  left:16%;
+  width:70px;
+  font-size:42px;
+  color:#d8b25c;
+  text-align:center;
+  font-weight:900;
+}
+
+/* ruolo, piede, logo sotto overall */
+.pc-role-row{
+  top:26%;
+  left:13%;
+  width:24%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
+  color:#e9d6a2;
+  font-size:15px;
+  font-weight:900;
+  text-align:center;
+}
+
+.pc-role-item{
+  justify-content:center;
+  gap:5px;
+}
+
+.pc-role-icon{
+  font-size:17px;
+}
+
+.pc-logo{
+  top:37%;
+  left:16%;
+  right:auto;
+  width:80px;
+}
+
+/* foto tutta a destra */
+.pc-photo-box{
+  top: 17.1%;
+  left:36%;
+  width:47%;
+  height:35%;
+}
+
+/* nome nel pannello centrale */
+.pc-name-row{
+  top:53.8%;
+  left:16%;
+  width:68%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.pc-name-row span{
+  font-size:20px;
+  font-weight:900;
+  color:white;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+
+.pc-name-row b{
+  display:none;
+}
+
+/* attributi più piccoli */
+.pc-stats{
+  top:62%;
+  left:14%;
+  width:72%;
+  height:20%;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-template-rows:repeat(2,1fr);
+}
+
+.pc-stat-box{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+}
+
+.pc-stat-box span{
+  display:block !important;
+  color:#e9d6a2;
+  font-size:14px;
+  font-weight:900;
+}
+
+.pc-stat-box b{
+  color:white;
+  font-size:18px;
+  font-weight:900;
+}
+
+/* nascita altezza peso eliminati */
+.pc-bottom{
+  display:none !important;
+}
+
+.pc-role-shoe{
+  width:25px;
+  height:auto;
+  object-fit:contain;
+  flex-shrink:0;
+}

@@ -23,7 +23,8 @@ import gareProssime from "./assets/gare-prossime.png";
 import gareArchivio from "./assets/gare-archivio.png";
 import weekendHero from "./assets/weekend-hero.png";
 import schedeHero from "./assets/schede-hero.png";
-import playerCardBg from "./assets/player-card.png";
+import playerCardBg from "./assets/card-base.png";
+import scarpaGold from "./assets/scarpa-gold.png";
 import "./App.css";
 import jsPDF from "jspdf";
 import Toast from "./components/Toast";
@@ -391,6 +392,32 @@ function precaricaSchede(utenteLogin){
 
   document.body.appendChild(script);
 
+}
+function getAttributiScheda(){
+
+  if(schedaModifica?.ruoloBase === "Portiere"){
+    return [
+      { sigla:"PRS", campo:"presa" },
+      { sigla:"TUF", campo:"tuffo" },
+      { sigla:"RIF", campo:"riflessi" },
+      { sigla:"PAR", campo:"parata" },
+      { sigla:"USC", campo:"uscite" },
+      { sigla:"REA", campo:"reattivita" },
+      { sigla:"POS", campo:"posizionamentoPorta" },
+      { sigla:"RIN", campo:"rinvio" }
+    ];
+  }
+
+  return [
+    { sigla:"ATT", campo:"att" },
+    { sigla:"TEC", campo:"tec" },
+    { sigla:"VEL", campo:"vel" },
+    { sigla:"FOR", campo:"for" },
+    { sigla:"DIF", campo:"dif" },
+    { sigla:"PAS", campo:"pas" },
+    { sigla:"INT", campo:"int" },
+    { sigla:"RES", campo:"res" }
+  ];
 }
 function caricaBootstrap(utenteLogin){
 
@@ -1578,49 +1605,18 @@ function calcolaOverall(){
     return 0;
   }
 
-  let campi = [];
-
-  if(schedaModifica.ruoloBase === "Portiere"){
-
-    campi = [
-      "presa",
-      "tuffo",
-      "riflessi",
-      "parata",
-      "uscite",
-      "reattivita",
-      "posizionamentoPorta",
-      "concentrazionePortiere"
-    ];
-
-  }else{
-
-    campi = [
-      "controllo",
-      "passaggio",
-      "dribbling",
-      "tiro",
-      "visioneGioco",
-      "velocita",
-      "resistenza",
-      "forza",
-      "concentrazione"
-    ];
-
-  }
+  const attributi = getAttributiScheda();
 
   let totale = 0;
   let numeroCampi = 0;
 
-  campi.forEach((campo) => {
-
-    const valore = Number(schedaModifica[campo]) || 0;
+  attributi.forEach((a) => {
+    const valore = Number(schedaModifica[a.campo]) || 0;
 
     if(valore > 0){
       totale += valore;
       numeroCampi++;
     }
-
   });
 
   if(numeroCampi === 0){
@@ -1628,7 +1624,6 @@ function calcolaOverall(){
   }
 
   return Math.round(totale / numeroCampi);
-
 }
 function caricaTuttiGruppi(){
 
@@ -2809,6 +2804,24 @@ function eliminaGara(){
     callbackName;
 
   document.body.appendChild(script);
+
+}
+function getPiedeCard(){
+
+  switch(schedaModifica.piede){
+
+    case "Destro":
+      return "DX";
+
+    case "Sinistro":
+      return "SX";
+
+    case "Entrambi":
+      return "DX / SX";
+
+    default:
+      return "--";
+  }
 
 }
 function salvaRisultato(){
@@ -4242,40 +4255,82 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
   <div className="pc-role-row">
 
   <div className="pc-role-item">
-    <span className="pc-role-icon">⚽</span>
     <span>{schedaModifica.ruolo || "Ruolo"}</span>
   </div>
 
   <div className="pc-role-item">
-    <span className="pc-role-icon">👟</span>
-    <span>{schedaModifica.piede || "Piede"}</span>
-  </div>
+  <img
+    src={scarpaGold}
+    className="pc-role-shoe"
+    alt=""
+  />
+
+  <span>{getPiedeCard()}</span>
+</div>
 
 </div>
 
   <div className="pc-stats">
-  <div><b>{getAtt()}</b></div>
-  <div><b>{getTec()}</b></div>
-  <div><b>{getVel()}</b></div>
-  <div><b>{getFor()}</b></div>
-  <div><b>{getDif()}</b></div>
-  <div><b>{getPas()}</b></div>
-  <div><b>{getInt()}</b></div>
-  <div><b>{getRes()}</b></div>
-</div>
 
-  <div className="pc-bottom">
-  <div>
-    <b>{formattaDataCard(schedaModifica.dataNascita)}</b>
-  </div>
+  {schedaModifica?.ruoloBase === "Portiere" ? (
 
-  <div>
-    <b>{schedaModifica.altezza || "-"}</b>
-  </div>
+    <>
+      <div className="pc-stat-box">
+        <span>PRS</span>
+        <b>{schedaModifica.presa || "-"}</b>
+      </div>
 
-  <div>
-    <b>{schedaModifica.peso || "-"}</b>
-  </div>
+      <div className="pc-stat-box">
+        <span>TUF</span>
+        <b>{schedaModifica.tuffo || "-"}</b>
+      </div>
+
+      <div className="pc-stat-box">
+        <span>RIF</span>
+        <b>{schedaModifica.riflessi || "-"}</b>
+      </div>
+
+      <div className="pc-stat-box">
+        <span>PAR</span>
+        <b>{schedaModifica.parata || "-"}</b>
+      </div>
+
+      <div className="pc-stat-box">
+        <span>USC</span>
+        <b>{schedaModifica.uscite || "-"}</b>
+      </div>
+
+      <div className="pc-stat-box">
+        <span>REA</span>
+        <b>{schedaModifica.reattivita || "-"}</b>
+      </div>
+
+      <div className="pc-stat-box">
+        <span>POS</span>
+        <b>{schedaModifica.posizionamentoPorta || "-"}</b>
+      </div>
+
+      <div className="pc-stat-box">
+        <span>RIN</span>
+        <b>{schedaModifica.rinvio || "-"}</b>
+      </div>
+    </>
+
+  ) : (
+
+    <>
+      <div className="pc-stat-box"><span>ATT</span><b>{getAtt()}</b></div>
+      <div className="pc-stat-box"><span>TEC</span><b>{getTec()}</b></div>
+      <div className="pc-stat-box"><span>VEL</span><b>{getVel()}</b></div>
+      <div className="pc-stat-box"><span>FOR</span><b>{getFor()}</b></div>
+      <div className="pc-stat-box"><span>DIF</span><b>{getDif()}</b></div>
+      <div className="pc-stat-box"><span>PAS</span><b>{getPas()}</b></div>
+      <div className="pc-stat-box"><span>INT</span><b>{getInt()}</b></div>
+      <div className="pc-stat-box"><span>RES</span><b>{getRes()}</b></div>
+    </>
+
+  )}
+
 </div>
 
 </div>
