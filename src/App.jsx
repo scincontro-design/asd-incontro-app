@@ -1246,6 +1246,7 @@ function caricaFotoScheda(id){
     }));
 
     var script = document.getElementById("jsonpFotoScheda");
+
     if(script){
       script.remove();
     }
@@ -1261,8 +1262,11 @@ function caricaFotoScheda(id){
     "&id=" + encodeURIComponent(id) +
     "&callback=" + callbackName;
 
-  document.body.appendChild(script);
+  script.onerror = function(){
+    setFotoInCaricamento(false);
+  };
 
+  document.body.appendChild(script);
 }
 function aggiornaScheda(campo, valore){
 
@@ -4221,16 +4225,24 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
   }
   onTouchEnd={fineDragFoto}
 >
-  {fotoInElaborazione ? (
+  {fotoInCaricamento ? (
 
-    <div className="foto-loading">
-  <div>📸</div>
-  <div>
-    FOTO IN ELABORAZIONE
-    <br />
-    ≈ 2 MIN
+  <div className="foto-loading">
+    <div className="spinner"></div>
+    <div>Caricamento foto...</div>
   </div>
-</div>
+
+) : fotoInElaborazione ? (
+
+  <div className="foto-loading">
+    <div className="foto-processing-icon">📸</div>
+
+    <div>
+      FOTO IN ELABORAZIONE
+      <br />
+      <small>Pronta entro circa 2 minuti</small>
+    </div>
+  </div>
 
 ) : (schedaModifica.fotoAnteprima || schedaModifica.foto) ? (
 
