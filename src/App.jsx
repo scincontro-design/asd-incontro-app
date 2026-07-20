@@ -2104,11 +2104,43 @@ if(!utente){
           </div>
         </div>
 
-        <div className="dash-user-panel">
-          <span>BENVENUTO</span>
-          <h2>{utente.nome}</h2>
-          <p>{utente.gruppo}</p>
-        </div>
+        <div className="profilo-giocatore-card">
+
+  <div className="profilo-giocatore-badge">
+    PROFILO GIOCATORE
+  </div>
+
+  <div className="profilo-giocatore-logo">
+    <img src={logo} alt="ASD Incontro" />
+  </div>
+
+  <div className="profilo-giocatore-societa">
+    ASD INCONTRO
+  </div>
+
+  <h2 className="profilo-giocatore-nome">
+    {utente.nome}
+  </h2>
+
+  <div className="profilo-giocatore-dettagli">
+
+    <span>
+      {utente.gruppo}
+    </span>
+
+    {schedaModifica?.ruolo && (
+      <>
+        <i></i>
+
+        <span>
+          {schedaModifica.ruolo}
+        </span>
+      </>
+    )}
+
+  </div>
+
+</div>
 
        {schedaModifica && (
 
