@@ -193,6 +193,10 @@ useEffect(() => {
 
 }, []);
 
+useEffect(() => {
+  window.scrollTo(0, 0);
+}, [pagina]);
+
   function login(){
 
   setErrore("");
@@ -2040,6 +2044,102 @@ if(!utente){
 
 
   if(utente){
+
+    if(utente.ruolo === "Ragazzo" && pagina === "dashboard"){
+  return (
+    <div className="app dashboard-dark">
+
+      <div className="dash-hero">
+
+        <div className="dash-brand">
+          <img src={logo} className="dash-logo" alt="ASD Incontro" />
+
+          <div>
+            <h1>ASD Incontro</h1>
+            <p>AREA RAGAZZO</p>
+          </div>
+        </div>
+
+        <div className="dash-user-panel">
+          <span>BENVENUTO</span>
+          <h2>{utente.nome}</h2>
+          <p>{utente.gruppo}</p>
+        </div>
+
+      </div>
+
+      <div className="dash-modules">
+
+        <button
+          className="module-card"
+          onClick={() => setPagina("miaScheda")}
+        >
+          <div>
+            <h3>LA MIA SCHEDA</h3>
+            <p>Visualizza il tuo profilo e le valutazioni</p>
+          </div>
+
+          <span>›</span>
+        </button>
+
+        <button
+          className="module-card"
+          onClick={() => setPagina("calendarioRagazzo")}
+        >
+          <div>
+            <h3>IL MIO CALENDARIO</h3>
+            <p>Allenamenti e appuntamenti del tuo gruppo</p>
+          </div>
+
+          <span>›</span>
+        </button>
+
+        <button
+          className="module-card"
+          onClick={() => setPagina("partiteRagazzo")}
+        >
+          <div>
+            <h3>LE MIE PARTITE</h3>
+            <p>Gare, convocazioni e risultati</p>
+          </div>
+
+          <span>›</span>
+        </button>
+
+        <button
+          className="module-card"
+          onClick={() => setPagina("comunicazioniRagazzo")}
+        >
+          <div>
+            <h3>COMUNICAZIONI</h3>
+            <p>Avvisi e informazioni della squadra</p>
+          </div>
+
+          <span>›</span>
+        </button>
+
+        <button
+          className="module-card logout-card"
+          onClick={() => {
+            localStorage.removeItem("utente");
+            localStorage.removeItem("ultimoAccesso");
+            setUtente(null);
+            setPagina("dashboard");
+          }}
+        >
+          <div>
+            <h3>ESCI</h3>
+            <p>Chiudi la sessione</p>
+          </div>
+
+          <span>›</span>
+        </button>
+
+      </div>
+
+    </div>
+  );
+}
 
     if(
   pagina === "compilaAllenamento" &&
