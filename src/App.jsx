@@ -146,6 +146,7 @@ const [registrazione, setRegistrazione] = useState({
 const [messaggioRegistrazione, setMessaggioRegistrazione] = useState("");
 const [accountCreato, setAccountCreato] = useState(null);
 const [messaggioFoto, setMessaggioFoto] = useState("");
+const [schedaRagazzo, setSchedaRagazzo] = useState(null);
 
 useEffect(() => {
 
@@ -172,6 +173,9 @@ useEffect(() => {
       }
 
       setUtente(utenteObj);
+      if(utenteObj.ruolo === "Ragazzo"){
+  caricaSchedaRagazzo(utenteObj);
+}
       caricaBootstrap(utenteObj);
       caricaDashboardContatori(utenteObj);
 
@@ -214,6 +218,9 @@ useEffect(() => {
   setUtente(data);
   caricaBootstrap(data);
   caricaDashboardContatori(data);
+  if(data.ruolo === "Ragazzo"){
+  caricaSchedaRagazzo(data);
+}
 
   setTimeout(() => {
     precaricaDati(data);
@@ -319,6 +326,43 @@ function precaricaAllenamenti(utenteLogin){
 
   document.body.appendChild(script);
 
+}
+function caricaSchedaRagazzo(utenteLogin){
+
+  const callbackName = "callbackSchedaRagazzo";
+
+  window[callbackName] = function(data){
+
+  setSchedaRagazzo(data);
+
+  // Carica gli stessi dati utilizzati dalla card FIFA
+  setSchedaModifica(data);
+
+  // Recupera anche la fotografia del ragazzo
+  if(data && data.id){
+    caricaFotoScheda(data.id);
+  }
+
+  var script = document.getElementById("jsonpSchedaRagazzo");
+
+  if(script){
+    script.remove();
+  }
+
+};
+
+  var script = document.createElement("script");
+  script.id = "jsonpSchedaRagazzo";
+
+  script.src =
+    API_URL +
+    "?action=schedaGiocatore" +
+    "&id=" + encodeURIComponent(utenteLogin.idRagazzo) +
+    "&nome=" + encodeURIComponent(utenteLogin.nome) +
+    "&gruppo=" + encodeURIComponent(utenteLogin.gruppo) +
+    "&callback=" + callbackName;
+
+  document.body.appendChild(script);
 }
 function mostraNotifica(testo, tipo = "success"){
 
@@ -2066,58 +2110,156 @@ if(!utente){
           <p>{utente.gruppo}</p>
         </div>
 
+       {schedaModifica && (
+
+  <div className="player-card-dashboard-ragazzo">
+
+    <div className="player-card">
+
+      <img
+        src={playerCardBg}
+        className="player-card-bg"
+        alt=""
+      />
+
+      <div className="pc-overall-value">
+        {calcolaOverall()}
+      </div>
+
+      <img
+        src={logo}
+        className="pc-logo"
+        alt="Logo ASD Incontro"
+      />
+
+      <div className="pc-photo-box">
+
+        {fotoInCaricamento ? (
+
+          <div className="foto-loading">
+            <div className="spinner"></div>
+            <div>Caricamento foto...</div>
+          </div>
+
+        ) : (schedaModifica.fotoAnteprima || schedaModifica.foto) ? (
+
+          <img
+            src={
+              schedaModifica.fotoAnteprima ||
+              schedaModifica.foto
+            }
+            className="pc-player-photo"
+            alt={schedaModifica.nome}
+            draggable="false"
+            style={{
+              transform: `
+                translate(
+                  ${schedaModifica.offsetX || 0}px,
+                  ${schedaModifica.offsetY || 0}px
+                )
+                scale(${schedaModifica.zoom || 1})
+              `
+            }}
+          />
+
+        ) : null}
+
+      </div>
+
+      <div className="pc-name-row">
+        <span>
+          {formattaNomeCard(schedaModifica.nome)}
+        </span>
+
+        <b>
+          {schedaModifica.numero || ""}
+        </b>
+      </div>
+
+      <div className="pc-role-row">
+
+        <div className="pc-role-item">
+          <span>
+            {schedaModifica.ruolo || "-"}
+          </span>
+        </div>
+
+        <div className="pc-role-item">
+
+          <img
+            src={scarpaGold}
+            className="pc-role-shoe"
+            alt=""
+          />
+
+          <span>
+            {getPiedeCard()}
+          </span>
+
+        </div>
+
+      </div>
+
+      <div className="pc-stats">
+
+        {getAttributiScheda().map((attributo) => (
+
+          <div
+            className="pc-stat-box"
+            key={attributo.campo}
+          >
+
+            <span>
+              {attributo.sigla}
+            </span>
+
+            <b>
+              {schedaModifica[attributo.campo] || "-"}
+            </b>
+
+          </div>
+
+        ))}
+
+      </div>
+
+    </div>
+
+  </div>
+
+)}
+
       </div>
 
       <div className="dash-modules">
 
-        <button
-          className="module-card"
-          onClick={() => setPagina("miaScheda")}
-        >
-          <div>
-            <h3>LA MIA SCHEDA</h3>
-            <p>Visualizza il tuo profilo e le valutazioni</p>
-          </div>
+  <CardDashboard
+    titolo="LA MIA SCHEDA"
+    descrizione="Visualizza il tuo profilo e le valutazioni"
+    immagine={cardSchede}
+    onClick={() => setPagina("miaScheda")}
+  />
 
-          <span>›</span>
-        </button>
+  <CardDashboard
+    titolo="IL MIO CALENDARIO"
+    descrizione="Allenamenti e appuntamenti del tuo gruppo"
+    immagine={cardAllenamenti}
+    onClick={() => setPagina("calendarioRagazzo")}
+  />
 
-        <button
-          className="module-card"
-          onClick={() => setPagina("calendarioRagazzo")}
-        >
-          <div>
-            <h3>IL MIO CALENDARIO</h3>
-            <p>Allenamenti e appuntamenti del tuo gruppo</p>
-          </div>
+  <CardDashboard
+    titolo="LE MIE PARTITE"
+    descrizione="Gare, convocazioni e risultati"
+    immagine={cardGare}
+    onClick={() => setPagina("partiteRagazzo")}
+  />
 
-          <span>›</span>
-        </button>
-
-        <button
-          className="module-card"
-          onClick={() => setPagina("partiteRagazzo")}
-        >
-          <div>
-            <h3>LE MIE PARTITE</h3>
-            <p>Gare, convocazioni e risultati</p>
-          </div>
-
-          <span>›</span>
-        </button>
-
-        <button
-          className="module-card"
-          onClick={() => setPagina("comunicazioniRagazzo")}
-        >
-          <div>
-            <h3>COMUNICAZIONI</h3>
-            <p>Avvisi e informazioni della squadra</p>
-          </div>
-
-          <span>›</span>
-        </button>
-
+  <CardDashboard
+    titolo="COMUNICAZIONI"
+    descrizione="Avvisi e informazioni della squadra"
+    immagine={cardStatistiche}
+    onClick={() => setPagina("comunicazioniRagazzo")}
+  />
         <button
           className="module-card logout-card"
           onClick={() => {
@@ -2139,6 +2281,47 @@ if(!utente){
 
     </div>
   );
+}
+if(utente.ruolo === "Ragazzo" && pagina === "miaScheda"){
+
+  return (
+    <div className="app">
+
+      <BottoneIndietro />
+
+      <div className="dashboard-card">
+
+        <h2>LA MIA SCHEDA</h2>
+
+        <p className="subtitle">
+          {utente.nome}
+        </p>
+
+        {!schedaRagazzo ? (
+          <p>Caricamento scheda...</p>
+        ) : (
+          <div className="mini-card">
+
+            <p>
+              <b>Nome:</b> {schedaRagazzo.nome}
+            </p>
+
+            <p>
+              <b>Gruppo:</b> {schedaRagazzo.gruppo}
+            </p>
+
+            <p>
+              <b>Ruolo:</b> {schedaRagazzo.ruoloBase || "-"}
+            </p>
+
+          </div>
+        )}
+
+      </div>
+
+    </div>
+  );
+
 }
 
     if(

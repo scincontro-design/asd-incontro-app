@@ -2524,3 +2524,51 @@ height:150px;
   object-fit:contain;
   flex-shrink:0;
 }
+
+/* CARD FIFA NELLA DASHBOARD RAGAZZO */
+
+.player-card-dashboard-ragazzo{
+  position:relative;
+  width:100%;
+  max-width:390px;
+  margin:20px auto 24px;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+}
+
+.player-card-dashboard-ragazzo .player-card{
+  width:390px;
+  max-width:100%;
+  margin:0 auto;
+}
+
+.player-card-dashboard-ragazzo .pc-overall-value{
+  color:#d8b25c !important;
+}
+
+.player-card-dashboard-ragazzo .pc-photo-box{
+  cursor:default;
+}
+
+.player-card-dashboard-ragazzo .pc-photo-box:empty{
+  background:transparent !important;
+  border:none !important;
+  box-shadow:none !important;
+}
+
+.player-card-dashboard-ragazzo .pc-player-photo{
+  pointer-events:none;
+}
+
+@media(max-width:430px){
+
+  .player-card-dashboard-ragazzo{
+    max-width:350px;
+  }
+
+  .player-card-dashboard-ragazzo .player-card{
+    width:350px;
+  }
+
+}
