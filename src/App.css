@@ -2773,3 +2773,280 @@ height:150px;
   }
 
 }
+
+/* CALENDARIO ALLENAMENTI RAGAZZO */
+
+.calendario-ragazzo-page{
+  width:100%;
+  max-width:620px;
+  margin:0 auto;
+  padding:10px 14px 35px;
+  box-sizing:border-box;
+}
+
+.calendario-ragazzo-header{
+  position:relative;
+  margin:12px 0 20px;
+  padding:24px 20px;
+  overflow:hidden;
+  text-align:center;
+
+  background:
+    radial-gradient(
+      circle at top center,
+      rgba(216,178,92,0.18),
+      transparent 50%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(135,0,0,0.98),
+      rgba(45,0,0,0.98)
+    );
+
+  border:1px solid rgba(216,178,92,0.75);
+  border-radius:18px;
+
+  box-shadow:
+    0 10px 24px rgba(0,0,0,0.34),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.calendario-ragazzo-label{
+  display:block;
+  margin-bottom:7px;
+
+  color:#d8b25c;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:2px;
+}
+
+.calendario-ragazzo-header h2{
+  margin:0 0 7px;
+
+  color:#ffffff;
+  font-size:25px;
+  font-weight:900;
+  letter-spacing:0.5px;
+}
+
+.calendario-ragazzo-header p{
+  margin:0;
+
+  color:rgba(255,255,255,0.78);
+  font-size:12px;
+  line-height:1.4;
+}
+
+.calendario-ragazzo-header strong{
+  color:#ffffff;
+}
+
+.calendario-ragazzo-loading,
+.calendario-ragazzo-vuoto{
+  padding:34px 22px;
+  text-align:center;
+
+  background:rgba(255,255,255,0.96);
+  border-radius:18px;
+
+  box-shadow:0 8px 22px rgba(0,0,0,0.18);
+}
+
+.calendario-ragazzo-loading p{
+  margin:12px 0 0;
+  color:#6c6c6c;
+  font-size:13px;
+}
+
+.calendario-ragazzo-vuoto-icona{
+  width:62px;
+  height:62px;
+  margin:0 auto 14px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:linear-gradient(
+    145deg,
+    #8b0000,
+    #430000
+  );
+
+  border:2px solid #d8b25c;
+  border-radius:15px;
+
+  color:#ffffff;
+  font-size:27px;
+  font-weight:900;
+
+  box-shadow:0 6px 15px rgba(0,0,0,0.25);
+}
+
+.calendario-ragazzo-vuoto h3{
+  margin:0 0 8px;
+  color:#570000;
+  font-size:17px;
+}
+
+.calendario-ragazzo-vuoto p{
+  max-width:380px;
+  margin:0 auto;
+
+  color:#777777;
+  font-size:12px;
+  line-height:1.55;
+}
+
+.calendario-ragazzo-lista{
+  display:flex;
+  flex-direction:column;
+  gap:13px;
+}
+
+.allenamento-ragazzo-card{
+  display:flex;
+  min-height:125px;
+  overflow:hidden;
+
+  background:#ffffff;
+  border:1px solid rgba(90,0,0,0.12);
+  border-radius:17px;
+
+  box-shadow:0 7px 18px rgba(0,0,0,0.16);
+}
+
+.allenamento-ragazzo-data{
+  width:84px;
+  min-width:84px;
+  padding:15px 8px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  background:linear-gradient(
+    160deg,
+    #850000,
+    #3c0000
+  );
+
+  color:#ffffff;
+  text-align:center;
+}
+
+.allenamento-ragazzo-data span{
+  color:#d8b25c;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+
+.allenamento-ragazzo-data strong{
+  margin:2px 0;
+  font-size:34px;
+  line-height:1;
+  font-weight:900;
+}
+
+.allenamento-ragazzo-data small{
+  font-size:10px;
+  font-weight:800;
+  text-transform:uppercase;
+}
+
+.allenamento-ragazzo-info{
+  flex:1;
+  min-width:0;
+  padding:15px 16px;
+}
+
+.allenamento-ragazzo-tipo{
+  display:block;
+  margin-bottom:4px;
+
+  color:#9a711f;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:1.5px;
+}
+
+.allenamento-ragazzo-info h3{
+  margin:0 0 9px;
+
+  color:#540000;
+  font-size:17px;
+  line-height:1.15;
+  font-weight:900;
+  text-transform:uppercase;
+}
+
+.allenamento-ragazzo-dettagli{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+
+.allenamento-ragazzo-dettagli span{
+  padding:5px 9px;
+
+  background:#f3eded;
+  border-radius:15px;
+
+  color:#5c4747;
+  font-size:10px;
+  font-weight:800;
+}
+
+.allenamento-ragazzo-info p{
+  margin:10px 0 0;
+
+  color:#777777;
+  font-size:11px;
+  line-height:1.4;
+}
+
+@media(max-width:430px){
+
+  .calendario-ragazzo-page{
+    padding-left:10px;
+    padding-right:10px;
+  }
+
+  .calendario-ragazzo-header{
+    padding:21px 14px;
+  }
+
+  .calendario-ragazzo-header h2{
+    font-size:21px;
+  }
+
+  .allenamento-ragazzo-card{
+    min-height:115px;
+  }
+
+  .allenamento-ragazzo-data{
+    width:71px;
+    min-width:71px;
+  }
+
+  .allenamento-ragazzo-data strong{
+    font-size:30px;
+  }
+
+  .allenamento-ragazzo-info{
+    padding:13px 12px;
+  }
+
+  .allenamento-ragazzo-info h3{
+    font-size:15px;
+  }
+
+}
+
+.dashboard-card h2.page-title{
+  color:#fff;
+}

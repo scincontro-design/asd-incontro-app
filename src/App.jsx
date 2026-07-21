@@ -147,6 +147,9 @@ const [messaggioRegistrazione, setMessaggioRegistrazione] = useState("");
 const [accountCreato, setAccountCreato] = useState(null);
 const [messaggioFoto, setMessaggioFoto] = useState("");
 const [schedaRagazzo, setSchedaRagazzo] = useState(null);
+const [allenamentiRagazzo, setAllenamentiRagazzo] = useState([]);
+const [caricamentoCalendario, setCaricamentoCalendario] = useState(false);
+
 
 useEffect(() => {
 
@@ -363,6 +366,71 @@ function caricaSchedaRagazzo(utenteLogin){
     "&callback=" + callbackName;
 
   document.body.appendChild(script);
+}
+function caricaCalendarioRagazzo(){
+
+  if(!utente || !utente.gruppo){
+    alert("Gruppo del ragazzo non disponibile");
+    return;
+  }
+
+  setCaricamentoCalendario(true);
+  setPagina("calendarioRagazzo");
+
+  const callbackName = "callbackCalendarioRagazzo";
+
+  window[callbackName] = function(data){
+
+    console.log("ALLENAMENTI RAGAZZO:", data);
+
+    setAllenamentiRagazzo(
+      Array.isArray(data) ? data : []
+    );
+
+    setCaricamentoCalendario(false);
+
+    const scriptEsistente = document.getElementById(
+      "jsonpCalendarioRagazzo"
+    );
+
+    if(scriptEsistente){
+      scriptEsistente.remove();
+    }
+
+    delete window[callbackName];
+
+  };
+
+  const script = document.createElement("script");
+
+  script.id = "jsonpCalendarioRagazzo";
+
+  script.src =
+    API_URL +
+    "?action=allenamentiRagazzo" +
+    "&gruppo=" + encodeURIComponent(utente.gruppo) +
+    "&callback=" + callbackName;
+
+  script.onerror = function(){
+
+    setCaricamentoCalendario(false);
+
+    alert("Errore nel caricamento del calendario");
+
+    const scriptEsistente = document.getElementById(
+      "jsonpCalendarioRagazzo"
+    );
+
+    if(scriptEsistente){
+      scriptEsistente.remove();
+    }
+
+    delete window[callbackName];
+
+  };
+
+  document.body.appendChild(script);
+
 }
 function mostraNotifica(testo, tipo = "success"){
 
@@ -2276,7 +2344,7 @@ if(!utente){
     titolo="IL MIO CALENDARIO"
     descrizione="Allenamenti e appuntamenti del tuo gruppo"
     immagine={cardAllenamenti}
-    onClick={() => setPagina("calendarioRagazzo")}
+    onClick={caricaCalendarioRagazzo}
   />
 
   <CardDashboard
@@ -2323,7 +2391,9 @@ if(utente.ruolo === "Ragazzo" && pagina === "miaScheda"){
 
       <div className="dashboard-card">
 
-        <h2>LA MIA SCHEDA</h2>
+        <h2 className="page-title">
+  LA MIA SCHEDA
+</h2>
 
         <p className="subtitle">
           {utente.nome}
@@ -2352,6 +2422,85 @@ if(utente.ruolo === "Ragazzo" && pagina === "miaScheda"){
       </div>
 
     </div>
+  );
+
+}
+
+if (
+  utente.ruolo === "Ragazzo" &&
+  pagina === "calendarioRagazzo"
+) {
+
+  return (
+
+    <div className="app">
+
+      <BottoneIndietro />
+
+      <div className="dashboard-card">
+
+        <h2 className="page-title">
+  IL MIO CALENDARIO
+</h2>
+
+        <p className="subtitle">
+          {utente.gruppo}
+        </p>
+
+        {caricamentoCalendario ? (
+
+          <p>Caricamento allenamenti...</p>
+
+        ) : allenamentiRagazzo.length === 0 ? (
+
+          <div className="mini-card">
+  <h3>Nessun allenamento programmato</h3>
+  <p>
+    Al momento non risultano allenamenti o appuntamenti per il tuo gruppo.
+  </p>
+</div>
+
+        ) : (
+
+          <div>
+
+            {allenamentiRagazzo.map((allenamento, index) => (
+
+              <div
+                key={index}
+                className="mini-card"
+                style={{ marginBottom: "15px" }}
+              >
+
+                <h3>{allenamento.data}</h3>
+
+                <p>
+                  <strong>Orario:</strong>{" "}
+                  {allenamento.orario || "-"}
+                </p>
+
+                <p>
+                  <strong>Campo:</strong>{" "}
+                  {allenamento.campo || "-"}
+                </p>
+
+                <p>
+                  <strong>Stato:</strong>{" "}
+                  {allenamento.stato || "-"}
+                </p>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        )}
+
+      </div>
+
+    </div>
+
   );
 
 }
@@ -2818,6 +2967,10 @@ if(pagina === "allenamenti"){
 
   setPagina("dashboard");
 
+}
+if(pagina === "calendarioRagazzo"){
+  setPagina("dashboard");
+  return;
 }
 function BottoneIndietro(){
 
