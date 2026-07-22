@@ -149,6 +149,8 @@ const [messaggioFoto, setMessaggioFoto] = useState("");
 const [schedaRagazzo, setSchedaRagazzo] = useState(null);
 const [allenamentiRagazzo, setAllenamentiRagazzo] = useState([]);
 const [caricamentoCalendario, setCaricamentoCalendario] = useState(false);
+const [confermePresenza, setConfermePresenza] = useState({});
+const [confermaInSalvataggio, setConfermaInSalvataggio] = useState("");
 
 
 useEffect(() => {
@@ -381,25 +383,26 @@ function caricaCalendarioRagazzo(){
 
   window[callbackName] = function(data){
 
-    console.log("ALLENAMENTI RAGAZZO:", data);
+  console.log("ALLENAMENTI RAGAZZO:", data);
 
-    setAllenamentiRagazzo(
-      Array.isArray(data) ? data : []
-    );
+  setAllenamentiRagazzo(
+    Array.isArray(data) ? data : []
+  );
 
-    setCaricamentoCalendario(false);
+  caricaConfermePresenza();
 
-    const scriptEsistente = document.getElementById(
-      "jsonpCalendarioRagazzo"
-    );
+  setCaricamentoCalendario(false);
 
-    if(scriptEsistente){
-      scriptEsistente.remove();
-    }
+  const scriptEsistente =
+    document.getElementById("jsonpCalendarioRagazzo");
 
-    delete window[callbackName];
+  if(scriptEsistente){
+    scriptEsistente.remove();
+  }
 
-  };
+  delete window[callbackName];
+
+};
 
   const script = document.createElement("script");
 
@@ -432,6 +435,151 @@ function caricaCalendarioRagazzo(){
   document.body.appendChild(script);
 
 }
+function caricaConfermePresenza(){
+
+  if(!utente){
+    return;
+  }
+
+  const callbackName = "callbackConfermePresenza";
+
+  window[callbackName] = function(data){
+
+    setConfermePresenza(data || {});
+
+    const script =
+      document.getElementById("jsonpConfermePresenza");
+
+    if(script){
+      script.remove();
+    }
+
+    delete window[callbackName];
+
+  };
+
+  const script = document.createElement("script");
+
+  script.id = "jsonpConfermePresenza";
+
+  script.src =
+    API_URL +
+    "?action=getConfermePresenza" +
+    "&gruppo=" + encodeURIComponent(utente.gruppo) +
+    "&ragazzo=" + encodeURIComponent(utente.nome) +
+    "&callback=" + callbackName;
+
+  document.body.appendChild(script);
+
+}
+function salvaConfermaAllenamento(allenamento, risposta){
+
+  if(!utente || !utente.nome || !utente.gruppo){
+    mostraNotifica(
+      "Dati del giocatore non disponibili",
+      "error"
+    );
+    return;
+  }
+
+  const chiave =
+    allenamento.data +
+    "|" +
+    allenamento.gruppo +
+    "|" +
+    utente.nome;
+
+  setConfermaInSalvataggio(chiave);
+
+  const callbackName =
+    "callbackConfermaPresenza_" +
+    new Date().getTime();
+
+  window[callbackName] = function(data){
+
+    setConfermaInSalvataggio("");
+
+    if(data && data.esito === "OK"){
+
+      setConfermePresenza((precedenti) => ({
+        ...precedenti,
+        [chiave]: risposta
+      }));
+
+      if(risposta === "Presente"){
+
+        mostraNotifica(
+          "Presenza confermata",
+          "success"
+        );
+
+      }else{
+
+        mostraNotifica(
+          "Assenza comunicata",
+          "success"
+        );
+
+      }
+
+    }else{
+
+      mostraNotifica(
+        data?.messaggio || "Errore nel salvataggio",
+        "error"
+      );
+
+    }
+
+    const scriptEsistente = document.getElementById(
+      "jsonpConfermaPresenza"
+    );
+
+    if(scriptEsistente){
+      scriptEsistente.remove();
+    }
+
+    delete window[callbackName];
+
+  };
+
+  const script = document.createElement("script");
+
+  script.id = "jsonpConfermaPresenza";
+
+  script.src =
+    API_URL +
+    "?action=salvaConfermaPresenza" +
+    "&data=" + encodeURIComponent(allenamento.data) +
+    "&gruppo=" + encodeURIComponent(allenamento.gruppo) +
+    "&ragazzo=" + encodeURIComponent(utente.nome) +
+    "&risposta=" + encodeURIComponent(risposta) +
+    "&callback=" + callbackName;
+
+  script.onerror = function(){
+
+    setConfermaInSalvataggio("");
+
+    mostraNotifica(
+      "Errore di collegamento",
+      "error"
+    );
+
+    const scriptEsistente = document.getElementById(
+      "jsonpConfermaPresenza"
+    );
+
+    if(scriptEsistente){
+      scriptEsistente.remove();
+    }
+
+    delete window[callbackName];
+
+  };
+
+  document.body.appendChild(script);
+
+}
 function mostraNotifica(testo, tipo = "success"){
 
   setNotifica({
@@ -451,9 +599,6 @@ function mostraNotifica(testo, tipo = "success"){
 }
 function precaricaStatistiche(utenteLogin){
 
-  if(statistiche){
-    return;
-  }
 
   const callbackName = "callbackPrecaricaStatistiche";
 
@@ -482,9 +627,6 @@ function precaricaStatistiche(utenteLogin){
 }
 function precaricaSchede(utenteLogin){
 
-  if(giocatoriSchede.length > 0){
-    return;
-  }
 
   const callbackName = "callbackPrecaricaSchede";
 
@@ -2363,11 +2505,35 @@ if(!utente){
         <button
           className="module-card logout-card"
           onClick={() => {
-            localStorage.removeItem("utente");
-            localStorage.removeItem("ultimoAccesso");
-            setUtente(null);
-            setPagina("dashboard");
-          }}
+
+  localStorage.removeItem("utente");
+  localStorage.removeItem("ultimoAccesso");
+
+  setUtente(null);
+  setPagina("dashboard");
+
+  setAllenamenti([]);
+  setGare([]);
+  setGiocatoriSchede([]);
+  setGiocatoreSelezionato(null);
+  setSchedaModifica(null);
+  setStatistiche(null);
+  setGruppoStatistiche("");
+  setGruppiAllenamento([]);
+  setTuttiGruppi([]);
+  setListaIscritti([]);
+  setStatisticheAllenamenti([]);
+  setGruppoStatisticheAllenamenti("");
+  setDashboardInfo({
+    allievi: 0,
+    allieviTotali: 0
+  });
+  setDashboardContatori({
+    allenamentiProgrammati: 0,
+    gareProgrammate: 0
+  });
+
+}}
         >
           <div>
             <h3>ESCI</h3>
@@ -2464,34 +2630,150 @@ if (
 
           <div>
 
-            {allenamentiRagazzo.map((allenamento, index) => (
+            {allenamentiRagazzo.map((allenamento, index) => {
 
-              <div
-                key={index}
-                className="mini-card"
-                style={{ marginBottom: "15px" }}
-              >
+  const chiave =
+    allenamento.data +
+    "|" +
+    allenamento.gruppo +
+    "|" +
+    utente.nome;
 
-                <h3>{allenamento.data}</h3>
+  const rispostaSalvata =
+    confermePresenza[allenamento.data] || "";
 
-                <p>
-                  <strong>Orario:</strong>{" "}
-                  {allenamento.orario || "-"}
-                </p>
+  const staSalvando =
+    confermaInSalvataggio === chiave;
 
-                <p>
-                  <strong>Campo:</strong>{" "}
-                  {allenamento.campo || "-"}
-                </p>
+  return (
 
-                <p>
-                  <strong>Stato:</strong>{" "}
-                  {allenamento.stato || "-"}
-                </p>
+    <div
+      key={chiave || index}
+      className="mini-card"
+      style={{ marginBottom: "15px" }}
+    >
+
+      <h3>{allenamento.data}</h3>
+
+      <p>
+        <strong>Orario:</strong>{" "}
+        {allenamento.orario || "-"}
+      </p>
+
+      <p>
+        <strong>Campo:</strong>{" "}
+        {allenamento.campo || "-"}
+      </p>
+
+      <p>
+        <strong>Stato:</strong>{" "}
+        {allenamento.stato || "-"}
+      </p>
+
+      {allenamento.stato === "Programmato" && (
+
+        <div
+          style={{
+            marginTop: "15px"
+          }}
+        >
+
+          {!rispostaSalvata ? (
+
+            <>
+              <p>
+                <strong>
+                  Parteciperai all’allenamento?
+                </strong>
+              </p>
+
+              <div className="stato-row">
+
+                <button
+                  className="active-green"
+                  disabled={staSalvando}
+                  onClick={() =>
+                    salvaConfermaAllenamento(
+                      allenamento,
+                      "Presente"
+                    )
+                  }
+                >
+                  {staSalvando
+                    ? "Salvataggio..."
+                    : "Confermo presenza"}
+                </button>
+
+                <button
+                  className="active-red"
+                  disabled={staSalvando}
+                  onClick={() =>
+                    salvaConfermaAllenamento(
+                      allenamento,
+                      "Assente"
+                    )
+                  }
+                >
+                  Non sarò presente
+                </button>
 
               </div>
+            </>
 
-            ))}
+          ) : (
+
+            <div>
+
+              <p>
+                {rispostaSalvata === "Presente"
+                  ? "✅ Hai confermato la presenza"
+                  : "❌ Hai comunicato l’assenza"}
+              </p>
+
+              <button
+                disabled={staSalvando}
+                onClick={() =>
+                  salvaConfermaAllenamento(
+                    allenamento,
+                    rispostaSalvata === "Presente"
+                      ? "Assente"
+                      : "Presente"
+                  )
+                }
+              >
+                {staSalvando
+                  ? "Salvataggio..."
+                  : rispostaSalvata === "Presente"
+                    ? "Comunica assenza"
+                    : "Conferma presenza"}
+              </button>
+
+            </div>
+
+          )}
+
+        </div>
+
+      )}
+
+      {allenamento.stato === "Svolto" && (
+
+        <p
+          style={{
+            marginTop: "15px",
+            opacity: 0.7
+          }}
+        >
+          Allenamento già svolto
+        </p>
+
+      )}
+
+    </div>
+
+  );
+
+})}
 
           </div>
 
@@ -5710,10 +5992,35 @@ if(pagina === "gruppi"){
       <button
         className="logout module-card logout-card"
         onClick={() => {
-          localStorage.removeItem("utente");
-          localStorage.removeItem("ultimoAccesso");
-          setUtente(null);
-        }}
+
+  localStorage.removeItem("utente");
+  localStorage.removeItem("ultimoAccesso");
+
+  setUtente(null);
+  setPagina("dashboard");
+
+  setAllenamenti([]);
+  setGare([]);
+  setGiocatoriSchede([]);
+  setGiocatoreSelezionato(null);
+  setSchedaModifica(null);
+  setStatistiche(null);
+  setGruppoStatistiche("");
+  setGruppiAllenamento([]);
+  setTuttiGruppi([]);
+  setListaIscritti([]);
+  setStatisticheAllenamenti([]);
+  setGruppoStatisticheAllenamenti("");
+  setDashboardInfo({
+    allievi: 0,
+    allieviTotali: 0
+  });
+  setDashboardContatori({
+    allenamentiProgrammati: 0,
+    gareProgrammate: 0
+  });
+
+}}
       >
         <div className="module-icon">🚪</div>
         <div>
