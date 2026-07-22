@@ -2502,6 +2502,13 @@ if(!utente){
     immagine={cardStatistiche}
     onClick={() => setPagina("comunicazioniRagazzo")}
   />
+
+  <CardDashboard
+  titolo="STATISTICHE GRUPPO"
+  descrizione="Presenze e andamento del tuo gruppo"
+  immagine={cardStatistiche}
+  onClick={() => setPagina("statisticheGruppoRagazzo")}
+/>
         <button
           className="module-card logout-card"
           onClick={() => {
@@ -2783,6 +2790,117 @@ if (
 
     </div>
 
+  );
+
+}
+if(
+  utente.ruolo === "Ragazzo" &&
+  pagina === "partiteRagazzo"
+){
+
+  return (
+    <div className="app">
+
+      <BottoneIndietro />
+
+      <div className="dashboard-card">
+
+        <h2 className="page-title">
+          LE MIE PARTITE
+        </h2>
+
+        <p className="subtitle">
+          {utente.gruppo}
+        </p>
+
+        <div className="mini-card">
+
+          <h3>Sezione in preparazione</h3>
+
+          <p>
+            Qui compariranno le gare, le convocazioni
+            e i risultati del tuo gruppo.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+  );
+
+}
+if(
+  utente.ruolo === "Ragazzo" &&
+  pagina === "comunicazioniRagazzo"
+){
+
+  return (
+    <div className="app">
+
+      <BottoneIndietro />
+
+      <div className="dashboard-card">
+
+        <h2 className="page-title">
+          COMUNICAZIONI
+        </h2>
+
+        <p className="subtitle">
+          {utente.gruppo}
+        </p>
+
+        <div className="mini-card">
+
+          <h3>Nessuna comunicazione</h3>
+
+          <p>
+            Gli avvisi della società e dello staff
+            tecnico compariranno in questa sezione.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+  );
+
+}
+if(
+  utente.ruolo === "Ragazzo" &&
+  pagina === "statisticheGruppoRagazzo"
+){
+
+  return (
+    <div className="app">
+
+      <BottoneIndietro />
+
+      <div className="dashboard-card">
+
+        <h2 className="page-title">
+          STATISTICHE GRUPPO
+        </h2>
+
+        <p className="subtitle">
+          {utente.gruppo}
+        </p>
+
+        <div className="mini-card">
+
+          <h3>Statistiche in preparazione</h3>
+
+          <p>
+            Qui saranno mostrate esclusivamente
+            le statistiche relative al tuo gruppo.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
   );
 
 }
