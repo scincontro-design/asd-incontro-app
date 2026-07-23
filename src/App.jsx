@@ -2636,8 +2636,8 @@ if(!utente){
 
       <div className="pc-name-row">
         <span>
-  {schedaModifica.cognome} {schedaModifica.nome.charAt(0)}.
-</span>
+          {formattaNomeCard(schedaModifica.nome)}
+        </span>
 
         <b>
           {schedaModifica.numero || ""}
