@@ -151,6 +151,8 @@ const [allenamentiRagazzo, setAllenamentiRagazzo] = useState([]);
 const [caricamentoCalendario, setCaricamentoCalendario] = useState(false);
 const [confermePresenza, setConfermePresenza] = useState({});
 const [confermaInSalvataggio, setConfermaInSalvataggio] = useState("");
+const [partiteRagazzo, setPartiteRagazzo] = useState([]);
+const [caricamentoPartiteRagazzo, setCaricamentoPartiteRagazzo] = useState(false);
 
 
 useEffect(() => {
@@ -221,6 +223,9 @@ useEffect(() => {
   localStorage.setItem("ultimoAccesso", new Date().getTime());
 
   setUtente(data);
+
+  console.log("LOGIN RAGAZZO:", data);
+  
   caricaBootstrap(data);
   caricaDashboardContatori(data);
   if(data.ruolo === "Ragazzo"){
@@ -439,6 +444,73 @@ console.log(JSON.stringify(utente.gruppi));
     }
 
     delete window[callbackName];
+
+  };
+
+  document.body.appendChild(script);
+
+}
+function caricaPartiteRagazzo(){
+
+  if(!utente || !utente.id){
+    return;
+  }
+
+  setCaricamentoPartiteRagazzo(true);
+
+  const callbackName =
+    "callbackPartiteRagazzo_" + Date.now();
+
+  window[callbackName] = function(risultato){
+
+    console.log("PARTITE RAGAZZO:", risultato);
+
+    setPartiteRagazzo(
+      Array.isArray(risultato)
+        ? risultato
+        : []
+    );
+
+    setCaricamentoPartiteRagazzo(false);
+
+    const script =
+      document.getElementById(callbackName);
+
+    if(script){
+      script.remove();
+    }
+
+    delete window[callbackName];
+
+  };
+
+  const script = document.createElement("script");
+
+  script.id = callbackName;
+
+  script.src =
+    API_URL +
+    "?action=partiteRagazzo" +
+    "&idRagazzo=" +
+    encodeURIComponent(utente.id) +
+    "&callback=" +
+    callbackName;
+
+  script.onerror = function(){
+
+    setPartiteRagazzo([]);
+    setCaricamentoPartiteRagazzo(false);
+
+    const scriptEsistente =
+      document.getElementById(callbackName);
+
+    if(scriptEsistente){
+      scriptEsistente.remove();
+    }
+
+    delete window[callbackName];
+
+    alert("Errore nel caricamento delle partite");
 
   };
 
@@ -2566,11 +2638,14 @@ if(!utente){
   />
 
   <CardDashboard
-    titolo="LE MIE PARTITE"
-    descrizione="Gare, convocazioni e risultati"
-    immagine={cardGare}
-    onClick={() => setPagina("partiteRagazzo")}
-  />
+  titolo="LE MIE PARTITE"
+  descrizione="Gare, convocazioni e risultati"
+  immagine={cardGare}
+  onClick={() => {
+    setPagina("partiteRagazzo");
+    caricaPartiteRagazzo();
+  }}
+/>
 
   <CardDashboard
     titolo="COMUNICAZIONI"
