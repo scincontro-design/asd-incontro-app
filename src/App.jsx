@@ -465,7 +465,8 @@ function caricaCalendarioRagazzo(){
 }
 function caricaPartiteRagazzo(){
 
-  if(!utente || !utente.id){
+  if(!utente || !utente.idRagazzo){
+    alert("ID ragazzo non disponibile");
     return;
   }
 
@@ -486,11 +487,11 @@ function caricaPartiteRagazzo(){
 
     setCaricamentoPartiteRagazzo(false);
 
-    const script =
+    const scriptEsistente =
       document.getElementById(callbackName);
 
-    if(script){
-      script.remove();
+    if(scriptEsistente){
+      scriptEsistente.remove();
     }
 
     delete window[callbackName];
@@ -505,7 +506,7 @@ function caricaPartiteRagazzo(){
     API_URL +
     "?action=partiteRagazzo" +
     "&idRagazzo=" +
-    encodeURIComponent(utente.id) +
+    encodeURIComponent(utente.idRagazzo) +
     "&callback=" +
     callbackName;
 
@@ -3458,19 +3459,318 @@ if(
         </h2>
 
         <p className="subtitle">
-          {utente.gruppo}
+          {utente.nome}
         </p>
+
+        {caricamentoPartiteRagazzo ? (
+
+          <p>Caricamento partite...</p>
+
+        ) : partiteRagazzo.length === 0 ? (
+
+          <div className="mini-card">
+
+            <h3>Nessuna partita disponibile</h3>
+
+            <p>
+              Al momento non risultano gare associate
+              ai tuoi gruppi.
+            </p>
+
+          </div>
+
+        ) : (
+
+          <div>
+
+            {partiteRagazzo.map((partita, index) => {
+
+  const risultatoInserito =
+    partita.golFatti !== "" &&
+    partita.golFatti !== null &&
+    partita.golFatti !== undefined &&
+    partita.golSubiti !== "" &&
+    partita.golSubiti !== null &&
+    partita.golSubiti !== undefined;
+
+  return (
+
+    <div
+      className="match-card"
+      key={
+        partita.gruppo +
+        partita.data +
+        partita.avversario +
+        index
+      }
+    >
+
+      <div className="match-group">
+        ⚽ {partita.gruppo}
+      </div>
+
+      {risultatoInserito ? (
+
+        <div className="match-result">
+
+          {partita.casaTrasferta === "Trasferta" ? (
+
+            <>
+
+              <div className="team-side">
+
+                <span className="opponent-badge">
+                  {getSiglaSquadra(partita.avversario)}
+                </span>
+
+                <span>{partita.avversario}</span>
+
+              </div>
+
+              <div className="score-box">
+                {partita.golSubiti} - {partita.golFatti}
+              </div>
+
+              <div className="team-side">
+
+                <img
+                  src={logo}
+                  className="team-logo"
+                  alt="ASD Incontro"
+                />
+
+                <span>ASD INCONTRO</span>
+
+              </div>
+
+            </>
+
+          ) : (
+
+            <>
+
+              <div className="team-side">
+
+                <img
+                  src={logo}
+                  className="team-logo"
+                  alt="ASD Incontro"
+                />
+
+                <span>ASD INCONTRO</span>
+
+              </div>
+
+              <div className="score-box">
+                {partita.golFatti} - {partita.golSubiti}
+              </div>
+
+              <div className="team-side">
+
+                <span className="opponent-badge">
+                  {getSiglaSquadra(partita.avversario)}
+                </span>
+
+                <span>{partita.avversario}</span>
+
+              </div>
+
+            </>
+
+          )}
+
+        </div>
+
+      ) : (
+
+        <div className="match-vs">
+
+          {partita.casaTrasferta === "Trasferta" ? (
+
+            <>
+
+              <div className="team-side">
+
+                <span className="opponent-badge">
+                  {getSiglaSquadra(partita.avversario)}
+                </span>
+
+                <span>{partita.avversario}</span>
+
+              </div>
+
+              <b>VS</b>
+
+              <div className="team-side">
+
+                <img
+                  src={logo}
+                  className="team-logo"
+                  alt="ASD Incontro"
+                />
+
+                <span>ASD INCONTRO</span>
+
+              </div>
+
+            </>
+
+          ) : (
+
+            <>
+
+              <div className="team-side">
+
+                <img
+                  src={logo}
+                  className="team-logo"
+                  alt="ASD Incontro"
+                />
+
+                <span>ASD INCONTRO</span>
+
+              </div>
+
+              <b>VS</b>
+
+              <div className="team-side">
+
+                <span className="opponent-badge">
+                  {getSiglaSquadra(partita.avversario)}
+                </span>
+
+                <span>{partita.avversario}</span>
+
+              </div>
+
+            </>
+
+          )}
+
+        </div>
+
+      )}
+
+      <div className="match-info-row">
+
+        <p>📅 {partita.data || "-"}</p>
+
+        <p>🕒 {partita.orario || "-"}</p>
+
+      </div>
+
+      <p className="match-field">
+        🏟️ {partita.campo || "-"}
+      </p>
+
+      {partita.convocato && (
 
         <div className="mini-card">
 
-          <h3>Sezione in preparazione</h3>
+          <b>✅ CONVOCATO</b>
 
-          <p>
-            Qui compariranno le gare, le convocazioni
-            e i risultati del tuo gruppo.
-          </p>
+          {partita.orarioAppuntamento && (
+
+            <p>
+              Appuntamento: {partita.orarioAppuntamento}
+            </p>
+
+          )}
 
         </div>
+
+      )}
+
+      {!partita.convocato && !risultatoInserito && (
+
+        <div className="mini-card">
+
+          <b>Convocazione non presente</b>
+
+        </div>
+
+      )}
+
+      {risultatoInserito && (
+
+        <div className="mini-card">
+
+          <h3>Le tue statistiche</h3>
+
+          {partita.titolare && (
+
+            <p>
+              <b>Titolare:</b>{" "}
+              {partita.titolare === "SI" ? "Sì" : "No"}
+            </p>
+
+          )}
+
+          {partita.minuti !== "" &&
+            partita.minuti !== null &&
+            partita.minuti !== undefined && (
+
+            <p>
+              <b>Minuti:</b> {partita.minuti}
+            </p>
+
+          )}
+
+          {Number(partita.goal || 0) > 0 && (
+
+            <p>
+              <b>Goal:</b> {partita.goal}
+            </p>
+
+          )}
+
+          {Number(partita.assist || 0) > 0 && (
+
+            <p>
+              <b>Assist:</b> {partita.assist}
+            </p>
+
+          )}
+
+          {partita.voto !== "" &&
+            partita.voto !== null &&
+            partita.voto !== undefined && (
+
+            <p>
+              <b>Valutazione:</b> {partita.voto}
+            </p>
+
+          )}
+
+          {partita.mvp === "SI" && (
+
+            <p>
+              ⭐ Migliore in campo
+            </p>
+
+          )}
+
+        </div>
+
+      )}
+
+      {partita.note && (
+
+        <p className="match-field">
+          📝 {partita.note}
+        </p>
+
+      )}
+
+    </div>
+
+  );
+
+})}
+
+          </div>
+
+        )}
 
       </div>
 
