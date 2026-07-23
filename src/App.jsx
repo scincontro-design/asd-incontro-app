@@ -225,7 +225,7 @@ useEffect(() => {
   setUtente(data);
 
   console.log("LOGIN RAGAZZO:", data);
-  
+
   caricaBootstrap(data);
   caricaDashboardContatori(data);
   if(data.ruolo === "Ragazzo"){
@@ -376,68 +376,81 @@ function caricaSchedaRagazzo(utenteLogin){
 }
 function caricaCalendarioRagazzo(){
 
-  if(
-  !utente ||
-  !utente.gruppi ||
-  utente.gruppi.length === 0
-){
-  alert("Nessun gruppo associato al ragazzo");
-  return;
-}
+  if(!utente){
+    return;
+  }
+
+  const gruppiRagazzo =
+    Array.isArray(utente.gruppi) &&
+    utente.gruppi.length > 0
+      ? utente.gruppi
+      : utente.gruppo
+        ? [utente.gruppo]
+        : [];
+
+  if(gruppiRagazzo.length === 0){
+    alert("Nessun gruppo associato al ragazzo");
+    return;
+  }
 
   setCaricamentoCalendario(true);
   setPagina("calendarioRagazzo");
 
-  const callbackName = "callbackCalendarioRagazzo";
+  const callbackName =
+    "callbackCalendarioRagazzo_" +
+    Date.now();
 
   window[callbackName] = function(data){
 
-  console.log("ALLENAMENTI RAGAZZO:", data);
+    console.log(
+      "ALLENAMENTI RAGAZZO:",
+      data
+    );
 
-  setAllenamentiRagazzo(
-    Array.isArray(data) ? data : []
-  );
+    setAllenamentiRagazzo(
+      Array.isArray(data) ? data : []
+    );
 
-  caricaConfermePresenza();
+    caricaConfermePresenza();
 
-  setCaricamentoCalendario(false);
+    setCaricamentoCalendario(false);
 
-  const scriptEsistente =
-    document.getElementById("jsonpCalendarioRagazzo");
+    const scriptEsistente =
+      document.getElementById(callbackName);
 
-  if(scriptEsistente){
-    scriptEsistente.remove();
-  }
+    if(scriptEsistente){
+      scriptEsistente.remove();
+    }
 
-  delete window[callbackName];
+    delete window[callbackName];
 
-};
+  };
 
-  const script = document.createElement("script");
+  const script =
+    document.createElement("script");
 
-  script.id = "jsonpCalendarioRagazzo";
-
-  console.log("GRUPPI:", utente.gruppi);
-console.log(JSON.stringify(utente.gruppi));
+  script.id = callbackName;
 
   script.src =
-  API_URL +
-  "?action=allenamentiRagazzo" +
-  "&gruppi=" +
-  encodeURIComponent(
-    JSON.stringify(utente.gruppi)
-  ) +
-  "&callback=" + callbackName;
+    API_URL +
+    "?action=allenamentiRagazzo" +
+    "&gruppi=" +
+    encodeURIComponent(
+      JSON.stringify(gruppiRagazzo)
+    ) +
+    "&callback=" +
+    callbackName;
 
   script.onerror = function(){
 
     setCaricamentoCalendario(false);
 
-    alert("Errore nel caricamento del calendario");
-
-    const scriptEsistente = document.getElementById(
-      "jsonpCalendarioRagazzo"
+    alert(
+      "Errore nel caricamento del calendario"
     );
+
+    const scriptEsistente =
+      document.getElementById(callbackName);
 
     if(scriptEsistente){
       scriptEsistente.remove();
