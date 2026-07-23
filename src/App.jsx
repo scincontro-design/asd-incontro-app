@@ -371,10 +371,14 @@ function caricaSchedaRagazzo(utenteLogin){
 }
 function caricaCalendarioRagazzo(){
 
-  if(!utente || !utente.gruppo){
-    alert("Gruppo del ragazzo non disponibile");
-    return;
-  }
+  if(
+  !utente ||
+  !utente.gruppi ||
+  utente.gruppi.length === 0
+){
+  alert("Nessun gruppo associato al ragazzo");
+  return;
+}
 
   setCaricamentoCalendario(true);
   setPagina("calendarioRagazzo");
@@ -408,11 +412,17 @@ function caricaCalendarioRagazzo(){
 
   script.id = "jsonpCalendarioRagazzo";
 
+  console.log("GRUPPI:", utente.gruppi);
+console.log(JSON.stringify(utente.gruppi));
+
   script.src =
-    API_URL +
-    "?action=allenamentiRagazzo" +
-    "&gruppo=" + encodeURIComponent(utente.gruppo) +
-    "&callback=" + callbackName;
+  API_URL +
+  "?action=allenamentiRagazzo" +
+  "&gruppi=" +
+  encodeURIComponent(
+    JSON.stringify(utente.gruppi)
+  ) +
+  "&callback=" + callbackName;
 
   script.onerror = function(){
 
@@ -1567,31 +1577,45 @@ function salvaScheda(){
   window[callbackName] = function(data){
 
     if(data && data.esito === "OK"){
+
       alert("Scheda salvata");
+
       setGiocatoreSelezionato(schedaModifica);
+      setSchedaRagazzo(schedaModifica);
+
     }else{
+
       alert("Errore salvataggio scheda");
+
     }
 
     var script = document.getElementById("jsonpSalvaScheda");
+
     if(script){
       script.remove();
     }
 
   };
 
+  var action =
+    utente?.ruolo === "Ragazzo"
+      ? "salvaSchedaRagazzo"
+      : "salvaScheda";
+
   var script = document.createElement("script");
   script.id = "jsonpSalvaScheda";
 
   script.src =
     API_URL +
-    "?action=salvaScheda" +
+    "?action=" + action +
     "&scheda=" +
-    encodeURIComponent(JSON.stringify({
-  ...schedaModifica,
-  foto: "",
-  fotoAnteprima: ""
-})) +
+    encodeURIComponent(
+      JSON.stringify({
+        ...schedaModifica,
+        foto: "",
+        fotoAnteprima: ""
+      })
+    ) +
     "&callback=" +
     callbackName;
 
@@ -1784,6 +1808,58 @@ function sliderScheda(campo, label){
       />
 
     </div>
+  );
+
+}
+function valoreSchedaRagazzo(campo, label){
+
+  const valore = Number(schedaModifica?.[campo]) || 0;
+
+  return (
+
+    <div className="mini-card">
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "8px"
+        }}
+      >
+
+        <b>{label}</b>
+
+        <strong>
+          {valore > 0 ? valore : "-"}
+        </strong>
+
+      </div>
+
+      <div
+        style={{
+          width: "100%",
+          height: "8px",
+          background: "rgba(255,255,255,0.15)",
+          borderRadius: "10px",
+          overflow: "hidden"
+        }}
+      >
+
+        <div
+          style={{
+            width: `${valore}%`,
+            maxWidth: "100%",
+            height: "100%",
+            background: "currentColor",
+            borderRadius: "10px"
+          }}
+        ></div>
+
+      </div>
+
+    </div>
+
   );
 
 }
@@ -2558,6 +2634,7 @@ if(!utente){
 if(utente.ruolo === "Ragazzo" && pagina === "miaScheda"){
 
   return (
+
     <div className="app">
 
       <BottoneIndietro />
@@ -2565,36 +2642,363 @@ if(utente.ruolo === "Ragazzo" && pagina === "miaScheda"){
       <div className="dashboard-card">
 
         <h2 className="page-title">
-  LA MIA SCHEDA
-</h2>
+          LA MIA SCHEDA
+        </h2>
 
         <p className="subtitle">
           {utente.nome}
         </p>
 
-        {!schedaRagazzo ? (
+        {!schedaModifica ? (
+
           <p>Caricamento scheda...</p>
+
         ) : (
-          <div className="mini-card">
 
-            <p>
-              <b>Nome:</b> {schedaRagazzo.nome}
-            </p>
+          <>
 
-            <p>
-              <b>Gruppo:</b> {schedaRagazzo.gruppo}
-            </p>
+            <div className="mini-card">
 
-            <p>
-              <b>Ruolo:</b> {schedaRagazzo.ruoloBase || "-"}
-            </p>
+              <h3>Dati personali</h3>
 
-          </div>
+              <label>Nome</label>
+
+              <input
+                value={schedaModifica.nome || ""}
+                disabled
+              />
+
+              <label>Gruppo</label>
+
+              <input
+                value={schedaModifica.gruppo || ""}
+                disabled
+              />
+
+              <label>Ruolo</label>
+
+              <input
+                value={
+                  schedaModifica.ruolo ||
+                  schedaModifica.ruoloBase ||
+                  ""
+                }
+                disabled
+              />
+
+              <label>Data di nascita</label>
+
+              <input
+                type="date"
+                value={schedaModifica.dataNascita || ""}
+                onChange={(e) =>
+                  aggiornaScheda(
+                    "dataNascita",
+                    e.target.value
+                  )
+                }
+              />
+
+              <label>Altezza in cm</label>
+
+              <input
+                type="number"
+                min="50"
+                max="250"
+                value={schedaModifica.altezza || ""}
+                onChange={(e) =>
+                  aggiornaScheda(
+                    "altezza",
+                    e.target.value
+                  )
+                }
+              />
+
+              <label>Peso in kg</label>
+
+              <input
+                type="number"
+                min="10"
+                max="200"
+                step="0.1"
+                value={schedaModifica.peso || ""}
+                onChange={(e) =>
+                  aggiornaScheda(
+                    "peso",
+                    e.target.value
+                  )
+                }
+              />
+
+            </div>
+
+            <div className="mini-card">
+
+              <h3>Fotografia</h3>
+
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) =>
+                  caricaFotoGiocatore(
+                    e.target.files?.[0]
+                  )
+                }
+              />
+
+              {fotoInElaborazione && (
+
+                <div className="foto-loading">
+
+                  <div className="spinner"></div>
+
+                  <p>
+                    Elaborazione fotografia...
+                  </p>
+
+                </div>
+
+              )}
+
+              {messaggioFoto && (
+                <p>{messaggioFoto}</p>
+              )}
+
+              {(schedaModifica.fotoAnteprima ||
+                schedaModifica.foto) && (
+
+                <div
+                  style={{
+                    marginTop: "15px",
+                    textAlign: "center"
+                  }}
+                >
+
+                  <img
+                    src={
+                      schedaModifica.fotoAnteprima ||
+                      schedaModifica.foto
+                    }
+                    alt={schedaModifica.nome}
+                    style={{
+                      maxWidth: "220px",
+                      maxHeight: "280px",
+                      objectFit: "contain"
+                    }}
+                  />
+
+                </div>
+
+              )}
+
+            </div>
+
+            {schedaModifica.ruoloBase === "Giocatore" && (
+
+              <>
+
+                <h3>Valori giocatore</h3>
+
+                {valoreSchedaRagazzo(
+                  "controllo",
+                  "Controllo palla"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "passaggio",
+                  "Passaggio"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "dribbling",
+                  "Dribbling"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "tiro",
+                  "Tiro"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "visioneGioco",
+                  "Visione di gioco"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "cross",
+                  "Cross"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "difesa",
+                  "Difesa"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "colpoTesta",
+                  "Colpo di testa"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "calcioPiazzato",
+                  "Calcio piazzato"
+                )}
+
+                <h3>Fisico</h3>
+
+                {valoreSchedaRagazzo(
+                  "velocita",
+                  "Velocità"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "accelerazione",
+                  "Accelerazione"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "resistenza",
+                  "Resistenza"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "forza",
+                  "Forza"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "agilita",
+                  "Agilità"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "equilibrio",
+                  "Equilibrio"
+                )}
+
+                <h3>Mentale e tattico</h3>
+
+                {valoreSchedaRagazzo(
+                  "posizionamento",
+                  "Posizionamento"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "letturaGioco",
+                  "Lettura del gioco"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "marcatura",
+                  "Marcatura"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "movimentoSenzaPalla",
+                  "Movimento senza palla"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "concentrazione",
+                  "Concentrazione"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "leadership",
+                  "Leadership"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "personalita",
+                  "Personalità"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "impegno",
+                  "Impegno"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "decisionMaking",
+                  "Decision making"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "disciplina",
+                  "Disciplina"
+                )}
+
+              </>
+
+            )}
+
+            {schedaModifica.ruoloBase === "Portiere" && (
+
+              <>
+
+                <h3>Valori portiere</h3>
+
+                {valoreSchedaRagazzo(
+                  "presa",
+                  "Presa"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "tuffo",
+                  "Tuffo"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "riflessi",
+                  "Riflessi"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "parata",
+                  "Parata"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "uscite",
+                  "Uscite"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "reattivita",
+                  "Reattività"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "posizionamentoPorta",
+                  "Posizionamento"
+                )}
+
+                {valoreSchedaRagazzo(
+                  "rinvio",
+                  "Rinvio"
+                )}
+
+              </>
+
+            )}
+
+            <button
+              onClick={salvaScheda}
+              disabled={fotoInElaborazione}
+            >
+              {fotoInElaborazione
+                ? "FOTO IN ELABORAZIONE..."
+                : "SALVA MODIFICHE"}
+            </button>
+
+          </>
+
         )}
 
       </div>
 
     </div>
+
   );
 
 }
@@ -2661,6 +3065,10 @@ if (
     >
 
       <h3>{allenamento.data}</h3>
+
+      <p>
+  <strong>Gruppo:</strong> {allenamento.gruppo}
+</p>
 
       <p>
         <strong>Orario:</strong>{" "}
