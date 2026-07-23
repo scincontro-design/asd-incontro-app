@@ -2656,6 +2656,158 @@ if(utente.ruolo === "Ragazzo" && pagina === "miaScheda"){
         ) : (
 
           <>
+          <div className="player-card-dashboard-ragazzo">
+
+  <div className="player-card">
+
+    <img
+      src={playerCardBg}
+      className="player-card-bg"
+      alt=""
+    />
+
+    <div className="pc-overall-value">
+      {calcolaOverall()}
+    </div>
+
+    <img
+      src={logo}
+      className="pc-logo"
+      alt="Logo ASD Incontro"
+    />
+
+    <div className="pc-photo-box">
+
+      {fotoInCaricamento ? (
+
+        <div className="foto-loading">
+
+          <div className="spinner"></div>
+
+          <div>
+            Caricamento foto...
+          </div>
+
+        </div>
+
+      ) : fotoInElaborazione ? (
+
+        <div className="foto-loading">
+
+          <div className="spinner"></div>
+
+          <div>
+            Elaborazione foto...
+          </div>
+
+        </div>
+
+      ) : (
+        schedaModifica.fotoAnteprima ||
+        schedaModifica.foto
+      ) ? (
+
+        <img
+          src={
+            schedaModifica.fotoAnteprima ||
+            schedaModifica.foto
+          }
+          className="pc-player-photo"
+          alt={schedaModifica.nome || ""}
+          draggable="false"
+          style={{
+            transform: `
+              translate(
+                ${schedaModifica.offsetX || 0}px,
+                ${schedaModifica.offsetY || 0}px
+              )
+              scale(${schedaModifica.zoom || 1})
+            `
+          }}
+        />
+
+      ) : (
+
+        <div className="foto-loading">
+          Nessuna foto
+        </div>
+
+      )}
+
+    </div>
+
+    <div className="pc-name-row">
+
+      <span>
+        {formattaNomeCard(
+          schedaModifica.nome
+        )}
+      </span>
+
+      <b>
+        {schedaModifica.numero || ""}
+      </b>
+
+    </div>
+
+    <div className="pc-role-row">
+
+      <div className="pc-role-item">
+
+        <span>
+          {schedaModifica.ruolo ||
+           schedaModifica.ruoloBase ||
+           "-"}
+        </span>
+
+      </div>
+
+      <div className="pc-role-item">
+
+        <img
+          src={scarpaGold}
+          className="pc-role-shoe"
+          alt=""
+        />
+
+        <span>
+          {getPiedeCard()}
+        </span>
+
+      </div>
+
+    </div>
+
+    <div className="pc-stats">
+
+      {getAttributiScheda().map(
+        (attributo) => (
+
+          <div
+            className="pc-stat-box"
+            key={attributo.campo}
+          >
+
+            <span>
+              {attributo.sigla}
+            </span>
+
+            <b>
+              {schedaModifica[
+                attributo.campo
+              ] || "-"}
+            </b>
+
+          </div>
+
+        )
+      )}
+
+    </div>
+
+  </div>
+
+</div>
 
             <div className="mini-card">
 
