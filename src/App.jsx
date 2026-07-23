@@ -1630,83 +1630,31 @@ function aggiornaScheda(campo, valore){
   });
 
 }
-function formattaNomeCard(nomeCompleto, nomeRagazzo) {
+function formattaNomeCard(nomeCompleto) {
 
   if(!nomeCompleto){
     return "";
   }
 
-  const testoCompleto = String(nomeCompleto)
+  const parti = String(nomeCompleto)
     .trim()
-    .replace(/\s+/g, " ");
-
-  const nome = String(nomeRagazzo || "")
-    .trim()
-    .replace(/\s+/g, " ");
-
-  /*
-    Quando il nome è disponibile separatamente,
-    lo rimuoviamo dalla fine della stringa completa.
-
-    Nasti Russo Emanuele + Emanuele
-    diventa:
-    Nasti Russo E.
-  */
-
-  if(nome){
-
-    const completoMinuscolo = testoCompleto.toLowerCase();
-    const nomeMinuscolo = nome.toLowerCase();
-
-    if(
-      completoMinuscolo === nomeMinuscolo
-    ){
-      return nome;
-    }
-
-    if(
-      completoMinuscolo.endsWith(
-        " " + nomeMinuscolo
-      )
-    ){
-
-      const cognome = testoCompleto
-        .slice(
-          0,
-          testoCompleto.length - nome.length
-        )
-        .trim();
-
-      const inizialiNome = nome
-        .split(/\s+/)
-        .filter(Boolean)
-        .map(function(parola){
-          return parola.charAt(0).toUpperCase() + ".";
-        })
-        .join(" ");
-
-      return cognome + " " + inizialiNome;
-
-    }
-
-  }
-
-  /*
-    Ripiego nel caso in cui il nome
-    non sia disponibile separatamente.
-  */
-
-  const parti = testoCompleto.split(" ");
+    .replace(/\s+/g, " ")
+    .split(" ");
 
   if(parti.length === 1){
     return parti[0];
   }
 
-  const cognome = parti.slice(0, -1).join(" ");
-  const inizialeNome =
-    parti[parti.length - 1].charAt(0).toUpperCase();
+  const nome = parti.pop();
 
-  return cognome + " " + inizialeNome + ".";
+  const cognome = parti.join(" ");
+
+  return (
+    cognome +
+    " " +
+    nome.charAt(0).toUpperCase() +
+    "."
+  );
 
 }
 function formattaDataCard(data) {
@@ -2635,14 +2583,14 @@ if(!utente){
       </div>
 
       <div className="pc-name-row">
-        <span>
-          {schedaModifica.cognome} {schedaModifica.nome.charAt(0)}.
-        </span>
+  <span>
+    {formattaNomeCard(schedaModifica.nome)}
+  </span>
 
-        <b>
-          {schedaModifica.numero || ""}
-        </b>
-      </div>
+  <b>
+    {schedaModifica.numero || ""}
+  </b>
+</div>
 
       <div className="pc-role-row">
 
