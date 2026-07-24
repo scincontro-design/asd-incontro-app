@@ -154,6 +154,331 @@ const [confermaInSalvataggio, setConfermaInSalvataggio] = useState("");
 const [partiteRagazzo, setPartiteRagazzo] = useState([]);
 const [caricamentoPartiteRagazzo, setCaricamentoPartiteRagazzo] = useState(false);
 
+function serializzaPerLog(valore) {
+
+  try {
+
+    if (valore === undefined) {
+      return "undefined";
+    }
+
+    if (valore === null) {
+      return "null";
+    }
+
+    if (typeof valore === "string") {
+      return valore;
+    }
+
+    return JSON.stringify(valore);
+
+  } catch (errore) {
+
+    try {
+      return String(valore);
+    } catch {
+      return "Valore non serializzabile";
+    }
+
+  }
+
+}
+
+
+function leggiUtentePerLog() {
+
+  if (utente) {
+    return utente;
+  }
+
+  try {
+
+    var utenteSalvato =
+      localStorage.getItem("utente");
+
+    if (utenteSalvato) {
+      return JSON.parse(utenteSalvato);
+    }
+
+  } catch (errore) {
+
+    console.error(
+      "Impossibile leggere utente per il log",
+      errore
+    );
+
+  }
+
+  return {};
+
+}
+
+
+function registraErroreClient({
+  tipo = "CLIENT",
+  funzione = "",
+  messaggio = "",
+  stack = "",
+  datiAggiuntivi = {}
+}) {
+
+  try {
+
+    var datiUtente =
+      leggiUtentePerLog();
+
+    var datiErrore = {
+
+      tipo: tipo,
+
+      funzione: funzione,
+
+      idAccesso:
+        datiUtente.id ||
+        datiUtente.idAccesso ||
+        "",
+
+      idRagazzo:
+        datiUtente.idRagazzo ||
+        "",
+
+      nome:
+        datiUtente.nome ||
+        "",
+
+      gruppo:
+        datiUtente.gruppo ||
+        "",
+
+      messaggio:
+        messaggio ||
+        "Errore senza messaggio",
+
+      stack:
+        stack ||
+        "",
+
+      pagina:
+        pagina ||
+        window.location.pathname ||
+        "",
+
+      dispositivo:
+        navigator.userAgent ||
+        "",
+
+      datiAggiuntivi: {
+        ...datiAggiuntivi,
+
+        url:
+          window.location.href,
+
+        dataClient:
+          new Date().toISOString(),
+
+        online:
+          navigator.onLine
+      }
+
+    };
+
+    console.error(
+      "ERRORE APP:",
+      datiErrore
+    );
+
+    var callbackName =
+      "callbackRegistroErrore_" +
+      Date.now() +
+      "_" +
+      Math.floor(
+        Math.random() * 100000
+      );
+
+    var scriptId =
+      "scriptRegistroErrore_" +
+      callbackName;
+
+    function pulisciInvioLog() {
+
+      var scriptEsistente =
+        document.getElementById(scriptId);
+
+      if (scriptEsistente) {
+        scriptEsistente.remove();
+      }
+
+      try {
+        delete window[callbackName];
+      } catch {
+        window[callbackName] = undefined;
+      }
+
+    }
+
+    window[callbackName] = function() {
+      pulisciInvioLog();
+    };
+
+    var script =
+      document.createElement("script");
+
+    script.id = scriptId;
+
+    script.src =
+      API_URL +
+      "?action=registraErroreApp" +
+      "&dati=" +
+      encodeURIComponent(
+        JSON.stringify(datiErrore)
+      ) +
+      "&callback=" +
+      encodeURIComponent(callbackName);
+
+    script.onerror = function() {
+
+      console.error(
+        "Impossibile inviare il log al server"
+      );
+
+      pulisciInvioLog();
+
+    };
+
+    document.body.appendChild(script);
+
+  } catch (erroreRegistro) {
+
+    console.error(
+      "Errore interno del sistema di log:",
+      erroreRegistro
+    );
+
+  }
+
+}
+
+useEffect(() => {
+
+  function gestisciErroreGlobale(evento) {
+
+    var erroreGlobale =
+      evento && evento.error
+        ? evento.error
+        : null;
+
+    registraErroreClient({
+
+      tipo: "ERRORE_JAVASCRIPT",
+
+      funzione: "window.error",
+
+      messaggio:
+        erroreGlobale &&
+        erroreGlobale.message
+          ? erroreGlobale.message
+          : evento &&
+            evento.message
+            ? evento.message
+            : "Errore JavaScript non identificato",
+
+      stack:
+        erroreGlobale &&
+        erroreGlobale.stack
+          ? erroreGlobale.stack
+          : "",
+
+      datiAggiuntivi: {
+
+        file:
+          evento &&
+          evento.filename
+            ? evento.filename
+            : "",
+
+        riga:
+          evento &&
+          evento.lineno
+            ? evento.lineno
+            : "",
+
+        colonna:
+          evento &&
+          evento.colno
+            ? evento.colno
+            : ""
+
+      }
+
+    });
+
+  }
+
+
+  function gestisciPromiseRifiutata(evento) {
+
+    var motivo =
+      evento
+        ? evento.reason
+        : null;
+
+    registraErroreClient({
+
+      tipo: "PROMISE_NON_GESTITA",
+
+      funzione:
+        "window.unhandledrejection",
+
+      messaggio:
+        motivo &&
+        motivo.message
+          ? motivo.message
+          : serializzaPerLog(motivo),
+
+      stack:
+        motivo &&
+        motivo.stack
+          ? motivo.stack
+          : "",
+
+      datiAggiuntivi: {
+
+        motivo:
+          serializzaPerLog(motivo)
+
+      }
+
+    });
+
+  }
+
+
+  window.addEventListener(
+    "error",
+    gestisciErroreGlobale
+  );
+
+  window.addEventListener(
+    "unhandledrejection",
+    gestisciPromiseRifiutata
+  );
+
+
+  return function() {
+
+    window.removeEventListener(
+      "error",
+      gestisciErroreGlobale
+    );
+
+    window.removeEventListener(
+      "unhandledrejection",
+      gestisciPromiseRifiutata
+    );
+
+  };
+
+}, [utente, pagina]);
 
 useEffect(() => {
 
@@ -195,12 +520,31 @@ useEffect(() => {
       localStorage.removeItem("ultimoAccesso");
     }
 
-  }catch(error){
+ }catch(error){
 
-    localStorage.removeItem("utente");
-    localStorage.removeItem("ultimoAccesso");
+  registraErroreClient({
 
-  }
+    tipo: "ERRORE_SESSIONE",
+
+    funzione:
+      "ripristinoSessione",
+
+    messaggio:
+      error && error.message
+        ? error.message
+        : String(error),
+
+    stack:
+      error && error.stack
+        ? error.stack
+        : ""
+
+  });
+
+  localStorage.removeItem("utente");
+  localStorage.removeItem("ultimoAccesso");
+
+}
 
 }, []);
 
@@ -216,6 +560,34 @@ useEffect(() => {
   window.prova = function(data){
 
     setLoading(false);
+
+    if(!data || typeof data !== "object"){
+
+  registraErroreClient({
+
+    tipo: "RISPOSTA_NON_VALIDA",
+
+    funzione: "login_callback",
+
+    messaggio:
+      "Il server ha restituito una risposta login non valida",
+
+    datiAggiuntivi: {
+
+      risposta:
+        serializzaPerLog(data)
+
+    }
+
+  });
+
+  setErrore(
+    "Risposta del server non valida"
+  );
+
+  return;
+
+}
 
     if(data.esito === "OK"){
 
@@ -258,9 +630,35 @@ useEffect(() => {
     "&callback=prova";
 
   script.onerror = function(){
-    setLoading(false);
-    setErrore("Errore collegamento");
-  };
+
+  registraErroreClient({
+
+    tipo: "ERRORE_COLLEGAMENTO",
+
+    funzione: "login",
+
+    messaggio:
+      "Errore di collegamento durante il login",
+
+    datiAggiuntivi: {
+
+      idInserito:
+        id || "",
+
+      urlRichiesta:
+        script.src
+
+    }
+
+  });
+
+  setLoading(false);
+
+  setErrore(
+    "Errore collegamento"
+  );
+
+};
 
   document.body.appendChild(script);
 
@@ -461,6 +859,76 @@ function caricaCalendarioRagazzo(){
   };
 
   document.body.appendChild(script);
+
+}
+function salvaErroreServer_(
+  nomeFunzione,
+  errore,
+  contesto
+) {
+
+  try {
+
+    registraErroreApp({
+
+      tipo: "SERVER_APPS_SCRIPT",
+
+      funzione:
+        nomeFunzione || "",
+
+      idAccesso:
+        contesto &&
+        contesto.idAccesso
+          ? contesto.idAccesso
+          : "",
+
+      idRagazzo:
+        contesto &&
+        contesto.idRagazzo
+          ? contesto.idRagazzo
+          : "",
+
+      nome:
+        contesto &&
+        contesto.nome
+          ? contesto.nome
+          : "",
+
+      gruppo:
+        contesto &&
+        contesto.gruppo
+          ? contesto.gruppo
+          : "",
+
+      messaggio:
+        errore && errore.message
+          ? errore.message
+          : String(errore),
+
+      stack:
+        errore && errore.stack
+          ? errore.stack
+          : "",
+
+      pagina:
+        "Apps Script",
+
+      dispositivo:
+        "SERVER",
+
+      datiAggiuntivi:
+        contesto || {}
+
+    });
+
+  } catch (erroreLog) {
+
+    console.error(
+      "Impossibile registrare errore server:",
+      erroreLog
+    );
+
+  }
 
 }
 function caricaPartiteRagazzo(){
@@ -2438,7 +2906,7 @@ if(!utente){
 
   <input
     type="text"
-    placeholder="👤  ID Istruttore"
+    placeholder="👤  ID Accesso"
     value={id}
     onChange={(e) => setId(e.target.value)}
   />
@@ -6924,7 +7392,7 @@ if(pagina === "gruppi"){
         </h1>
 
         <div className="hero-small-title">
-          GESTIONE TECNICA
+          AREA RISERVATA
         </div>
       </div>
 
