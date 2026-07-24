@@ -2895,7 +2895,7 @@ if(!utente){
   </h1>
 
   <p className="login-subtitle">
-    GESTIONE TECNICA
+    AREA RISERVATA
   </p>
 
   <div className="login-divider"></div>
@@ -7392,7 +7392,7 @@ if(pagina === "gruppi"){
         </h1>
 
         <div className="hero-small-title">
-          AREA RISERVATA
+          GESTIONE TECNICA
         </div>
       </div>
 
