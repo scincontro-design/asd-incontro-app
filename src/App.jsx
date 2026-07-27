@@ -2956,25 +2956,20 @@ if(!utente){
           </div>
         </div>
 
-        <div className="profilo-giocatore-card">
+        <div className="dash-player-intro">
 
-  <div className="profilo-giocatore-badge">
-    PROFILO GIOCATORE
-  </div>
 
-  <div className="profilo-giocatore-logo">
-    <img src={logo} alt="ASD Incontro" />
-  </div>
-
-  <div className="profilo-giocatore-societa">
-    ASD INCONTRO
-  </div>
-
-  <h2 className="profilo-giocatore-nome">
+  <h2>
     {utente.nome}
   </h2>
 
-  <div className="profilo-giocatore-dettagli">
+  {schedaModifica?.numero && (
+  <div className="dash-player-number">
+    #{schedaModifica.numero}
+  </div>
+)}
+
+  <div className="dash-player-details">
 
     <span>
       {utente.gruppo}
