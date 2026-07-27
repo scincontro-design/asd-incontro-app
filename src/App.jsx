@@ -3203,13 +3203,22 @@ if(utente.ruolo === "Ragazzo" && pagina === "miaScheda"){
 
       <div className="dashboard-card">
 
-        <h2 className="page-title">
-          LA MIA SCHEDA
-        </h2>
+  <div
+    className="hero-card"
+    style={{
+      backgroundImage: `url(${schedeHero})`
+    }}
+  >
+    <div className="hero-overlay">
 
-        <p className="subtitle">
-          {utente.nome}
-        </p>
+      <h1>LA MIA SCHEDA</h1>
+
+      <p>
+        Profilo personale e valutazione tecnica
+      </p>
+
+    </div>
+  </div>
 
         {!schedaModifica ? (
 
@@ -3730,13 +3739,22 @@ if (
 
       <div className="dashboard-card">
 
-        <h2 className="page-title">
-  IL MIO CALENDARIO
-</h2>
+  <div
+    className="hero-card"
+    style={{
+      backgroundImage: `url(${allenamentiHero})`
+    }}
+  >
+    <div className="hero-overlay">
 
-        <p className="subtitle">
-          {utente.gruppo}
-        </p>
+      <h1>IL MIO CALENDARIO</h1>
+
+      <p>
+        Allenamenti e appuntamenti del gruppo {utente.gruppo}
+      </p>
+
+    </div>
+  </div>
 
         {caricamentoCalendario ? (
 
@@ -3927,13 +3945,22 @@ if(
 
       <div className="dashboard-card">
 
-        <h2 className="page-title">
-          LE MIE PARTITE
-        </h2>
+  <div
+    className="hero-card"
+    style={{
+      backgroundImage: `url(${gareHero})`
+    }}
+  >
+    <div className="hero-overlay">
 
-        <p className="subtitle">
-          {utente.nome}
-        </p>
+      <h1>LE MIE PARTITE</h1>
+
+      <p>
+        Gare e convocazioni del gruppo {utente.gruppo}
+      </p>
+
+    </div>
+  </div>
 
         {caricamentoPartiteRagazzo ? (
 
@@ -6944,17 +6971,22 @@ if(
 
       <div className="dashboard-card">
 
-        <h2>STATISTICHE GRUPPO</h2>
+  <div
+    className="hero-card"
+    style={{
+      backgroundImage: `url(${allenamentiStatistiche})`
+    }}
+  >
+    <div className="hero-overlay">
 
-        <div className="mini-card">
+      <h1>STATISTICHE GRUPPO</h1>
 
-          <b>{utente.gruppo}</b>
+      <p>
+        Classifiche e rendimento del gruppo {utente.gruppo}
+      </p>
 
-          <p>
-            Classifiche aggiornate della squadra
-          </p>
-
-        </div>
+    </div>
+  </div>
 
         {!statistiche ? (
 
