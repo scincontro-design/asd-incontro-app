@@ -3142,13 +3142,6 @@ if(!utente){
 />
 
   <CardDashboard
-    titolo="COMUNICAZIONI"
-    descrizione="Avvisi e informazioni della squadra"
-    immagine={cardStatistiche}
-    onClick={() => setPagina("comunicazioniRagazzo")}
-  />
-
-  <CardDashboard
   titolo="STATISTICHE GRUPPO"
   descrizione="Presenze e andamento del tuo gruppo"
   immagine={cardStatistiche}
@@ -4285,43 +4278,6 @@ if(
           <p>
             Gli avvisi della società e dello staff
             tecnico compariranno in questa sezione.
-          </p>
-
-        </div>
-
-      </div>
-
-    </div>
-  );
-
-}
-if(
-  utente.ruolo === "Ragazzo" &&
-  pagina === "statisticheGruppoRagazzo"
-){
-
-  return (
-    <div className="app">
-
-      <BottoneIndietro />
-
-      <div className="dashboard-card">
-
-        <h2 className="page-title">
-          STATISTICHE GRUPPO
-        </h2>
-
-        <p className="subtitle">
-          {utente.gruppo}
-        </p>
-
-        <div className="mini-card">
-
-          <h3>Statistiche in preparazione</h3>
-
-          <p>
-            Qui saranno mostrate esclusivamente
-            le statistiche relative al tuo gruppo.
           </p>
 
         </div>
@@ -6901,6 +6857,185 @@ if(pagina === "schedaGiocatore" && giocatoreSelezionato){
     </div>
   );
 }
+if(
+  utente.ruolo === "Ragazzo" &&
+  pagina === "statisticheGruppoRagazzo"
+){
+
+  const filtraGruppoRagazzo = (lista) => {
+
+    if(!Array.isArray(lista)){
+      return [];
+    }
+
+    return lista.filter(
+      (elemento) =>
+        String(elemento.gruppo || "").trim() ===
+        String(utente.gruppo || "").trim()
+    );
+
+  };
+
+  const mostraClassifica = (
+    titolo,
+    lista,
+    campo,
+    etichetta,
+    suffisso = ""
+  ) => {
+
+    const classifica =
+      filtraGruppoRagazzo(lista).slice(0, 10);
+
+    return (
+
+      <div>
+
+        <h3>{titolo}</h3>
+
+        {classifica.length === 0 ? (
+
+          <div className="mini-card">
+            <p>Nessun dato disponibile</p>
+          </div>
+
+        ) : (
+
+          classifica.map((elemento, index) => (
+
+            <div
+              className="mini-card"
+              key={
+                campo +
+                "-" +
+                elemento.ragazzo +
+                "-" +
+                index
+              }
+            >
+
+              <b>
+                {index + 1}. {elemento.ragazzo}
+              </b>
+
+              <p>
+                {etichetta}:{" "}
+                {elemento[campo] ?? 0}
+                {suffisso}
+              </p>
+
+            </div>
+
+          ))
+
+        )}
+
+      </div>
+
+    );
+
+  };
+
+  return (
+
+    <div className="app">
+
+      <BottoneIndietro />
+
+      <div className="dashboard-card">
+
+        <h2>STATISTICHE GRUPPO</h2>
+
+        <div className="mini-card">
+
+          <b>{utente.gruppo}</b>
+
+          <p>
+            Classifiche aggiornate della squadra
+          </p>
+
+        </div>
+
+        {!statistiche ? (
+
+          <div className="mini-card">
+            <p>Caricamento statistiche...</p>
+          </div>
+
+        ) : (
+
+          <>
+
+            {mostraClassifica(
+              "⚽ Marcatori",
+              statistiche.marcatori,
+              "goal",
+              "Goal"
+            )}
+
+            {mostraClassifica(
+              "🎯 Assist",
+              statistiche.assist,
+              "assist",
+              "Assist"
+            )}
+
+            {mostraClassifica(
+              "⭐ Media voto",
+              statistiche.mediaVoto,
+              "mediaVoto",
+              "Media"
+            )}
+
+            {mostraClassifica(
+              "🏅 MVP",
+              statistiche.mvp,
+              "mvp",
+              "MVP"
+            )}
+
+            {mostraClassifica(
+              "🏃 Presenze allenamento",
+              statistiche.presenzeAllenamento,
+              "percentualeAllenamento",
+              "Presenze",
+              "%"
+            )}
+
+            {mostraClassifica(
+              "🏟️ Presenze gara",
+              statistiche.presenzePartite,
+              "percentualePartite",
+              "Presenze",
+              "%"
+            )}
+
+            {mostraClassifica(
+              "🟨 Ammonizioni",
+              statistiche.ammonizioni,
+              "ammonizioni",
+              "Ammonizioni"
+            )}
+
+            {mostraClassifica(
+              "🟥 Espulsioni",
+              statistiche.espulsioni,
+              "espulsioni",
+              "Espulsioni"
+            )}
+
+          </>
+
+        )}
+
+      </div>
+
+    </div>
+
+  );
+
+}
+
 if(pagina === "statistiche" && statistiche){
   return (
     <div className="app">
