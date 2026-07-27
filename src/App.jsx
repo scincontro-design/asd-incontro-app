@@ -28,6 +28,7 @@ import scarpaGold from "./assets/scarpa-gold.png";
 import "./App.css";
 import jsPDF from "jspdf";
 import Toast from "./components/Toast";
+import dashboardhero from "./assets/dashboardhero.png";
 
 const API_URL = "https://script.google.com/macros/s/AKfycbyokQ0HXWqPMtGzM7hyo5aOkUeY_NkEbIIXHSjZ8SL-jMwIDieUVVmqZXf85S3ahWY_/exec";
 
@@ -2945,7 +2946,12 @@ if(!utente){
   return (
     <div className="app dashboard-dark">
 
-      <div className="dash-hero">
+      <div
+  className="dash-hero"
+  style={{
+    backgroundImage: `url(${dashboardhero})`
+  }}
+>
 
         <div className="dash-brand">
           <img src={logo} className="dash-logo" alt="ASD Incontro" />
