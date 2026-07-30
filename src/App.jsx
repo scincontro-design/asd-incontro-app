@@ -3456,16 +3456,76 @@ if(utente.ruolo === "Ragazzo" && pagina === "miaScheda"){
                 disabled
               />
 
-              <label>Ruolo</label>
+              <label>Numero</label>
 
-              <input
-                value={
-                  schedaModifica.ruolo ||
-                  schedaModifica.ruoloBase ||
-                  ""
-                }
-                disabled
-              />
+<input
+  type="number"
+  min="1"
+  max="99"
+  value={schedaModifica.numero || ""}
+  onChange={(e) =>
+    aggiornaScheda(
+      "numero",
+      e.target.value
+    )
+  }
+/>
+
+<label>Ruolo Base</label>
+
+<select
+  value={schedaModifica.ruoloBase || "Giocatore"}
+  onChange={(e) => {
+    const ruoloBase = e.target.value;
+
+    aggiornaScheda("ruoloBase", ruoloBase);
+
+    if (ruoloBase === "Portiere") {
+      aggiornaScheda("ruolo", "POR");
+    } else if (
+      ![
+        "DC","TD","TS","ED","ES",
+        "CC","CDC","COC",
+        "AD","AS","SP","ATT"
+      ].includes(schedaModifica.ruolo)
+    ) {
+      aggiornaScheda("ruolo", "CC");
+    }
+  }}
+>
+  <option value="Giocatore">Giocatore</option>
+  <option value="Portiere">Portiere</option>
+</select>
+
+<label>Ruolo</label>
+
+<select
+  value={schedaModifica.ruolo || ""}
+  onChange={(e) =>
+    aggiornaScheda("ruolo", e.target.value)
+  }
+>
+  {schedaModifica.ruoloBase === "Portiere" ? (
+    <>
+      <option value="POR">POR</option>
+    </>
+  ) : (
+    <>
+      <option value="DC">DC</option>
+      <option value="TD">TD</option>
+      <option value="TS">TS</option>
+      <option value="ED">ED</option>
+      <option value="ES">ES</option>
+      <option value="CC">CC</option>
+      <option value="CDC">CDC</option>
+      <option value="COC">COC</option>
+      <option value="AD">AD</option>
+      <option value="AS">AS</option>
+      <option value="SP">SP</option>
+      <option value="ATT">ATT</option>
+    </>
+  )}
+</select>
 
               <label>Data di nascita</label>
 
