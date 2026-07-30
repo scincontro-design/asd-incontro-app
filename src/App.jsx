@@ -2516,25 +2516,82 @@ function calcolaOverall(){
     return 0;
   }
 
-  const attributi = getAttributiScheda();
+  let attributi = [];
 
-  let totale = 0;
-  let numeroCampi = 0;
+  if(schedaModifica.ruoloBase === "Portiere"){
 
-  attributi.forEach((a) => {
-    const valore = Number(schedaModifica[a.campo]) || 0;
+    attributi = [
+      schedaModifica.presa,
+      schedaModifica.tuffo,
+      schedaModifica.riflessi,
+      schedaModifica.parata,
+      schedaModifica.uscite,
+      schedaModifica.unoControUno,
+      schedaModifica.giocoConIPiedi,
+      schedaModifica.rinvio,
+      schedaModifica.passaggioCorto,
+      schedaModifica.lancioLungo,
+      schedaModifica.velocitaPortiere,
+      schedaModifica.accelerazionePortiere,
+      schedaModifica.reattivita,
+      schedaModifica.esplosivita,
+      schedaModifica.agilitaPortiere,
+      schedaModifica.forzaPortiere,
+      schedaModifica.posizionamentoPorta,
+      schedaModifica.letturaGiocoPortiere,
+      schedaModifica.comunicazioneDifesa,
+      schedaModifica.gestioneArea,
+      schedaModifica.concentrazionePortiere,
+      schedaModifica.coraggio,
+      schedaModifica.leadershipPortiere,
+      schedaModifica.personalitaPortiere,
+      schedaModifica.decisionMakingPortiere
+    ];
 
-    if(valore > 0){
-      totale += valore;
-      numeroCampi++;
-    }
-  });
+  }else{
 
-  if(numeroCampi === 0){
+    attributi = [
+      schedaModifica.controllo,
+      schedaModifica.passaggio,
+      schedaModifica.dribbling,
+      schedaModifica.tiro,
+      schedaModifica.visioneGioco,
+      schedaModifica.cross,
+      schedaModifica.difesa,
+      schedaModifica.colpoTesta,
+      schedaModifica.calcioPiazzato,
+      schedaModifica.velocita,
+      schedaModifica.accelerazione,
+      schedaModifica.resistenza,
+      schedaModifica.forza,
+      schedaModifica.agilita,
+      schedaModifica.equilibrio,
+      schedaModifica.posizionamento,
+      schedaModifica.letturaGioco,
+      schedaModifica.marcatura,
+      schedaModifica.movimentoSenzaPalla,
+      schedaModifica.concentrazione,
+      schedaModifica.leadership,
+      schedaModifica.personalita,
+      schedaModifica.impegno,
+      schedaModifica.decisionMaking,
+      schedaModifica.disciplina
+    ];
+
+  }
+
+  const valori = attributi
+    .map(v => Number(v))
+    .filter(v => Number.isFinite(v) && v > 0);
+
+  if(valori.length === 0){
     return 0;
   }
 
-  return Math.round(totale / numeroCampi);
+  return Math.round(
+    valori.reduce((tot, v) => tot + v, 0) / valori.length
+  );
+
 }
 function caricaTuttiGruppi(){
 
