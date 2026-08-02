@@ -963,6 +963,175 @@ function segnaNotificaLetta(notificaUtente){
   document.body.appendChild(script);
 
 }
+function eliminaNotificaUtente(
+  notificaUtente,
+  evento
+){
+
+  if(evento){
+    evento.stopPropagation();
+  }
+
+  if(
+    !utente ||
+    !utente.id ||
+    !notificaUtente
+  ){
+    return;
+  }
+
+  const idNotifica =
+    notificaUtente.id ||
+    notificaUtente.ID ||
+    "";
+
+  if(!idNotifica){
+    return;
+  }
+
+  const eliminabile =
+    String(
+      notificaUtente.eliminabile ||
+      notificaUtente.ELIMINABILE ||
+      ""
+    )
+    .trim()
+    .toUpperCase();
+
+  if(
+    eliminabile !== "SI" &&
+    eliminabile !== "S" &&
+    eliminabile !== "TRUE" &&
+    eliminabile !== "1"
+  ){
+
+    mostraNotifica(
+      "Questa notifica non può essere eliminata",
+      "error"
+    );
+
+    return;
+
+  }
+
+  const callbackName =
+    "callbackEliminaNotifica_" +
+    Date.now() +
+    "_" +
+    Math.floor(Math.random() * 100000);
+
+  const scriptId =
+    "jsonpEliminaNotifica_" +
+    callbackName;
+
+  function pulisciRichiesta(){
+
+    const scriptEsistente =
+      document.getElementById(scriptId);
+
+    if(scriptEsistente){
+      scriptEsistente.remove();
+    }
+
+    try{
+      delete window[callbackName];
+    }catch{
+      window[callbackName] = undefined;
+    }
+
+  }
+
+  window[callbackName] = function(data){
+
+    if(
+      data &&
+      data.esito === "OK"
+    ){
+
+      setNotificheUtente(
+        precedenti =>
+          precedenti.filter(
+            notifica => {
+
+              const idCorrente =
+                notifica.id ||
+                notifica.ID;
+
+              return idCorrente !== idNotifica;
+
+            }
+          )
+      );
+
+      if(!notificaUtente.letta){
+
+        setNumeroNotificheNonLette(
+          precedente =>
+            Math.max(
+              0,
+              precedente - 1
+            )
+        );
+
+      }
+
+      mostraNotifica(
+        "Notifica eliminata",
+        "success"
+      );
+
+    }else if(
+      data &&
+      data.esito === "NON_ELIMINABILE"
+    ){
+
+      mostraNotifica(
+        "Questa notifica non può essere eliminata",
+        "error"
+      );
+
+    }else{
+
+      mostraNotifica(
+        "Errore durante l'eliminazione",
+        "error"
+      );
+
+    }
+
+    pulisciRichiesta();
+
+  };
+
+  const script =
+    document.createElement("script");
+
+  script.id = scriptId;
+
+  script.src =
+    API_URL +
+    "?action=eliminaNotifica" +
+    "&idNotifica=" +
+    encodeURIComponent(idNotifica) +
+    "&id=" +
+    encodeURIComponent(utente.id) +
+    "&callback=" +
+    encodeURIComponent(callbackName);
+
+  script.onerror = function(){
+
+    mostraNotifica(
+      "Errore di collegamento",
+      "error"
+    );
+
+    pulisciRichiesta();
+
+  };
+
+  document.body.appendChild(script);
+
+}
 function precaricaDati(utenteLogin){
 
   precaricaAllenamenti(utenteLogin);
@@ -3497,6 +3666,48 @@ if(!utente){
             </small>
 
           )}
+
+          {[
+  "SI",
+  "S",
+  "TRUE",
+  "1"
+].includes(
+  String(
+    notificaUtente.eliminabile ||
+    notificaUtente.ELIMINABILE ||
+    ""
+  )
+  .trim()
+  .toUpperCase()
+) && (
+
+  <button
+    type="button"
+    onClick={(evento) =>
+      eliminaNotificaUtente(
+        notificaUtente,
+        evento
+      )
+    }
+    style={{
+      display: "block",
+      marginTop: "10px",
+      marginLeft: "auto",
+      border: "1px solid rgba(255,255,255,0.25)",
+      borderRadius: "8px",
+      background: "rgba(180,0,0,0.35)",
+      color: "#ffffff",
+      padding: "7px 10px",
+      cursor: "pointer",
+      fontSize: "15px"
+    }}
+    aria-label="Elimina notifica"
+  >
+    🗑️
+  </button>
+
+)}
 
         </div>
 
@@ -8378,6 +8589,48 @@ if(pagina === "gruppi"){
             </small>
 
           )}
+
+          {[
+  "SI",
+  "S",
+  "TRUE",
+  "1"
+].includes(
+  String(
+    notificaUtente.eliminabile ||
+    notificaUtente.ELIMINABILE ||
+    ""
+  )
+  .trim()
+  .toUpperCase()
+) && (
+
+  <button
+    type="button"
+    onClick={(evento) =>
+      eliminaNotificaUtente(
+        notificaUtente,
+        evento
+      )
+    }
+    style={{
+      display: "block",
+      marginTop: "10px",
+      marginLeft: "auto",
+      border: "1px solid rgba(255,255,255,0.25)",
+      borderRadius: "8px",
+      background: "rgba(180,0,0,0.35)",
+      color: "#ffffff",
+      padding: "7px 10px",
+      cursor: "pointer",
+      fontSize: "15px"
+    }}
+    aria-label="Elimina notifica"
+  >
+    🗑️
+  </button>
+
+)}
 
         </div>
 
