@@ -154,6 +154,10 @@ const [confermePresenza, setConfermePresenza] = useState({});
 const [confermaInSalvataggio, setConfermaInSalvataggio] = useState("");
 const [partiteRagazzo, setPartiteRagazzo] = useState([]);
 const [caricamentoPartiteRagazzo, setCaricamentoPartiteRagazzo] = useState(false);
+const [notificheUtente, setNotificheUtente] = useState([]);
+const [numeroNotificheNonLette, setNumeroNotificheNonLette] = useState(0);
+const [caricamentoNotifiche, setCaricamentoNotifiche] = useState(false);
+const [notificheAperte, setNotificheAperte] = useState(false);
 
 function serializzaPerLog(valore) {
 
@@ -510,7 +514,8 @@ useEffect(() => {
   caricaSchedaRagazzo(utenteObj);
 }
       caricaBootstrap(utenteObj);
-      caricaDashboardContatori(utenteObj);
+caricaDashboardContatori(utenteObj);
+caricaNotificheUtente(utenteObj);
 
       setTimeout(() => {
         precaricaDati(utenteObj);
@@ -599,9 +604,11 @@ useEffect(() => {
 
   console.log("LOGIN RAGAZZO:", data);
 
-  caricaBootstrap(data);
-  caricaDashboardContatori(data);
-  if(data.ruolo === "Ragazzo"){
+ caricaBootstrap(data);
+caricaDashboardContatori(data);
+caricaNotificheUtente(data);
+
+if(data.ruolo === "Ragazzo"){
   caricaSchedaRagazzo(data);
 }
 
@@ -691,6 +698,267 @@ function caricaDashboardContatori(utenteLogin){
     "&id=" + encodeURIComponent(utenteLogin.id) +
     "&ruolo=" + encodeURIComponent(utenteLogin.ruolo) +
     "&callback=" + callbackName;
+
+  document.body.appendChild(script);
+
+}
+function caricaNotificheUtente(utenteLogin){
+
+  if(!utenteLogin || !utenteLogin.id){
+    return;
+  }
+
+  setCaricamentoNotifiche(true);
+
+  const gruppiUtente =
+    Array.isArray(utenteLogin.gruppi) &&
+    utenteLogin.gruppi.length > 0
+      ? utenteLogin.gruppi
+      : utenteLogin.gruppo
+        ? [utenteLogin.gruppo]
+        : [];
+
+  const callbackName =
+    "callbackNotificheUtente_" +
+    Date.now() +
+    "_" +
+    Math.floor(Math.random() * 100000);
+
+  const scriptId =
+    "jsonpNotificheUtente_" +
+    callbackName;
+
+  function pulisciRichiestaNotifiche(){
+
+    const scriptEsistente =
+      document.getElementById(scriptId);
+
+    if(scriptEsistente){
+      scriptEsistente.remove();
+    }
+
+    try{
+      delete window[callbackName];
+    }catch{
+      window[callbackName] = undefined;
+    }
+
+  }
+
+  window[callbackName] = function(data){
+
+    setCaricamentoNotifiche(false);
+
+    if(
+      data &&
+      data.esito === "OK"
+    ){
+
+      setNotificheUtente(
+        Array.isArray(data.notifiche)
+          ? data.notifiche
+          : []
+      );
+
+      setNumeroNotificheNonLette(
+        Number(data.nonLette) || 0
+      );
+
+    }else{
+
+      setNotificheUtente([]);
+      setNumeroNotificheNonLette(0);
+
+      registraErroreClient({
+        tipo: "RISPOSTA_NON_VALIDA",
+        funzione: "caricaNotificheUtente_callback",
+        messaggio:
+          data?.messaggio ||
+          "Risposta notifiche non valida",
+        datiAggiuntivi: {
+          risposta:
+            serializzaPerLog(data)
+        }
+      });
+
+    }
+
+    pulisciRichiestaNotifiche();
+
+  };
+
+  const script =
+    document.createElement("script");
+
+  script.id = scriptId;
+
+  script.src =
+    API_URL +
+    "?action=notificheUtente" +
+    "&id=" +
+    encodeURIComponent(
+      utenteLogin.id
+    ) +
+    "&ruolo=" +
+    encodeURIComponent(
+      utenteLogin.ruolo || ""
+    ) +
+    "&gruppi=" +
+    encodeURIComponent(
+      JSON.stringify(gruppiUtente)
+    ) +
+    "&callback=" +
+    encodeURIComponent(callbackName);
+
+  script.onerror = function(){
+
+    setCaricamentoNotifiche(false);
+
+    registraErroreClient({
+      tipo: "ERRORE_COLLEGAMENTO",
+      funzione: "caricaNotificheUtente",
+      messaggio:
+        "Errore nel caricamento delle notifiche",
+      datiAggiuntivi: {
+        idUtente:
+          utenteLogin.id || "",
+        ruolo:
+          utenteLogin.ruolo || ""
+      }
+    });
+
+    pulisciRichiestaNotifiche();
+
+  };
+
+  document.body.appendChild(script);
+
+}
+function segnaNotificaLetta(notificaUtente){
+
+  if(
+    !utente ||
+    !utente.id ||
+    !notificaUtente
+  ){
+    return;
+  }
+
+  const idNotifica =
+    notificaUtente.id ||
+    notificaUtente.ID ||
+    "";
+
+  if(!idNotifica){
+    return;
+  }
+
+  // Se è già letta, non richiamiamo nuovamente il server
+  if(notificaUtente.letta){
+    return;
+  }
+
+  const callbackName =
+    "callbackLeggiNotifica_" +
+    Date.now() +
+    "_" +
+    Math.floor(Math.random() * 100000);
+
+  const scriptId =
+    "jsonpLeggiNotifica_" +
+    callbackName;
+
+  function pulisciRichiesta(){
+
+    const scriptEsistente =
+      document.getElementById(scriptId);
+
+    if(scriptEsistente){
+      scriptEsistente.remove();
+    }
+
+    try{
+      delete window[callbackName];
+    }catch{
+      window[callbackName] = undefined;
+    }
+
+  }
+
+  window[callbackName] = function(data){
+
+    if(
+      data &&
+      data.esito === "OK"
+    ){
+
+      setNotificheUtente((precedenti) =>
+        precedenti.map((notifica) => {
+
+          const idCorrente =
+            notifica.id ||
+            notifica.ID;
+
+          if(idCorrente === idNotifica){
+
+            return {
+              ...notifica,
+              letta: true
+            };
+
+          }
+
+          return notifica;
+
+        })
+      );
+
+      setNumeroNotificheNonLette(
+        (precedente) =>
+          Math.max(0, precedente - 1)
+      );
+
+    }else{
+
+      mostraNotifica(
+        "Errore durante la lettura della notifica",
+        "error"
+      );
+
+    }
+
+    pulisciRichiesta();
+
+  };
+
+  const script =
+    document.createElement("script");
+
+  script.id = scriptId;
+
+  script.src =
+    API_URL +
+    "?action=leggiNotifica" +
+    "&idNotifica=" +
+    encodeURIComponent(idNotifica) +
+
+    // IMPORTANTE: il backend legge e.parameter.id
+    "&id=" +
+    encodeURIComponent(utente.id) +
+
+    "&callback=" +
+    encodeURIComponent(callbackName);
+
+  script.onerror = function(){
+
+    mostraNotifica(
+      "Errore di collegamento",
+      "error"
+    );
+
+    pulisciRichiesta();
+
+  };
 
   document.body.appendChild(script);
 
@@ -3003,6 +3271,8 @@ if(!utente){
   return (
     <div className="app dashboard-dark">
 
+      
+
       <div
   className="dash-hero"
   style={{
@@ -3010,14 +3280,233 @@ if(!utente){
   }}
 >
 
-        <div className="dash-brand">
-          <img src={logo} className="dash-logo" alt="ASD Incontro" />
+        <div
+  className="dash-brand"
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center"
+  }}
+>
 
-          <div>
-            <h1>ASD Incontro</h1>
-            <p>AREA RAGAZZO</p>
-          </div>
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: "12px"
+    }}
+  >
+
+    <img
+      src={logo}
+      className="dash-logo"
+      alt="ASD Incontro"
+    />
+
+    <div>
+      <h1>ASD Incontro</h1>
+      <p>AREA RAGAZZO</p>
+    </div>
+
+  </div>
+
+  <div
+    style={{
+      position: "relative",
+      cursor: "pointer",
+      fontSize: "28px"
+    }}
+    onClick={() =>
+      setNotificheAperte(!notificheAperte)
+    }
+  >
+
+    🔔
+
+    {numeroNotificheNonLette > 0 && (
+
+      <div
+        style={{
+          position: "absolute",
+          top: "-6px",
+          right: "-8px",
+          background: "#d60000",
+          color: "#fff",
+          borderRadius: "50%",
+          minWidth: "20px",
+          height: "20px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          fontSize: "12px",
+          fontWeight: "bold"
+        }}
+      >
+        {numeroNotificheNonLette}
+      </div>
+
+    )}
+
+  </div>
+
+</div>
+{notificheAperte && (
+
+  <div
+    style={{
+      position: "absolute",
+      top: "85px",
+      right: "18px",
+      width: "min(360px, calc(100vw - 36px))",
+      maxHeight: "430px",
+      overflowY: "auto",
+      background: "rgba(18,18,18,0.98)",
+      border: "1px solid rgba(255,255,255,0.22)",
+      borderRadius: "16px",
+      padding: "16px",
+      boxSizing: "border-box",
+      zIndex: 9999,
+      boxShadow: "0 12px 35px rgba(0,0,0,0.65)"
+    }}
+  >
+
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: "14px"
+      }}
+    >
+
+      <h3
+        style={{
+          margin: 0,
+          color: "#ffffff"
+        }}
+      >
+        Notifiche
+      </h3>
+
+      <button
+        type="button"
+        onClick={() => setNotificheAperte(false)}
+        style={{
+          border: "none",
+          background: "transparent",
+          color: "#ffffff",
+          fontSize: "22px",
+          cursor: "pointer",
+          padding: "0 4px"
+        }}
+      >
+        ✕
+      </button>
+
+    </div>
+
+    {caricamentoNotifiche ? (
+
+      <p
+        style={{
+          color: "#ffffff",
+          margin: 0
+        }}
+      >
+        Caricamento notifiche...
+      </p>
+
+    ) : notificheUtente.length === 0 ? (
+
+      <p
+        style={{
+          color: "rgba(255,255,255,0.75)",
+          margin: 0
+        }}
+      >
+        Non ci sono notifiche.
+      </p>
+
+    ) : (
+
+      notificheUtente.map((notificaUtente, indice) => (
+
+        <div
+  key={
+    notificaUtente.id ||
+    notificaUtente.ID ||
+    indice
+  }
+
+  onClick={() =>
+  segnaNotificaLetta(notificaUtente)
+}
+
+  style={{
+            cursor:"pointer",
+            padding: "13px",
+            marginBottom: "10px",
+            borderRadius: "12px",
+            background:
+              notificaUtente.letta
+                ? "rgba(255,255,255,0.07)"
+                : "rgba(180,0,0,0.30)",
+            border:
+              notificaUtente.letta
+                ? "1px solid rgba(255,255,255,0.10)"
+                : "1px solid rgba(255,80,80,0.55)"
+          }}
+        >
+
+          <strong
+            style={{
+              display: "block",
+              color: "#ffffff",
+              marginBottom: "6px"
+            }}
+          >
+            {notificaUtente.titolo ||
+             notificaUtente.TITOLO ||
+             "Comunicazione"}
+          </strong>
+
+          <p
+            style={{
+              margin: 0,
+              color: "rgba(255,255,255,0.86)",
+              lineHeight: "1.4"
+            }}
+          >
+            {notificaUtente.messaggio ||
+             notificaUtente.MESSAGGIO ||
+             ""}
+          </p>
+
+          {(notificaUtente.data ||
+            notificaUtente.DATA) && (
+
+            <small
+              style={{
+                display: "block",
+                marginTop: "8px",
+                color: "rgba(255,255,255,0.55)"
+              }}
+            >
+              {notificaUtente.data ||
+               notificaUtente.DATA}
+            </small>
+
+          )}
+
         </div>
+
+      ))
+
+    )}
+
+  </div>
+
+)}
 
         <div className="dash-player-intro">
 
@@ -7663,25 +8152,242 @@ if(pagina === "gruppi"){
 >
   <div className="hero-header-overlay">
 
-    <div className="hero-header-top">
+    <div
+  className="hero-header-top"
+  style={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%"
+  }}
+>
 
-      <img
-        src={logo}
-        alt="ASD Incontro"
-        className="hero-header-logo"
-      />
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: "12px"
+    }}
+  >
 
-      <div>
-        <h1 className="hero-main-title">
-          ASD INCONTRO
-        </h1>
+    <img
+      src={logo}
+      alt="ASD Incontro"
+      className="hero-header-logo"
+    />
 
-        <div className="hero-small-title">
-          GESTIONE TECNICA
-        </div>
+    <div>
+      <h1 className="hero-main-title">
+        ASD INCONTRO
+      </h1>
+
+      <div className="hero-small-title">
+        GESTIONE TECNICA
+      </div>
+    </div>
+
+  </div>
+
+  <div
+    style={{
+      position: "relative",
+      cursor: "pointer",
+      fontSize: "28px",
+      lineHeight: "1"
+    }}
+    onClick={() =>
+      setNotificheAperte(!notificheAperte)
+    }
+  >
+
+    🔔
+
+    {numeroNotificheNonLette > 0 && (
+
+      <div
+        style={{
+          position: "absolute",
+          top: "-7px",
+          right: "-9px",
+          background: "#d60000",
+          color: "#ffffff",
+          borderRadius: "50%",
+          minWidth: "20px",
+          height: "20px",
+          padding: "0 4px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          fontSize: "12px",
+          fontWeight: "bold",
+          boxSizing: "border-box"
+        }}
+      >
+        {numeroNotificheNonLette}
       </div>
 
+    )}
+
+  </div>
+
+</div>
+{notificheAperte && (
+
+  <div
+    style={{
+      position: "absolute",
+      top: "85px",
+      right: "18px",
+      width: "min(360px, calc(100vw - 36px))",
+      maxHeight: "430px",
+      overflowY: "auto",
+      background: "rgba(18,18,18,0.98)",
+      border: "1px solid rgba(255,255,255,0.22)",
+      borderRadius: "16px",
+      padding: "16px",
+      boxSizing: "border-box",
+      zIndex: 9999,
+      boxShadow: "0 12px 35px rgba(0,0,0,0.65)"
+    }}
+  >
+
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: "14px"
+      }}
+    >
+
+      <h3
+        style={{
+          margin: 0,
+          color: "#ffffff"
+        }}
+      >
+        Notifiche
+      </h3>
+
+      <button
+        type="button"
+        onClick={() => setNotificheAperte(false)}
+        style={{
+          border: "none",
+          background: "transparent",
+          color: "#ffffff",
+          fontSize: "22px",
+          cursor: "pointer",
+          padding: "0 4px"
+        }}
+      >
+        ✕
+      </button>
+
     </div>
+
+    {caricamentoNotifiche ? (
+
+      <p
+        style={{
+          color: "#ffffff",
+          margin: 0
+        }}
+      >
+        Caricamento notifiche...
+      </p>
+
+    ) : notificheUtente.length === 0 ? (
+
+      <p
+        style={{
+          color: "rgba(255,255,255,0.75)",
+          margin: 0
+        }}
+      >
+        Non ci sono notifiche.
+      </p>
+
+    ) : (
+
+      notificheUtente.map((notificaUtente, indice) => (
+
+  <div
+    key={
+      notificaUtente.id ||
+      notificaUtente.ID ||
+      indice
+    }
+
+    onClick={() =>
+      segnaNotificaLetta(notificaUtente)
+    }
+
+    style={{
+      cursor: "pointer",
+      padding: "13px",
+      marginBottom: "10px",
+            borderRadius: "12px",
+            background:
+              notificaUtente.letta
+                ? "rgba(255,255,255,0.07)"
+                : "rgba(180,0,0,0.30)",
+            border:
+              notificaUtente.letta
+                ? "1px solid rgba(255,255,255,0.10)"
+                : "1px solid rgba(255,80,80,0.55)"
+          }}
+        >
+
+          <strong
+            style={{
+              display: "block",
+              color: "#ffffff",
+              marginBottom: "6px"
+            }}
+          >
+            {notificaUtente.titolo ||
+             notificaUtente.TITOLO ||
+             "Comunicazione"}
+          </strong>
+
+          <p
+            style={{
+              margin: 0,
+              color: "rgba(255,255,255,0.86)",
+              lineHeight: "1.4"
+            }}
+          >
+            {notificaUtente.messaggio ||
+             notificaUtente.MESSAGGIO ||
+             ""}
+          </p>
+
+          {(notificaUtente.data ||
+            notificaUtente.DATA) && (
+
+            <small
+              style={{
+                display: "block",
+                marginTop: "8px",
+                color: "rgba(255,255,255,0.55)"
+              }}
+            >
+              {notificaUtente.data ||
+               notificaUtente.DATA}
+            </small>
+
+          )}
+
+        </div>
+
+      ))
+
+    )}
+
+  </div>
+
+)}
 
     <div className="hero-user-block">
       <h2 className="hero-user-title">
@@ -7850,6 +8556,11 @@ if(pagina === "gruppi"){
     allenamentiProgrammati: 0,
     gareProgrammate: 0
   });
+
+  setNotificheUtente([]);
+setNumeroNotificheNonLette(0);
+setCaricamentoNotifiche(false);
+setNotificheAperte(false);
 
 }}
       >
