@@ -36,6 +36,7 @@ export default function App() {
 
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
+  const [ricordami, setRicordami] = useState(false);
   const [loading, setLoading] = useState(false);
   const [utente, setUtente] = useState(null);
   const [errore, setErrore] = useState("");
@@ -489,6 +490,44 @@ useEffect(() => {
 
   try {
 
+    const credenzialiSalvate =
+      localStorage.getItem(
+        "credenzialiRicordate"
+      );
+
+    if(!credenzialiSalvate){
+      return;
+    }
+
+    const credenziali =
+      JSON.parse(credenzialiSalvate);
+
+    if(
+      credenziali &&
+      credenziali.id &&
+      credenziali.password
+    ){
+
+      setId(credenziali.id);
+      setPassword(credenziali.password);
+      setRicordami(true);
+
+    }
+
+  }catch(error){
+
+    localStorage.removeItem(
+      "credenzialiRicordate"
+    );
+
+  }
+
+}, []);
+
+useEffect(() => {
+
+  try {
+
     var utenteSalvato = localStorage.getItem("utente");
     var ultimoAccesso = localStorage.getItem("ultimoAccesso");
 
@@ -597,8 +636,39 @@ useEffect(() => {
 
     if(data.esito === "OK"){
 
-  localStorage.setItem("utente", JSON.stringify(data));
-  localStorage.setItem("ultimoAccesso", new Date().getTime());
+  localStorage.setItem(
+    "utente",
+    JSON.stringify(data)
+  );
+
+  localStorage.setItem(
+    "ultimoAccesso",
+    new Date().getTime()
+  );
+
+
+  // ==========================
+  // RICORDA CREDENZIALI
+  // ==========================
+
+  if(ricordami){
+
+    localStorage.setItem(
+      "credenzialiRicordate",
+      JSON.stringify({
+        id: id,
+        password: password
+      })
+    );
+
+  }else{
+
+    localStorage.removeItem(
+      "credenzialiRicordate"
+    );
+
+  }
+
 
   setUtente(data);
 
@@ -3412,6 +3482,44 @@ if(!utente){
     value={password}
     onChange={(e) => setPassword(e.target.value)}
   />
+
+<label
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    marginTop: "4px",
+    marginBottom: "12px",
+    cursor: "pointer",
+    fontSize: "14px"
+  }}
+>
+  <input
+    type="checkbox"
+    checked={ricordami}
+    onChange={(e) => {
+
+  const valore =
+    e.target.checked;
+
+  setRicordami(valore);
+
+  if(!valore){
+
+    localStorage.removeItem(
+      "credenzialiRicordate"
+    );
+
+  }
+
+}}
+  />
+
+  <span>
+    Ricordami su questo dispositivo
+  </span>
+
+</label>
 
   <button onClick={login} disabled={loading}>
     {loading ? "ACCESSO..." : "ACCEDI  →"}
