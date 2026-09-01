@@ -3487,11 +3487,13 @@ if(!utente){
   style={{
     display: "flex",
     alignItems: "center",
-    gap: "8px",
-    marginTop: "4px",
-    marginBottom: "12px",
+    justifyContent: "flex-start",
+    gap: "6px",
+    width: "100%",
+    margin: "2px 0 12px 0",
     cursor: "pointer",
-    fontSize: "14px"
+    fontSize: "13px",
+    lineHeight: "1.2"
   }}
 >
   <input
@@ -3499,23 +3501,36 @@ if(!utente){
     checked={ricordami}
     onChange={(e) => {
 
-  const valore =
-    e.target.checked;
+      const valore =
+        e.target.checked;
 
-  setRicordami(valore);
+      setRicordami(valore);
 
-  if(!valore){
+      if(!valore){
 
-    localStorage.removeItem(
-      "credenzialiRicordate"
-    );
+        localStorage.removeItem(
+          "credenzialiRicordate"
+        );
 
-  }
+      }
 
-}}
+    }}
+    style={{
+      width: "16px",
+      height: "16px",
+      margin: 0,
+      padding: 0,
+      flex: "0 0 16px",
+      cursor: "pointer"
+    }}
   />
 
-  <span>
+  <span
+    style={{
+      whiteSpace: "nowrap",
+      margin: 0
+    }}
+  >
     Ricordami su questo dispositivo
   </span>
 
