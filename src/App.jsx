@@ -3250,7 +3250,8 @@ function cambiaPresenza(nome, stato){
 
 }
 function salvaCompilaAllenamento(){
-setSalvataggio(true);
+
+  setSalvataggio(true);
 
   const callbackName = "callbackSalvaAllenamento";
 
@@ -3259,38 +3260,131 @@ setSalvataggio(true);
     setSalvataggio(false);
 
     if(data.esito === "OK"){
+
+      // =====================================================
+      // AGGIORNA SUBITO L'ALLENAMENTO NELLO STATO REACT
+      // =====================================================
+
+      setAllenamenti((prev) =>
+        prev.map((a) => {
+
+          const stessoAllenamento =
+            a.gruppo === allenamentoSelezionato.gruppo &&
+            a.data === allenamentoSelezionato.data &&
+            a.orario === allenamentoSelezionato.orario &&
+            a.campo === allenamentoSelezionato.campo;
+
+          if(stessoAllenamento){
+
+            return {
+              ...a,
+              stato: "Svolto"
+            };
+
+          }
+
+          return a;
+
+        })
+      );
+
+
+      // Aggiorniamo anche l'allenamento attualmente selezionato
+
+      setAllenamentoSelezionato((prev) => {
+
+        if(!prev){
+          return prev;
+        }
+
+        return {
+          ...prev,
+          stato: "Svolto"
+        };
+
+      });
+
+
       alert("Allenamento salvato correttamente");
-      caricaAllenamenti();
+
+
+      // Torniamo direttamente alla lista
+      setPagina("allenamenti");
+
+      // Apriamo l'archivio perché la seduta è appena diventata svolta
+      setTabAllenamenti("archivio");
+
     }else{
+
       alert("Errore salvataggio allenamento");
+
     }
 
-    var script = document.getElementById("jsonpSalvaAllenamento");
+
+    var script =
+      document.getElementById(
+        "jsonpSalvaAllenamento"
+      );
+
     if(script){
       script.remove();
     }
 
   };
 
-  var script = document.createElement("script");
-  script.id = "jsonpSalvaAllenamento";
+
+  var script =
+    document.createElement("script");
+
+  script.id =
+    "jsonpSalvaAllenamento";
+
 
   script.src =
     API_URL +
     "?action=salvaCompilaAllenamento" +
-    "&gruppo=" + encodeURIComponent(allenamentoSelezionato.gruppo) +
-    "&data=" + encodeURIComponent(allenamentoSelezionato.data) +
-    "&orario=" + encodeURIComponent(allenamentoSelezionato.orario) +
-    "&campo=" + encodeURIComponent(allenamentoSelezionato.campo) +
-    "&istruttore=" + encodeURIComponent(utente.nome) +
-    "&presenze=" + encodeURIComponent(JSON.stringify(presenze)) +
-    "&report=" + encodeURIComponent(JSON.stringify(reportAllenamento)) +
-    "&callback=" + callbackName;
+    "&gruppo=" +
+    encodeURIComponent(
+      allenamentoSelezionato.gruppo
+    ) +
+    "&data=" +
+    encodeURIComponent(
+      allenamentoSelezionato.data
+    ) +
+    "&orario=" +
+    encodeURIComponent(
+      allenamentoSelezionato.orario
+    ) +
+    "&campo=" +
+    encodeURIComponent(
+      allenamentoSelezionato.campo
+    ) +
+    "&istruttore=" +
+    encodeURIComponent(
+      utente.nome
+    ) +
+    "&presenze=" +
+    encodeURIComponent(
+      JSON.stringify(presenze)
+    ) +
+    "&report=" +
+    encodeURIComponent(
+      JSON.stringify(reportAllenamento)
+    ) +
+    "&callback=" +
+    callbackName;
+
 
   script.onerror = function(){
+
     setSalvataggio(false);
-    alert("Errore collegamento salvataggio");
+
+    alert(
+      "Errore collegamento salvataggio"
+    );
+
   };
+
 
   document.body.appendChild(script);
 
