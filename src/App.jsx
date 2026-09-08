@@ -1790,38 +1790,64 @@ function caricaBootstrap(utenteLogin){
 }
 function caricaAllenamenti(){
 
-  if(allenamenti.length > 0){
-    setPagina("allenamenti");
-    return;
-  }
-
   const callbackName = "callbackAllenamenti";
 
- window[callbackName] = function(data){
+  window[callbackName] = function(data){
 
-  setAllenamenti(data);
+    setAllenamenti(data);
 
-  setPagina("allenamenti");
+    setPagina("allenamenti");
 
-  var script = document.getElementById("jsonpAllenamenti");
-  if(script){
-    script.remove();
+    var script =
+      document.getElementById(
+        "jsonpAllenamenti"
+      );
+
+    if(script){
+      script.remove();
+    }
+
+    delete window[callbackName];
+
+  };
+
+
+  var vecchioScript =
+    document.getElementById(
+      "jsonpAllenamenti"
+    );
+
+  if(vecchioScript){
+    vecchioScript.remove();
   }
 
-};
 
-  var script = document.createElement("script");
-  script.id = "jsonpAllenamenti";
+  var script =
+    document.createElement("script");
+
+  script.id =
+    "jsonpAllenamenti";
+
 
   script.src =
     API_URL +
     "?action=allenamenti" +
-    "&id=" + encodeURIComponent(utente.id) +
-    "&callback=" + callbackName;
+    "&id=" +
+    encodeURIComponent(utente.id) +
+    "&callback=" +
+    callbackName +
+    "&_=" +
+    new Date().getTime();
+
 
   script.onerror = function(){
-    alert("Errore caricamento allenamenti");
+
+    alert(
+      "Errore caricamento allenamenti"
+    );
+
   };
+
 
   document.body.appendChild(script);
 
@@ -3307,12 +3333,9 @@ function salvaCompilaAllenamento(){
 
       alert("Allenamento salvato correttamente");
 
+setTabAllenamenti("archivio");
 
-      // Torniamo direttamente alla lista
-      setPagina("allenamenti");
-
-      // Apriamo l'archivio perché la seduta è appena diventata svolta
-      setTabAllenamenti("archivio");
+caricaAllenamenti();
 
     }else{
 
