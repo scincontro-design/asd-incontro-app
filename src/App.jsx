@@ -116,6 +116,9 @@ const [nuovoGruppoGestione, setNuovoGruppoGestione] = useState("");
 const [statisticheAllenamenti, setStatisticheAllenamenti] = useState([]);
 const [gruppoStatisticheAllenamenti, setGruppoStatisticheAllenamenti] = useState("");
 const [dettaglioPresenzeRagazzo, setDettaglioPresenzeRagazzo] = useState(null);
+const [dataInizioRegistro, setDataInizioRegistro] = useState("");
+const [dataFineRegistro, setDataFineRegistro] = useState("");
+const [esportazioneRegistro, setEsportazioneRegistro] = useState(false);
 const [loadingGare, setLoadingGare] = useState(false);
 const [dashboardContatori, setDashboardContatori] = useState({
   allenamentiProgrammati: 0,
@@ -1933,6 +1936,557 @@ function filtraStatisticheAllenamenti(){
   return statisticheAllenamenti.filter(
     (s) => s.gruppo === gruppoStatisticheAllenamenti
   );
+
+}
+function esportaRegistroPresenze(){
+
+  if(!gruppoStatisticheAllenamenti){
+    alert("Seleziona prima un gruppo");
+    return;
+  }
+
+  if(!dataInizioRegistro || !dataFineRegistro){
+    alert("Seleziona la data iniziale e la data finale");
+    return;
+  }
+
+  if(dataInizioRegistro > dataFineRegistro){
+    alert("La data iniziale non può essere successiva alla data finale");
+    return;
+  }
+
+  setEsportazioneRegistro(true);
+
+  const callbackName =
+    "callbackRegistroPresenze_" + Date.now();
+
+
+  window[callbackName] = function(data){
+
+    setEsportazioneRegistro(false);
+
+    if(
+      !data ||
+      data.esito !== "OK" ||
+      !data.registro
+    ){
+
+      alert(
+        data?.messaggio ||
+        "Errore durante la creazione del registro"
+      );
+
+      delete window[callbackName];
+      return;
+    }
+
+
+    const registro = data.registro;
+
+
+    if(
+      !registro.dateAllenamenti ||
+      registro.dateAllenamenti.length === 0
+    ){
+
+      alert(
+        "Non ci sono allenamenti svolti nel periodo selezionato"
+      );
+
+      delete window[callbackName];
+      return;
+    }
+
+
+    // =====================================================
+    // PDF ORIZZONTALE
+    // =====================================================
+
+    const doc = new jsPDF({
+      orientation: "landscape",
+      unit: "mm",
+      format: "a4"
+    });
+
+
+    // =====================================================
+    // LOGO
+    // =====================================================
+
+    try{
+
+      doc.addImage(
+        logo,
+        "PNG",
+        12,
+        8,
+        25,
+        25
+      );
+
+    }catch(e){
+
+      console.log(
+        "Logo non inserito nel PDF",
+        e
+      );
+
+    }
+
+
+    // =====================================================
+    // INTESTAZIONE
+    // =====================================================
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(17);
+
+    doc.text(
+      "ASD INCONTRO",
+      43,
+      15
+    );
+
+
+    doc.setFontSize(14);
+
+    doc.text(
+      "REGISTRO PRESENZE",
+      43,
+      23
+    );
+
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+
+    doc.text(
+      "Gruppo: " + registro.gruppo,
+      43,
+      30
+    );
+
+
+    function dataItaliana(data){
+
+      if(!data){
+        return "";
+      }
+
+      const parti =
+        String(data).split("-");
+
+      if(parti.length !== 3){
+        return data;
+      }
+
+      return (
+        parti[2] +
+        "/" +
+        parti[1] +
+        "/" +
+        parti[0]
+      );
+
+    }
+
+
+    doc.text(
+      "Periodo: " +
+      dataItaliana(registro.dataInizio) +
+      " - " +
+      dataItaliana(registro.dataFine),
+      115,
+      30
+    );
+
+    doc.text(
+      "Stagione 2026/27",
+      240,
+      30
+    );
+
+
+    // =====================================================
+    // DIMENSIONI TABELLA
+    // =====================================================
+
+    const margineSinistro = 10;
+    const larghezzaNome = 48;
+    const larghezzaTotale = 277;
+
+    const numeroDate =
+      registro.dateAllenamenti.length;
+
+    const larghezzaTotali = 24;
+
+    let larghezzaData =
+      (
+        larghezzaTotale -
+        larghezzaNome -
+        larghezzaTotali
+      ) / numeroDate;
+
+
+    // Evitiamo colonne enormi con poche sedute
+    if(larghezzaData > 18){
+      larghezzaData = 18;
+    }
+
+
+    const altezzaRiga = 6;
+
+    let y = 42;
+
+
+    // =====================================================
+    // FUNZIONE INTESTAZIONE TABELLA
+    // =====================================================
+
+    function disegnaIntestazione(){
+
+      let x = margineSinistro;
+
+      doc.setFont(
+        "helvetica",
+        "bold"
+      );
+
+      doc.setFontSize(7);
+
+
+      doc.rect(
+        x,
+        y,
+        larghezzaNome,
+        altezzaRiga
+      );
+
+      doc.text(
+        "GIOCATORE",
+        x + 2,
+        y + 4
+      );
+
+      x += larghezzaNome;
+
+
+      registro.dateAllenamenti.forEach(
+        function(dataAllenamento){
+
+          doc.rect(
+            x,
+            y,
+            larghezzaData,
+            altezzaRiga
+          );
+
+          const parti =
+            dataAllenamento.split("-");
+
+          const dataBreve =
+            parti[2] + "/" + parti[1];
+
+          doc.text(
+            dataBreve,
+            x + larghezzaData / 2,
+            y + 4,
+            {
+              align: "center"
+            }
+          );
+
+          x += larghezzaData;
+
+        }
+      );
+
+
+      ["P", "A", "I"].forEach(
+        function(titolo){
+
+          doc.rect(
+            x,
+            y,
+            8,
+            altezzaRiga
+          );
+
+          doc.text(
+            titolo,
+            x + 4,
+            y + 4,
+            {
+              align: "center"
+            }
+          );
+
+          x += 8;
+
+        }
+      );
+
+
+      y += altezzaRiga;
+
+    }
+
+
+    disegnaIntestazione();
+
+
+    // =====================================================
+    // RIGHE GIOCATORI
+    // =====================================================
+
+    registro.ragazzi.forEach(
+      function(ragazzo){
+
+        if(y > 190){
+
+          doc.addPage();
+
+          y = 15;
+
+          disegnaIntestazione();
+
+        }
+
+
+        let x =
+          margineSinistro;
+
+
+        doc.setFont(
+          "helvetica",
+          "normal"
+        );
+
+        doc.setFontSize(7);
+
+
+        doc.rect(
+          x,
+          y,
+          larghezzaNome,
+          altezzaRiga
+        );
+
+
+        doc.text(
+          ragazzo.nome,
+          x + 2,
+          y + 4
+        );
+
+
+        x += larghezzaNome;
+
+
+        let totaleP = 0;
+        let totaleA = 0;
+        let totaleI = 0;
+
+
+        registro.dateAllenamenti.forEach(
+          function(dataAllenamento){
+
+            const stato =
+              registro.presenze?.[dataAllenamento]?.[ragazzo.nome] || "";
+
+            let simbolo = "-";
+
+
+            if(stato === "Presente"){
+              simbolo = "P";
+              totaleP++;
+            }
+
+            else if(stato === "Assente"){
+              simbolo = "A";
+              totaleA++;
+            }
+
+            else if(stato === "Infortunato"){
+              simbolo = "I";
+              totaleI++;
+            }
+
+
+            doc.rect(
+              x,
+              y,
+              larghezzaData,
+              altezzaRiga
+            );
+
+
+            doc.text(
+              simbolo,
+              x + larghezzaData / 2,
+              y + 4,
+              {
+                align: "center"
+              }
+            );
+
+
+            x += larghezzaData;
+
+          }
+        );
+
+
+        [
+          totaleP,
+          totaleA,
+          totaleI
+        ].forEach(
+          function(totale){
+
+            doc.rect(
+              x,
+              y,
+              8,
+              altezzaRiga
+            );
+
+            doc.text(
+              String(totale),
+              x + 4,
+              y + 4,
+              {
+                align: "center"
+              }
+            );
+
+            x += 8;
+
+          }
+        );
+
+
+        y += altezzaRiga;
+
+      }
+    );
+
+
+    // =====================================================
+    // LEGENDA
+    // =====================================================
+
+    y += 7;
+
+    if(y > 195){
+      doc.addPage();
+      y = 15;
+    }
+
+
+    doc.setFont(
+      "helvetica",
+      "normal"
+    );
+
+    doc.setFontSize(8);
+
+    doc.text(
+      "Legenda: P = Presente   |   A = Assente   |   I = Infortunato   |   - = Nessun dato",
+      10,
+      y
+    );
+
+
+    // =====================================================
+    // SALVA PDF
+    // =====================================================
+
+    const nomeFile =
+      "Registro_Presenze_" +
+      registro.gruppo
+        .replace(/\s+/g, "_") +
+      "_" +
+      registro.dataInizio +
+      "_" +
+      registro.dataFine +
+      ".pdf";
+
+
+    doc.save(nomeFile);
+
+
+    var script =
+      document.getElementById(
+        "jsonpRegistroPresenze"
+      );
+
+    if(script){
+      script.remove();
+    }
+
+
+    delete window[callbackName];
+
+  };
+
+
+  // =====================================================
+  // JSONP
+  // =====================================================
+
+  var vecchioScript =
+    document.getElementById(
+      "jsonpRegistroPresenze"
+    );
+
+  if(vecchioScript){
+    vecchioScript.remove();
+  }
+
+
+  var script =
+    document.createElement("script");
+
+  script.id =
+    "jsonpRegistroPresenze";
+
+
+  script.src =
+    API_URL +
+    "?action=registroPresenze" +
+    "&gruppo=" +
+    encodeURIComponent(
+      gruppoStatisticheAllenamenti
+    ) +
+    "&dataInizio=" +
+    encodeURIComponent(
+      dataInizioRegistro
+    ) +
+    "&dataFine=" +
+    encodeURIComponent(
+      dataFineRegistro
+    ) +
+    "&callback=" +
+    callbackName +
+    "&_=" +
+    Date.now();
+
+
+  script.onerror = function(){
+
+    setEsportazioneRegistro(false);
+
+    alert(
+      "Errore di collegamento durante l'esportazione"
+    );
+
+    delete window[callbackName];
+
+  };
+
+
+  document.body.appendChild(script);
 
 }
 function caricaGruppiAllenamento(){
@@ -5530,22 +6084,16 @@ function eliminaAllenamentoSelezionato(){
   window[callbackName] = function(data){
 
     if(data && data.esito === "OK"){
-      alert("Allenamento eliminato");
 
-      setAllenamenti((prev) =>
-  prev.filter((a) =>
-    !(
-      a.gruppo === allenamentoSelezionato.gruppo &&
-      a.data === allenamentoSelezionato.data &&
-      a.orario === allenamentoSelezionato.orario &&
-      a.campo === allenamentoSelezionato.campo
-    )
-  )
-);
+  alert("Allenamento eliminato");
 
-setPagina("allenamenti");
+  setAllenamentoSelezionato(null);
+  setDettaglioAllenamento(null);
 
-    }else{
+  // Ricarica realmente da Supabase
+  caricaAllenamenti();
+
+}else{
       alert("Errore eliminazione");
     }
 
@@ -5593,29 +6141,23 @@ console.log("nuovoAllenamento:", nuovoAllenamento);
 
     if(data && data.esito === "OK"){
 
-      alert("Allenamento creato");
+  alert("Allenamento creato");
 
-      setNuovoAllenamento({
-        gruppo: "",
-        data: "",
-        orario: "",
-        campo: ""
-      });
+  setNuovoAllenamento({
+    gruppo: "",
+    data: "",
+    orario: "",
+    campo: "",
+    ripeti: false,
+    settimane: 1
+  });
 
-     const nuovo = {
-  data: nuovoAllenamento.data.split("-").reverse().join("/"),
-  gruppo: nuovoAllenamento.gruppo,
-  orario: nuovoAllenamento.orario,
-  campo: nuovoAllenamento.campo,
-  stato: "Programmato"
-};
+  setTabAllenamenti("prossimi");
 
-setAllenamenti((prev) => [...prev, nuovo]);
+  // Ricarica realmente da Supabase
+  caricaAllenamenti();
 
-setPagina("allenamenti");
-setTabAllenamenti("prossimi");
-
-    }else{
+}else{
 
       alert("Errore creazione allenamento");
 
@@ -6632,6 +7174,93 @@ function haAllenamentiInData(data){
       ))}
 
     </select>
+    <div
+  style={{
+    marginTop: "16px",
+    marginBottom: "20px",
+    padding: "15px",
+    border: "1px solid rgba(255,255,255,0.15)",
+    borderRadius: "12px"
+  }}
+>
+
+  <h4 style={{ marginTop: 0 }}>
+    Esporta registro presenze
+  </h4>
+
+
+  <div
+    style={{
+      display: "flex",
+      gap: "12px",
+      flexWrap: "wrap",
+      alignItems: "end"
+    }}
+  >
+
+    <div>
+
+      <label
+        style={{
+          display: "block",
+          marginBottom: "5px"
+        }}
+      >
+        Dal
+      </label>
+
+      <input
+        type="date"
+        value={dataInizioRegistro}
+        onChange={(e) =>
+          setDataInizioRegistro(
+            e.target.value
+          )
+        }
+      />
+
+    </div>
+
+
+    <div>
+
+      <label
+        style={{
+          display: "block",
+          marginBottom: "5px"
+        }}
+      >
+        Al
+      </label>
+
+      <input
+        type="date"
+        value={dataFineRegistro}
+        onChange={(e) =>
+          setDataFineRegistro(
+            e.target.value
+          )
+        }
+      />
+
+    </div>
+
+
+    <button
+      type="button"
+      onClick={esportaRegistroPresenze}
+      disabled={esportazioneRegistro}
+    >
+
+      {esportazioneRegistro
+        ? "Creazione PDF..."
+        : "Esporta PDF"}
+
+    </button>
+
+  </div>
+
+</div>
 {dettaglioPresenzeRagazzo && (
 
   <div className="mini-card">
