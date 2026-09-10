@@ -2995,18 +2995,18 @@ function eliminaIscritto(iscritto){
 
     if(data.esito === "OK"){
 
-  setIscritti(function(listaAttuale){
+  setListaIscritti(function(listaAttuale){
 
-    return listaAttuale.filter(
-      function(ragazzo){
+  return listaAttuale.filter(
+    function(ragazzo){
 
-        return String(ragazzo.id) !==
-          String(iscritto.id);
+      return String(ragazzo.id) !==
+        String(iscritto.id);
 
-      }
-    );
+    }
+  );
 
-  });
+});
 
   alert("Iscritto eliminato");
 
