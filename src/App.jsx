@@ -2932,15 +2932,44 @@ function salvaModificaIscritto(){
 
   window[callbackName] = function(data){
 
-    if(data.esito === "OK"){
+  if(data.esito === "OK"){
 
-      alert("Iscritto aggiornato");
+  setListaIscritti(function(listaAttuale){
 
-      setIscrittoInModifica(null);
+    return listaAttuale.map(
+      function(ragazzo){
 
-      caricaIscritti();
+        if(
+          String(ragazzo.id) ===
+          String(iscrittoInModifica.id)
+        ){
 
-    }
+          return {
+            ...ragazzo,
+            nome:
+              nuovoIscritto.nome,
+            gruppo:
+              nuovoIscritto.gruppo,
+            dataNascita:
+              nuovoIscritto.dataNascita,
+            telefono:
+              nuovoIscritto.telefono
+          };
+
+        }
+
+        return ragazzo;
+
+      }
+    );
+
+  });
+
+  setIscrittoInModifica(null);
+
+  alert("Iscritto aggiornato");
+
+}
 
   };
 
