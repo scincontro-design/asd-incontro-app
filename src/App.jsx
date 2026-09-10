@@ -3010,8 +3010,6 @@ function eliminaIscritto(iscritto){
 
   alert("Iscritto eliminato");
 
-  caricaIscritti();
-
 }
 
   };
