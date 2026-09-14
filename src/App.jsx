@@ -6897,11 +6897,37 @@ function salvaRisultato(){
 
     if(data && data.esito === "OK"){
 
-      alert("Risultato salvato");
+  alert("Risultato salvato");
 
-      caricaGare();
+  // Toglie immediatamente la gara dalle prossime
+  setGare(function(listaAttuale){
 
-    }else{
+    return listaAttuale.filter(
+      function(gara){
+
+        return !(
+          String(gara.gruppo) ===
+            String(garaSelezionata.gruppo) &&
+
+          String(gara.data) ===
+            String(garaSelezionata.data) &&
+
+          String(gara.avversario) ===
+            String(garaSelezionata.avversario)
+        );
+
+      }
+    );
+
+  });
+
+  setPagina("gare");
+  setTabGare("prossime");
+
+  // Aggiorna anche il contatore dashboard
+  caricaDashboardContatori(utente);
+
+}else{
 
       alert("Errore salvataggio");
 
