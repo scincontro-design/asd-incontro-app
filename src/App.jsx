@@ -6329,6 +6329,142 @@ function apriDettaglioGara(gara){
   document.body.appendChild(script);
 
 }
+function confermaLetturaGara(){
+
+  if(
+    !utente ||
+    !garaSelezionata
+  ){
+    return;
+  }
+
+  if(
+    !window.confirm(
+      "Confermi di aver letto la gara?"
+    )
+  ){
+    return;
+  }
+
+
+  const callbackName =
+    "callbackConfermaLetturaGara_" +
+    Date.now();
+
+
+  window[callbackName] = function(data){
+
+    if(
+      data &&
+      data.esito === "OK"
+    ){
+
+      setGaraSelezionata(
+        function(garaAttuale){
+
+          return {
+            ...garaAttuale,
+            letta: true
+          };
+
+        }
+      );
+
+
+      setGare(
+        function(listaAttuale){
+
+          return listaAttuale.map(
+            function(gara){
+
+              if(
+                String(gara.gruppo) ===
+                  String(garaSelezionata.gruppo) &&
+                String(gara.data) ===
+                  String(garaSelezionata.data) &&
+                String(gara.avversario) ===
+                  String(garaSelezionata.avversario)
+              ){
+
+                return {
+                  ...gara,
+                  letta: true
+                };
+
+              }
+
+              return gara;
+
+            }
+          );
+
+        }
+      );
+
+
+      mostraNotifica(
+        "Lettura gara confermata",
+        "success"
+      );
+
+    }else{
+
+      mostraNotifica(
+        "Errore nella conferma lettura",
+        "error"
+      );
+
+    }
+
+
+    var script =
+      document.getElementById(
+        callbackName
+      );
+
+    if(script){
+      script.remove();
+    }
+
+
+    delete window[callbackName];
+
+  };
+
+
+  var script =
+    document.createElement("script");
+
+  script.id =
+    callbackName;
+
+
+  script.src =
+    API_URL +
+    "?action=confermaLetturaGara" +
+    "&istruttore=" +
+    encodeURIComponent(utente.id) +
+    "&gruppo=" +
+    encodeURIComponent(
+      garaSelezionata.gruppo
+    ) +
+    "&data=" +
+    encodeURIComponent(
+      garaSelezionata.data
+    ) +
+    "&avversario=" +
+    encodeURIComponent(
+      garaSelezionata.avversario
+    ) +
+    "&callback=" +
+    callbackName;
+
+
+  document.body.appendChild(
+    script
+  );
+
+}
 function apriModificaGara(){
 
   setGaraModifica({
@@ -7746,6 +7882,28 @@ if(pagina === "dettaglioGara" && garaSelezionata){
           <p>🏟️ {garaSelezionata.campo}</p>
           <p>📌 {garaSelezionata.casaTrasferta}</p>
         </div>
+
+        {garaSelezionata.letta ? (
+
+  <div
+    className="mini-card"
+    style={{
+      textAlign: "center",
+      fontWeight: "bold"
+    }}
+  >
+    ✅ GARA LETTA
+  </div>
+
+) : (
+
+  <button
+    onClick={confermaLetturaGara}
+  >
+    CONFERMO LETTURA
+  </button>
+
+)}
 
         <button onClick={apriConvocazioni}>
   CONVOCAZIONI
