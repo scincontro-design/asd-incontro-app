@@ -6647,6 +6647,152 @@ function apriConvocazioni(){
   document.body.appendChild(script);
 
 }
+function esportaConvocazioniWhatsApp(){
+
+  if(!garaSelezionata){
+    return;
+  }
+
+  const callbackName =
+    "callbackWhatsAppConvocazioni_" +
+    Date.now();
+
+
+  window[callbackName] = function(data){
+
+    if(
+      !data ||
+      !Array.isArray(data.convocati) ||
+      data.convocati.length === 0
+    ){
+
+      alert(
+        "Nessun convocato inserito per questa gara"
+      );
+
+      pulisci();
+
+      return;
+    }
+
+
+    var testo =
+      "📋 *CONVOCAZIONI*\n\n" +
+      "🔵 *" +
+      garaSelezionata.gruppo +
+      "*\n" +
+      "📅 " +
+      garaSelezionata.data +
+      "\n" +
+      "⚽ Avversario: " +
+      garaSelezionata.avversario +
+      "\n" +
+      "🕒 Gara: " +
+      (garaSelezionata.orario || "-") +
+      "\n" +
+      "🏟️ Campo: " +
+      (garaSelezionata.campo || "-") +
+      "\n";
+
+
+    if(orarioAppuntamento){
+
+      testo +=
+        "⏰ Appuntamento: " +
+        orarioAppuntamento +
+        "\n";
+
+    }
+
+
+    testo +=
+      "\n*Convocati:*\n";
+
+
+    data.convocati.forEach(
+      function(nome){
+
+        testo +=
+          "• " +
+          nome +
+          "\n";
+
+      }
+    );
+
+
+    var urlWhatsApp =
+      "https://wa.me/?text=" +
+      encodeURIComponent(testo);
+
+
+    window.open(
+      urlWhatsApp,
+      "_blank"
+    );
+
+
+    pulisci();
+
+  };
+
+
+  function pulisci(){
+
+    var script =
+      document.getElementById(
+        "jsonpWhatsAppConvocazioni"
+      );
+
+    if(script){
+      script.remove();
+    }
+
+    delete window[callbackName];
+
+  }
+
+
+  var script =
+    document.createElement("script");
+
+  script.id =
+    "jsonpWhatsAppConvocazioni";
+
+
+  script.src =
+    API_URL +
+    "?action=datiConvocazioni" +
+    "&gruppo=" +
+    encodeURIComponent(
+      garaSelezionata.gruppo
+    ) +
+    "&dataGara=" +
+    encodeURIComponent(
+      garaSelezionata.data
+    ) +
+    "&avversario=" +
+    encodeURIComponent(
+      garaSelezionata.avversario
+    ) +
+    "&callback=" +
+    callbackName;
+
+
+  script.onerror = function(){
+
+    alert(
+      "Errore nel caricamento delle convocazioni"
+    );
+
+    pulisci();
+
+  };
+
+
+  document.body.appendChild(script);
+
+}
 function apriRisultatoGara(){
 
   const callbackName = "callbackConvocatiRisultato";
@@ -7933,6 +8079,18 @@ if(pagina === "dettaglioGara" && garaSelezionata){
 
         <button onClick={apriConvocazioni}>
   CONVOCAZIONI
+</button>
+
+<button
+  onClick={esportaConvocazioniWhatsApp}
+  disabled={!garaConvocata}
+  className={
+    garaConvocata
+      ? ""
+      : "disabled-button"
+  }
+>
+  📲 INVIA CONVOCAZIONI WHATSAPP
 </button>
 
 <button
