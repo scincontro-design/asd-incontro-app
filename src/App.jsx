@@ -556,7 +556,6 @@ useEffect(() => {
   caricaSchedaRagazzo(utenteObj);
 }
       caricaBootstrap(utenteObj);
-caricaDashboardContatori(utenteObj);
 caricaNotificheUtente(utenteObj);
 
       setTimeout(() => {
@@ -678,7 +677,6 @@ useEffect(() => {
   console.log("LOGIN RAGAZZO:", data);
 
  caricaBootstrap(data);
-caricaDashboardContatori(data);
 caricaNotificheUtente(data);
 
 if(data.ruolo === "Ragazzo"){
@@ -1767,6 +1765,14 @@ function caricaBootstrap(utenteLogin){
    setDashboardInfo({
   allievi: data.allievi || 0,
   allieviTotali: data.allieviTotali || data.allievi || 0
+});
+
+setDashboardContatori({
+  allenamentiProgrammati:
+    data.allenamentiProgrammati || 0,
+
+  gareProgrammate:
+    data.gareProgrammate || 0
 });
 
     if(utenteLogin.ruolo === "Admin"){
