@@ -1542,7 +1542,8 @@ function caricaConfermePresenza(){
     "?action=getConfermePresenza" +
     "&gruppo=" + encodeURIComponent(utente.gruppo) +
     "&ragazzo=" + encodeURIComponent(utente.nome) +
-    "&callback=" + callbackName;
+"&idRagazzo=" + encodeURIComponent(utente.idRagazzo || "") +
+"&callback=" + callbackName;
 
   document.body.appendChild(script);
 
@@ -1628,6 +1629,7 @@ function salvaConfermaAllenamento(allenamento, risposta){
     "&data=" + encodeURIComponent(allenamento.data) +
     "&gruppo=" + encodeURIComponent(allenamento.gruppo) +
     "&ragazzo=" + encodeURIComponent(utente.nome) +
+    "&idRagazzo=" + encodeURIComponent(utente.idRagazzo || "") +
     "&risposta=" + encodeURIComponent(risposta) +
     "&callback=" + callbackName;
 
