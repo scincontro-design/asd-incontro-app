@@ -7083,10 +7083,17 @@ function salvaRisultato(){
 
 }else{
 
-      alert("Errore salvataggio");
+  alert(
+    "Errore salvataggio:\n" +
+    (
+      data &&
+      data.messaggio
+        ? data.messaggio
+        : "Errore non specificato"
+    )
+  );
 
-    }
-
+}
     var script =
       document.getElementById(
         "jsonpSalvaRisultato"
