@@ -2911,7 +2911,9 @@ function salvaNuovoIscritto(){
     "&gruppo=" + encodeURIComponent(nuovoIscritto.gruppo) +
     "&dataNascita=" + encodeURIComponent(nuovoIscritto.dataNascita) +
     "&telefono=" + encodeURIComponent(nuovoIscritto.telefono) +
-    "&callback=" + callbackName;
+"&idUtente=" + encodeURIComponent(utente.id) +
+"&ruoloUtente=" + encodeURIComponent(utente.ruolo) +
+"&callback=" + callbackName;
 
   document.body.appendChild(script);
 
@@ -9462,11 +9464,20 @@ if(pagina === "iscritti"){
           >
             <option value="">Seleziona gruppo</option>
 
-            {tuttiGruppi.map((gruppo, index) => (
-              <option key={index} value={gruppo}>
-                {gruppo}
-              </option>
-            ))}
+            {(
+  utente.ruolo === "Admin"
+    ? tuttiGruppi
+    : gruppiAllenamento
+).map((gruppo, index) => (
+
+  <option
+    key={index}
+    value={gruppo}
+  >
+    {gruppo}
+  </option>
+
+))}
 
           </select>
 
@@ -9510,11 +9521,22 @@ if(pagina === "iscritti"){
 />
 
 {listaIscritti
-  .filter((i) =>
-    i.nome.toLowerCase().includes(
-      ricercaIscritto.toLowerCase()
-    )
-  )
+  .filter((i) => {
+
+    if(
+      utente.ruolo !== "Admin" &&
+      !gruppiAllenamento.includes(i.gruppo)
+    ){
+      return false;
+    }
+
+    return i.nome
+      .toLowerCase()
+      .includes(
+        ricercaIscritto.toLowerCase()
+      );
+
+  })
   .map((i, index) => (
 
     <div className="mini-card" key={index}>
@@ -9563,11 +9585,20 @@ if(pagina === "gruppi"){
         >
           <option value="">Seleziona gruppo</option>
 
-          {tuttiGruppi.map((gruppo, index) => (
-            <option key={index} value={gruppo}>
-              {gruppo}
-            </option>
-          ))}
+          {(
+  utente.ruolo === "Admin"
+    ? tuttiGruppi
+    : gruppiAllenamento
+).map((gruppo, index) => (
+
+  <option
+    key={index}
+    value={gruppo}
+  >
+    {gruppo}
+  </option>
+
+))}
 
         </select>
 
@@ -9607,13 +9638,24 @@ if(pagina === "gruppi"){
     >
       <option value="">Nuovo gruppo</option>
 
-      {tuttiGruppi
-        .filter((g) => g !== gruppoGestione)
-        .map((gruppo, index) => (
-          <option key={index} value={gruppo}>
-            {gruppo}
-          </option>
-        ))}
+      {(
+  utente.ruolo === "Admin"
+    ? tuttiGruppi
+    : gruppiAllenamento
+)
+  .filter(
+    (g) => g !== gruppoGestione
+  )
+  .map((gruppo, index) => (
+
+    <option
+      key={index}
+      value={gruppo}
+    >
+      {gruppo}
+    </option>
+
+  ))}
 
     </select>
 
@@ -10045,32 +10087,44 @@ if(pagina === "gruppi"){
   onClick={caricaSchedeGiocatori}
 />
 
-      {utente.ruolo === "Admin" && (
-        <>
-         <CardDashboard
-  titolo="ALLIEVI"
-  descrizione="Anagrafica ragazzi e dati societari"
-  immagine={cardAllievi}
-  onClick={caricaIscritti}
-/>
+      {(
+  utente.ruolo === "Admin" ||
+  utente.ruolo === "Istruttore"
+) && (
+  <>
+    <CardDashboard
+      titolo="ALLIEVI"
+      descrizione="Anagrafica ragazzi e dati societari"
+      immagine={cardAllievi}
+      onClick={caricaIscritti}
+    />
 
-          <CardDashboard
-  titolo="GRUPPI"
-  descrizione="Spostamenti e gruppi multipli"
-  immagine={cardGruppi}
-  onClick={caricaGestioneGruppi}
-/>
+    <CardDashboard
+      titolo="GRUPPI"
+      descrizione="Spostamenti e gruppi multipli"
+      immagine={cardGruppi}
+      onClick={caricaGestioneGruppi}
+    />
 
-          <button className="module-card" onClick={caricaListaWeekend}>
-            <div className="module-icon">📋</div>
-            <div>
-              <h3>LISTA WEEKEND</h3>
-              <p>Riepilogo gare ed esportazione</p>
-            </div>
-            <span>›</span>
-          </button>
-        </>
-      )}
+    {utente.ruolo === "Admin" && (
+      <button
+        className="module-card"
+        onClick={caricaListaWeekend}
+      >
+        <div className="module-icon">
+          📋
+        </div>
+
+        <div>
+          <h3>LISTA WEEKEND</h3>
+          <p>Riepilogo gare ed esportazione</p>
+        </div>
+
+        <span>›</span>
+      </button>
+    )}
+  </>
+)}
 
       <button
         className="logout module-card logout-card"
