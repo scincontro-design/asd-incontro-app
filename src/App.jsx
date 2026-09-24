@@ -6901,24 +6901,51 @@ function salvaConvocati(){
 
   Object.keys(convocati).forEach((nome) => {
 
-    if(convocati[nome]){
+  if(convocati[nome]){
 
-      listaConvocati.push({
+    var ragazzoTrovato =
+      ragazziConvocazioni.find(
+        function(r){
+          return r.nome === nome;
+        }
+      );
 
-  gruppo: garaSelezionata.gruppo,
-  dataGara: garaSelezionata.data,
-  orarioGara: garaSelezionata.orario,
-  orarioAppuntamento: orarioAppuntamento,
-  campo: garaSelezionata.campo,
-  avversario: garaSelezionata.avversario,
-  ragazzo: nome,
-  istruttore: utente.nome
+    listaConvocati.push({
+
+      idRagazzo:
+        ragazzoTrovato
+          ? ragazzoTrovato.id
+          : "",
+
+      gruppo:
+        garaSelezionata.gruppo,
+
+      dataGara:
+        garaSelezionata.data,
+
+      orarioGara:
+        garaSelezionata.orario,
+
+      orarioAppuntamento:
+        orarioAppuntamento,
+
+      campo:
+        garaSelezionata.campo,
+
+      avversario:
+        garaSelezionata.avversario,
+
+      ragazzo:
+        nome,
+
+      istruttore:
+        utente.nome
+
+    });
+
+  }
 
 });
-
-    }
-
-  });
 
   const callbackName = "callbackSalvaConvocati";
 
