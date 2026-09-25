@@ -2853,7 +2853,9 @@ function aggiungiGruppoRagazzi(){
     "?action=aggiungiGruppoRagazzi" +
     "&ids=" + encodeURIComponent(JSON.stringify(ids)) +
     "&gruppo=" + encodeURIComponent(nuovoGruppoGestione) +
-    "&callback=" + callbackName;
+"&gruppoOrigine=" + encodeURIComponent(gruppoGestione) +
+"&idUtente=" + encodeURIComponent(utente.id) +
+"&callback=" + callbackName;
 
   document.body.appendChild(script);
 
