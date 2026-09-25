@@ -3006,11 +3006,15 @@ function salvaModificaIscritto(){
       nuovoIscritto.dataNascita
     ) +
     "&telefono=" +
-    encodeURIComponent(
-      nuovoIscritto.telefono
-    ) +
-    "&callback=" +
-    callbackName;
+encodeURIComponent(
+  nuovoIscritto.telefono
+) +
+"&idUtente=" +
+encodeURIComponent(
+  utente.id
+) +
+"&callback=" +
+callbackName;
 
   document.body.appendChild(script);
 
