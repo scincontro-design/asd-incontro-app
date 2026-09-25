@@ -9560,11 +9560,13 @@ if(pagina === "iscritti"){
   ✏️ MODIFICA
 </button>
 
-<button
-  onClick={() => eliminaIscritto(i)}
->
-  🗑️ ELIMINA
-</button>
+{utente.ruolo === "Admin" && (
+  <button
+    onClick={() => eliminaIscritto(i)}
+  >
+    🗑️ ELIMINA
+  </button>
+)}
 
     </div>
 
