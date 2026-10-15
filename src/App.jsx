@@ -104,7 +104,9 @@ const [nuovoIscritto, setNuovoIscritto] = useState({
   nome: "",
   gruppo: "",
   dataNascita: "",
-  telefono: ""
+  telefono: "",
+  matricolaFigc: "",
+  numeroMaglia: ""
 });
 const [listaIscritti, setListaIscritti] = useState([]);
 const [ricercaIscritto, setRicercaIscritto] = useState("");
@@ -2887,11 +2889,13 @@ function salvaNuovoIscritto(){
       alert("Iscritto salvato");
 
       setNuovoIscritto({
-        nome: "",
-        gruppo: "",
-        dataNascita: "",
-        telefono: ""
-      });
+  nome: "",
+  gruppo: "",
+  dataNascita: "",
+  telefono: "",
+  matricolaFigc: "",
+  numeroMaglia: ""
+});
 
     }else{
       alert("Errore salvataggio iscritto");
@@ -2915,6 +2919,15 @@ function salvaNuovoIscritto(){
     "&gruppo=" + encodeURIComponent(nuovoIscritto.gruppo) +
     "&dataNascita=" + encodeURIComponent(nuovoIscritto.dataNascita) +
     "&telefono=" + encodeURIComponent(nuovoIscritto.telefono) +
+    "&matricolaFigc=" +
+encodeURIComponent(
+  nuovoIscritto.matricolaFigc
+) +
+
+"&numeroMaglia=" +
+encodeURIComponent(
+  nuovoIscritto.numeroMaglia
+) +
 "&idUtente=" + encodeURIComponent(utente.id) +
 "&ruoloUtente=" + encodeURIComponent(utente.ruolo) +
 "&callback=" + callbackName;
@@ -2930,7 +2943,9 @@ function modificaIscritto(iscritto){
     nome: iscritto.nome || "",
     gruppo: iscritto.gruppo || "",
     dataNascita: iscritto.dataNascita || "",
-    telefono: iscritto.telefono || ""
+    telefono: iscritto.telefono || "",
+    matricolaFigc: iscritto.matricolaFigc || "",
+    numeroMaglia: iscritto.numeroMaglia || ""
   });
 
   window.scrollTo({
@@ -2967,7 +2982,12 @@ function salvaModificaIscritto(){
             dataNascita:
               nuovoIscritto.dataNascita,
             telefono:
-              nuovoIscritto.telefono
+              nuovoIscritto.telefono,
+              matricolaFigc:
+  nuovoIscritto.matricolaFigc,
+
+numeroMaglia:
+  nuovoIscritto.numeroMaglia
           };
 
         }
@@ -3012,6 +3032,15 @@ function salvaModificaIscritto(){
     "&telefono=" +
 encodeURIComponent(
   nuovoIscritto.telefono
+) +
+"&matricolaFigc=" +
+encodeURIComponent(
+  nuovoIscritto.matricolaFigc
+) +
+
+"&numeroMaglia=" +
+encodeURIComponent(
+  nuovoIscritto.numeroMaglia
 ) +
 "&idUtente=" +
 encodeURIComponent(
@@ -9512,6 +9541,29 @@ if(pagina === "iscritti"){
               })
             }
           />
+          <input
+  type="text"
+  placeholder="Matricola FIGC"
+  value={nuovoIscritto.matricolaFigc}
+  onChange={(e) =>
+    setNuovoIscritto({
+      ...nuovoIscritto,
+      matricolaFigc: e.target.value
+    })
+  }
+/>
+
+<input
+  type="text"
+  placeholder="Numero maglia"
+  value={nuovoIscritto.numeroMaglia}
+  onChange={(e) =>
+    setNuovoIscritto({
+      ...nuovoIscritto,
+      numeroMaglia: e.target.value
+    })
+  }
+/>
 
           <button onClick={salvaNuovoIscritto}>
             SALVA ISCRITTO
@@ -9553,6 +9605,8 @@ if(pagina === "iscritti"){
       <p>Gruppo: {i.gruppo}</p>
       <p>Data nascita: {i.dataNascita || "-"}</p>
       <p>Telefono: {i.telefono || "-"}</p>
+      <p>Matricola FIGC: {i.matricolaFigc || "-"}</p>
+<p>Numero maglia: {i.numeroMaglia || "-"}</p>
 
       <button
   onClick={() => modificaIscritto(i)}
