@@ -75,6 +75,34 @@ const [nuovaGara, setNuovaGara] = useState({
   casaTrasferta: "Casa",
   note: ""
 });
+const [distintaGara, setDistintaGara] = useState({
+  gara: null,
+  campionato: "",
+  girone: "",
+
+  dirigente: {
+    nome: "",
+    tipoDocumento: "",
+    numeroDocumento: ""
+  },
+
+  allenatore: {
+    nome: "",
+    tipoDocumento: "",
+    numeroDocumento: ""
+  },
+
+  allenatoreSeconda: {
+    nome: "",
+    tipoDocumento: "",
+    numeroDocumento: ""
+  }
+});
+
+const [ragazziDistinta, setRagazziDistinta] = useState([]);
+const [selezionatiDistinta, setSelezionatiDistinta] = useState({});
+const [capitanoDistinta, setCapitanoDistinta] = useState("");
+const [viceCapitanoDistinta, setViceCapitanoDistinta] = useState("");
 const [tuttiGruppi, setTuttiGruppi] = useState([]);
 const [garaSelezionata, setGaraSelezionata] = useState(null);
 const [garaModifica, setGaraModifica] = useState(null);
@@ -2537,6 +2565,160 @@ function caricaGare(){
 
   setTabGare("");
   setPagina("gare");
+
+}
+function caricaDistinta(){
+
+  setDistintaGara({
+    gara: null,
+    campionato: "",
+    girone: "",
+
+    dirigente: {
+      nome: "",
+      tipoDocumento: "",
+      numeroDocumento: ""
+    },
+
+    allenatore: {
+      nome: "",
+      tipoDocumento: "",
+      numeroDocumento: ""
+    },
+
+    allenatoreSeconda: {
+      nome: "",
+      tipoDocumento: "",
+      numeroDocumento: ""
+    }
+  });
+
+  setSelezionatiDistinta({});
+  setCapitanoDistinta("");
+  setViceCapitanoDistinta("");
+
+  // ============================
+  // CARICA GARE
+  // ============================
+
+  const callbackGare =
+    "callbackGareDistinta_" +
+    Date.now();
+
+  window[callbackGare] = function(data){
+
+    setGare(
+      Array.isArray(data)
+        ? data
+        : []
+    );
+
+    var script =
+      document.getElementById(
+        callbackGare
+      );
+
+    if(script){
+      script.remove();
+    }
+
+    delete window[callbackGare];
+
+  };
+
+
+  var scriptGare =
+    document.createElement("script");
+
+  scriptGare.id =
+    callbackGare;
+
+  scriptGare.src =
+    API_URL +
+    "?action=gare" +
+    "&id=" +
+    encodeURIComponent(
+      utente.id
+    ) +
+    "&callback=" +
+    callbackGare;
+
+  document.body.appendChild(
+    scriptGare
+  );
+
+
+  // ============================
+  // CARICA TUTTI GLI ALLIEVI
+  // ============================
+
+  const callbackRagazzi =
+    "callbackRagazziDistinta_" +
+    Date.now();
+
+  window[callbackRagazzi] = function(data){
+
+    var lista =
+      Array.isArray(data)
+        ? data
+        : [];
+
+    // Istruttore:
+    // solo ragazzi dei suoi gruppi.
+    // Admin:
+    // tutti gli iscritti.
+
+    if(
+      utente.ruolo !== "Admin"
+    ){
+
+      lista =
+        lista.filter(
+          function(ragazzo){
+
+            return gruppiAllenamento.includes(
+              ragazzo.gruppo
+            );
+
+          }
+        );
+
+    }
+
+    setRagazziDistinta(lista);
+
+    var script =
+      document.getElementById(
+        callbackRagazzi
+      );
+
+    if(script){
+      script.remove();
+    }
+
+    delete window[callbackRagazzi];
+
+  };
+
+
+  var scriptRagazzi =
+    document.createElement("script");
+
+  scriptRagazzi.id =
+    callbackRagazzi;
+
+  scriptRagazzi.src =
+    API_URL +
+    "?action=listaIscritti" +
+    "&callback=" +
+    callbackRagazzi;
+
+  document.body.appendChild(
+    scriptRagazzi
+  );
+
+
+  setPagina("distinta");
 
 }
 function caricaListaWeekend(){
@@ -7744,6 +7926,162 @@ function haAllenamentiInData(data){
     </div>
   );
 }
+if(pagina === "distinta"){
+  return (
+    <div className="app">
+
+      <BottoneIndietro />
+
+      <div className="dashboard-card">
+
+        <h2>CREA DISTINTA</h2>
+
+        <div className="mini-card">
+
+          <h3>DATI GARA</h3>
+
+          <select
+            value={
+              distintaGara.gara
+                ? [
+                    distintaGara.gara.gruppo,
+                    distintaGara.gara.data,
+                    distintaGara.gara.avversario
+                  ].join("||")
+                : ""
+            }
+            onChange={(e) => {
+
+              const valore = e.target.value;
+
+              if(!valore){
+
+                setDistintaGara({
+                  ...distintaGara,
+                  gara: null
+                });
+
+                return;
+              }
+
+              const parti =
+                valore.split("||");
+
+              const gara =
+                gare.find(
+                  function(g){
+
+                    return (
+                      String(g.gruppo) === String(parti[0]) &&
+                      String(g.data) === String(parti[1]) &&
+                      String(g.avversario) === String(parti[2])
+                    );
+
+                  }
+                );
+
+              setDistintaGara({
+                ...distintaGara,
+                gara: gara || null
+              });
+
+            }}
+          >
+
+            <option value="">
+              Seleziona gara
+            </option>
+
+            {gare.map((g, index) => (
+
+              <option
+                key={index}
+                value={[
+                  g.gruppo,
+                  g.data,
+                  g.avversario
+                ].join("||")}
+              >
+                {g.data} - {g.gruppo} vs {g.avversario}
+              </option>
+
+            ))}
+
+          </select>
+
+
+          <input
+            type="text"
+            placeholder="Campionato"
+            value={distintaGara.campionato}
+            onChange={(e) =>
+              setDistintaGara({
+                ...distintaGara,
+                campionato: e.target.value
+              })
+            }
+          />
+
+          <input
+            type="text"
+            placeholder="Girone"
+            value={distintaGara.girone}
+            onChange={(e) =>
+              setDistintaGara({
+                ...distintaGara,
+                girone: e.target.value
+              })
+            }
+          />
+
+        </div>
+
+
+        {distintaGara.gara && (
+
+          <div className="mini-card">
+
+            <h3>RIEPILOGO GARA</h3>
+
+            <p>
+              <b>Gruppo:</b>{" "}
+              {distintaGara.gara.gruppo}
+            </p>
+
+            <p>
+              <b>Avversario:</b>{" "}
+              {distintaGara.gara.avversario}
+            </p>
+
+            <p>
+              <b>Data:</b>{" "}
+              {distintaGara.gara.data}
+            </p>
+
+            <p>
+              <b>Ora:</b>{" "}
+              {distintaGara.gara.orario || "-"}
+            </p>
+
+            <p>
+              <b>Campo:</b>{" "}
+              {distintaGara.gara.campo || "-"}
+            </p>
+
+            <p>
+              <b>Casa/Trasferta:</b>{" "}
+              {distintaGara.gara.casaTrasferta || "-"}
+            </p>
+
+          </div>
+
+        )}
+
+      </div>
+
+    </div>
+  );
+}
 if(pagina === "gare"){
   return (
     <div className="app">
@@ -10135,6 +10473,13 @@ if(pagina === "gruppi"){
   descrizione="Convocazioni, risultati e archivio"
   immagine={cardGare}
   onClick={caricaGare}
+/>
+
+<CardDashboard
+  titolo="CREA DISTINTA"
+  descrizione="Prepara la distinta ufficiale di gara"
+  immagine={cardGare}
+  onClick={caricaDistinta}
 />
 
      <CardDashboard
