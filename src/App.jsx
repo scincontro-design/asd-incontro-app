@@ -104,6 +104,7 @@ const [selezionatiDistinta, setSelezionatiDistinta] = useState({});
 const [capitanoDistinta, setCapitanoDistinta] = useState("");
 const [viceCapitanoDistinta, setViceCapitanoDistinta] = useState("");
 const [numeriDistinta, setNumeriDistinta] = useState({});
+const [gruppoFiltroDistinta, setGruppoFiltroDistinta] = useState("");
 const [tuttiGruppi, setTuttiGruppi] = useState([]);
 const [garaSelezionata, setGaraSelezionata] = useState(null);
 const [garaModifica, setGaraModifica] = useState(null);
@@ -3356,6 +3357,7 @@ function caricaDistinta(){
 
   setSelezionatiDistinta({});
   setNumeriDistinta({});
+  setGruppoFiltroDistinta("");
   setCapitanoDistinta("");
   setViceCapitanoDistinta("");
 
@@ -8845,152 +8847,232 @@ if(pagina === "distinta"){
 
   <p>
     Seleziona i ragazzi da inserire in distinta.
+    Puoi cambiare gruppo senza perdere quelli già selezionati.
   </p>
 
-  {ragazziDistinta.map((r, index) => {
-
-    const selezionato =
-      selezionatiDistinta[r.id] === true;
-
-    return (
-
-      <div
-        className="mini-card"
-        key={r.id || index}
-      >
-
-        <label
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px"
-          }}
-        >
-
-          <input
-            type="checkbox"
-            checked={selezionato}
-            onChange={(e) => {
-
-              setSelezionatiDistinta({
-                ...selezionatiDistinta,
-                [r.id]: e.target.checked
-              });
-
-              if(
-                !e.target.checked &&
-                String(capitanoDistinta) === String(r.id)
-              ){
-                setCapitanoDistinta("");
-              }
-
-              if(
-                !e.target.checked &&
-                String(viceCapitanoDistinta) === String(r.id)
-              ){
-                setViceCapitanoDistinta("");
-              }
-
-            }}
-          />
-
-          <b>{r.nome}</b>
-
-        </label>
-
-        <p>
-          Gruppo: {r.gruppo || "-"}
-        </p>
-
-        <p>
-          Data nascita: {r.dataNascita || "-"}
-        </p>
-
-        <p>
-          Matricola FIGC: {r.matricolaFigc || "-"}
-        </p>
-
-        <div
-  style={{
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-    marginBottom: "10px"
-  }}
->
-
-  <span>
-    Numero maglia:
-  </span>
-
-  <input
-    type="number"
-    min="1"
-    max="99"
-    value={
-      numeriDistinta[r.id] !== undefined
-        ? numeriDistinta[r.id]
-        : (r.numeroMaglia || "")
-    }
+  <select
+    value={gruppoFiltroDistinta}
     onChange={(e) =>
-      setNumeriDistinta({
-        ...numeriDistinta,
-        [r.id]: e.target.value
-      })
+      setGruppoFiltroDistinta(e.target.value)
     }
+  >
+    <option value="">
+      Tutti i miei gruppi
+    </option>
+
+    {gruppiAllenamento.map((gruppo, index) => (
+      <option
+        key={index}
+        value={gruppo}
+      >
+        {gruppo}
+      </option>
+    ))}
+
+  </select>
+
+
+  <p>
+    <b>
+      Selezionati:{" "}
+      {
+        Object.values(
+          selezionatiDistinta
+        ).filter(Boolean).length
+      }
+    </b>
+  </p>
+
+
+  <div
     style={{
-      width: "75px"
+      maxHeight: "430px",
+      overflowY: "auto",
+      overflowX: "hidden",
+      paddingRight: "6px"
     }}
-  />
+  >
 
-</div>
+    {ragazziDistinta
 
+      .filter((r) => {
 
-        {selezionato && (
+        if(!gruppoFiltroDistinta){
+          return true;
+        }
 
-          <div>
+        return (
+          String(r.gruppo) ===
+          String(gruppoFiltroDistinta)
+        );
 
-            <label>
+      })
+
+      .map((r, index) => {
+
+        const selezionato =
+          selezionatiDistinta[r.id] === true;
+
+        return (
+
+          <div
+            key={r.id || index}
+            style={{
+              borderBottom: "1px solid #ddd",
+              padding: "12px 4px"
+            }}
+          >
+
+            <label
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                cursor: "pointer"
+              }}
+            >
+
               <input
-                type="radio"
-                name="capitanoDistinta"
-                checked={
-                  String(capitanoDistinta) ===
-                  String(r.id)
-                }
-                onChange={() =>
-                  setCapitanoDistinta(r.id)
-                }
+                type="checkbox"
+                checked={selezionato}
+                onChange={(e) => {
+
+                  setSelezionatiDistinta({
+                    ...selezionatiDistinta,
+                    [r.id]: e.target.checked
+                  });
+
+                  if(
+                    !e.target.checked &&
+                    String(capitanoDistinta) ===
+                    String(r.id)
+                  ){
+                    setCapitanoDistinta("");
+                  }
+
+                  if(
+                    !e.target.checked &&
+                    String(viceCapitanoDistinta) ===
+                    String(r.id)
+                  ){
+                    setViceCapitanoDistinta("");
+                  }
+
+                }}
               />
-              Capitano
+
+              <b>{r.nome}</b>
+
+              <span
+                style={{
+                  marginLeft: "auto",
+                  fontSize: "12px"
+                }}
+              >
+                {r.gruppo}
+              </span>
+
             </label>
 
-            <br />
 
-            <label>
-              <input
-                type="radio"
-                name="viceCapitanoDistinta"
-                checked={
-                  String(viceCapitanoDistinta) ===
-                  String(r.id)
-                }
-                onChange={() =>
-                  setViceCapitanoDistinta(r.id)
-                }
-              />
-              Vice Capitano
-            </label>
+            {selezionato && (
+
+              <div
+                style={{
+                  marginTop: "10px",
+                  paddingLeft: "28px"
+                }}
+              >
+
+                <p>
+                  Data nascita:{" "}
+                  {r.dataNascita || "-"}
+                </p>
+
+                <p>
+                  Matricola FIGC:{" "}
+                  {r.matricolaFigc || "-"}
+                </p>
+
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    flexWrap: "wrap"
+                  }}
+                >
+
+                  <label>
+                    Numero maglia
+                  </label>
+
+                  <input
+                    type="number"
+                    min="1"
+                    max="99"
+                    value={
+                      numeriDistinta[r.id] !== undefined
+                        ? numeriDistinta[r.id]
+                        : (r.numeroMaglia || "")
+                    }
+                    onChange={(e) =>
+                      setNumeriDistinta({
+                        ...numeriDistinta,
+                        [r.id]: e.target.value
+                      })
+                    }
+                    style={{
+                      width: "75px"
+                    }}
+                  />
+
+
+                  <label>
+                    <input
+                      type="radio"
+                      name="capitanoDistinta"
+                      checked={
+                        String(capitanoDistinta) ===
+                        String(r.id)
+                      }
+                      onChange={() =>
+                        setCapitanoDistinta(r.id)
+                      }
+                    />
+                    Capitano
+                  </label>
+
+
+                  <label>
+                    <input
+                      type="radio"
+                      name="viceCapitanoDistinta"
+                      checked={
+                        String(viceCapitanoDistinta) ===
+                        String(r.id)
+                      }
+                      onChange={() =>
+                        setViceCapitanoDistinta(r.id)
+                      }
+                    />
+                    Vice
+                  </label>
+
+                </div>
+
+              </div>
+
+            )}
 
           </div>
 
-        )}
+        );
 
-      </div>
+      })}
 
-    );
-
-  })}
+  </div>
 
 </div>
 
