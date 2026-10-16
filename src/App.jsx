@@ -3413,8 +3413,12 @@ function caricaDistinta(){
 
 
   // ============================
-  // CARICA TUTTI GLI ALLIEVI
-  // ============================
+// CARICA RAGAZZI DELL'ISTRUTTORE
+// ============================
+
+if(
+  utente.ruolo === "Admin"
+){
 
   const callbackRagazzi =
     "callbackRagazziDistinta_" +
@@ -3422,34 +3426,11 @@ function caricaDistinta(){
 
   window[callbackRagazzi] = function(data){
 
-    var lista =
+    setRagazziDistinta(
       Array.isArray(data)
         ? data
-        : [];
-
-    // Istruttore:
-    // solo ragazzi dei suoi gruppi.
-    // Admin:
-    // tutti gli iscritti.
-
-    if(
-      utente.ruolo !== "Admin"
-    ){
-
-      lista =
-        lista.filter(
-          function(ragazzo){
-
-            return gruppiAllenamento.includes(
-              ragazzo.gruppo
-            );
-
-          }
-        );
-
-    }
-
-    setRagazziDistinta(lista);
+        : []
+    );
 
     var script =
       document.getElementById(
@@ -3463,7 +3444,6 @@ function caricaDistinta(){
     delete window[callbackRagazzi];
 
   };
-
 
   var scriptRagazzi =
     document.createElement("script");
@@ -3481,7 +3461,137 @@ function caricaDistinta(){
     scriptRagazzi
   );
 
+}else{
 
+  const gruppi =
+    Array.isArray(gruppiAllenamento)
+      ? gruppiAllenamento
+      : [];
+
+  let raccolta = [];
+  let completati = 0;
+
+  if(gruppi.length === 0){
+
+    setRagazziDistinta([]);
+
+  }else{
+
+    gruppi.forEach(
+      function(gruppo, index){
+
+        const callbackName =
+          "callbackDistintaGruppo_" +
+          index +
+          "_" +
+          Date.now();
+
+        window[callbackName] =
+          function(data){
+
+            const ragazziGruppo =
+              Array.isArray(data)
+                ? data
+                : [];
+
+            ragazziGruppo.forEach(
+              function(ragazzo){
+
+                const esiste =
+                  raccolta.some(
+                    function(r){
+
+                      return (
+                        String(r.id) ===
+                        String(ragazzo.id)
+                      );
+
+                    }
+                  );
+
+                if(!esiste){
+
+                  raccolta.push({
+                    ...ragazzo,
+                    gruppoDistinta:
+                      gruppo
+                  });
+
+                }
+
+              }
+            );
+
+            completati++;
+
+            var script =
+              document.getElementById(
+                callbackName
+              );
+
+            if(script){
+              script.remove();
+            }
+
+            delete window[callbackName];
+
+            if(
+              completati ===
+              gruppi.length
+            ){
+
+              raccolta.sort(
+                function(a, b){
+
+                  return String(
+                    a.nome || ""
+                  ).localeCompare(
+                    String(
+                      b.nome || ""
+                    ),
+                    "it"
+                  );
+
+                }
+              );
+
+              setRagazziDistinta(
+                raccolta
+              );
+
+            }
+
+          };
+
+
+        var script =
+          document.createElement(
+            "script"
+          );
+
+        script.id =
+          callbackName;
+
+        script.src =
+          API_URL +
+          "?action=ragazziGruppo" +
+          "&gruppo=" +
+          encodeURIComponent(
+            gruppo
+          ) +
+          "&callback=" +
+          callbackName;
+
+        document.body.appendChild(
+          script
+        );
+
+      }
+    );
+
+  }
+
+}
   setPagina("distinta");
 
 }
