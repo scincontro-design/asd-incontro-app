@@ -103,6 +103,7 @@ const [ragazziDistinta, setRagazziDistinta] = useState([]);
 const [selezionatiDistinta, setSelezionatiDistinta] = useState({});
 const [capitanoDistinta, setCapitanoDistinta] = useState("");
 const [viceCapitanoDistinta, setViceCapitanoDistinta] = useState("");
+const [numeriDistinta, setNumeriDistinta] = useState({});
 const [tuttiGruppi, setTuttiGruppi] = useState([]);
 const [garaSelezionata, setGaraSelezionata] = useState(null);
 const [garaModifica, setGaraModifica] = useState(null);
@@ -2594,6 +2595,7 @@ function caricaDistinta(){
   });
 
   setSelezionatiDistinta({});
+  setNumeriDistinta({});
   setCapitanoDistinta("");
   setViceCapitanoDistinta("");
 
@@ -8076,6 +8078,326 @@ if(pagina === "distinta"){
           </div>
 
         )}
+
+        <div className="mini-card">
+
+  <h3>GIOCATORI</h3>
+
+  <p>
+    Seleziona i ragazzi da inserire in distinta.
+  </p>
+
+  {ragazziDistinta.map((r, index) => {
+
+    const selezionato =
+      selezionatiDistinta[r.id] === true;
+
+    return (
+
+      <div
+        className="mini-card"
+        key={r.id || index}
+      >
+
+        <label
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px"
+          }}
+        >
+
+          <input
+            type="checkbox"
+            checked={selezionato}
+            onChange={(e) => {
+
+              setSelezionatiDistinta({
+                ...selezionatiDistinta,
+                [r.id]: e.target.checked
+              });
+
+              if(
+                !e.target.checked &&
+                String(capitanoDistinta) === String(r.id)
+              ){
+                setCapitanoDistinta("");
+              }
+
+              if(
+                !e.target.checked &&
+                String(viceCapitanoDistinta) === String(r.id)
+              ){
+                setViceCapitanoDistinta("");
+              }
+
+            }}
+          />
+
+          <b>{r.nome}</b>
+
+        </label>
+
+        <p>
+          Gruppo: {r.gruppo || "-"}
+        </p>
+
+        <p>
+          Data nascita: {r.dataNascita || "-"}
+        </p>
+
+        <p>
+          Matricola FIGC: {r.matricolaFigc || "-"}
+        </p>
+
+        <div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    marginBottom: "10px"
+  }}
+>
+
+  <span>
+    Numero maglia:
+  </span>
+
+  <input
+    type="number"
+    min="1"
+    max="99"
+    value={
+      numeriDistinta[r.id] !== undefined
+        ? numeriDistinta[r.id]
+        : (r.numeroMaglia || "")
+    }
+    onChange={(e) =>
+      setNumeriDistinta({
+        ...numeriDistinta,
+        [r.id]: e.target.value
+      })
+    }
+    style={{
+      width: "75px"
+    }}
+  />
+
+</div>
+
+
+        {selezionato && (
+
+          <div>
+
+            <label>
+              <input
+                type="radio"
+                name="capitanoDistinta"
+                checked={
+                  String(capitanoDistinta) ===
+                  String(r.id)
+                }
+                onChange={() =>
+                  setCapitanoDistinta(r.id)
+                }
+              />
+              Capitano
+            </label>
+
+            <br />
+
+            <label>
+              <input
+                type="radio"
+                name="viceCapitanoDistinta"
+                checked={
+                  String(viceCapitanoDistinta) ===
+                  String(r.id)
+                }
+                onChange={() =>
+                  setViceCapitanoDistinta(r.id)
+                }
+              />
+              Vice Capitano
+            </label>
+
+          </div>
+
+        )}
+
+      </div>
+
+    );
+
+  })}
+
+</div>
+
+<div className="mini-card">
+
+  <h3>STAFF</h3>
+
+  <h4>Dirigente accompagnatore</h4>
+
+  <input
+    type="text"
+    placeholder="Nome e cognome"
+    value={distintaGara.dirigente.nome}
+    onChange={(e) =>
+      setDistintaGara({
+        ...distintaGara,
+        dirigente: {
+          ...distintaGara.dirigente,
+          nome: e.target.value
+        }
+      })
+    }
+  />
+
+  <select
+    value={distintaGara.dirigente.tipoDocumento}
+    onChange={(e) =>
+      setDistintaGara({
+        ...distintaGara,
+        dirigente: {
+          ...distintaGara.dirigente,
+          tipoDocumento: e.target.value
+        }
+      })
+    }
+  >
+    <option value="">Tipo documento</option>
+    <option value="C.I.">C.I.</option>
+    <option value="PAT.">PAT.</option>
+    <option value="FIGC">FIGC</option>
+  </select>
+
+  <input
+    type="text"
+    placeholder="Numero documento"
+    value={distintaGara.dirigente.numeroDocumento}
+    onChange={(e) =>
+      setDistintaGara({
+        ...distintaGara,
+        dirigente: {
+          ...distintaGara.dirigente,
+          numeroDocumento: e.target.value
+        }
+      })
+    }
+  />
+
+
+  <h4>Allenatore</h4>
+
+  <input
+    type="text"
+    placeholder="Nome e cognome"
+    value={distintaGara.allenatore.nome}
+    onChange={(e) =>
+      setDistintaGara({
+        ...distintaGara,
+        allenatore: {
+          ...distintaGara.allenatore,
+          nome: e.target.value
+        }
+      })
+    }
+  />
+
+  <select
+    value={distintaGara.allenatore.tipoDocumento}
+    onChange={(e) =>
+      setDistintaGara({
+        ...distintaGara,
+        allenatore: {
+          ...distintaGara.allenatore,
+          tipoDocumento: e.target.value
+        }
+      })
+    }
+  >
+    <option value="">Tipo documento</option>
+    <option value="C.I.">C.I.</option>
+    <option value="PAT.">PAT.</option>
+    <option value="FIGC">FIGC</option>
+  </select>
+
+  <input
+    type="text"
+    placeholder="Numero documento"
+    value={distintaGara.allenatore.numeroDocumento}
+    onChange={(e) =>
+      setDistintaGara({
+        ...distintaGara,
+        allenatore: {
+          ...distintaGara.allenatore,
+          numeroDocumento: e.target.value
+        }
+      })
+    }
+  />
+
+
+  <h4>Allenatore in seconda</h4>
+
+  <input
+    type="text"
+    placeholder="Nome e cognome"
+    value={distintaGara.allenatoreSeconda.nome}
+    onChange={(e) =>
+      setDistintaGara({
+        ...distintaGara,
+        allenatoreSeconda: {
+          ...distintaGara.allenatoreSeconda,
+          nome: e.target.value
+        }
+      })
+    }
+  />
+
+  <select
+    value={distintaGara.allenatoreSeconda.tipoDocumento}
+    onChange={(e) =>
+      setDistintaGara({
+        ...distintaGara,
+        allenatoreSeconda: {
+          ...distintaGara.allenatoreSeconda,
+          tipoDocumento: e.target.value
+        }
+      })
+    }
+  >
+    <option value="">Tipo documento</option>
+    <option value="C.I.">C.I.</option>
+    <option value="PAT.">PAT.</option>
+    <option value="FIGC">FIGC</option>
+  </select>
+
+  <input
+    type="text"
+    placeholder="Numero documento"
+    value={distintaGara.allenatoreSeconda.numeroDocumento}
+    onChange={(e) =>
+      setDistintaGara({
+        ...distintaGara,
+        allenatoreSeconda: {
+          ...distintaGara.allenatoreSeconda,
+          numeroDocumento: e.target.value
+        }
+      })
+    }
+  />
+
+</div>
+
+<button
+  type="button"
+  onClick={generaDistintaPDF}
+>
+  GENERA DISTINTA PDF
+</button>
 
       </div>
 
