@@ -9026,11 +9026,15 @@ if(pagina === "distinta"){
         return (
 
           <div
-            key={r.id || index}
-            style={{
-              borderBottom: "1px solid #ddd",
-              padding: "12px 4px"
-            }}
+  key={r.id || index}
+  style={{
+    borderBottom: "1px solid #ddd",
+    padding: "12px",
+    background: "#ffffff",
+    color: "#111111",
+    borderRadius: "8px",
+    marginBottom: "6px"
+  }}
           >
 
             <label
@@ -9071,16 +9075,24 @@ if(pagina === "distinta"){
                 }}
               />
 
-              <b>{r.nome}</b>
+              <b
+  style={{
+    color: "#111111",
+    fontSize: "15px"
+  }}
+>
+  {r.nome || "NOME NON DISPONIBILE"}
+</b>
 
               <span
-                style={{
-                  marginLeft: "auto",
-                  fontSize: "12px"
-                }}
-              >
-                {r.gruppo}
-              </span>
+  style={{
+    marginLeft: "auto",
+    fontSize: "12px",
+    color: "#666666"
+  }}
+>
+  {r.gruppoDistinta || r.gruppo || ""}
+</span>
 
             </label>
 
