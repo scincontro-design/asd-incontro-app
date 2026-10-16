@@ -9167,7 +9167,13 @@ if(pagina === "distinta"){
                   />
 
 
-                  <label>
+                  <label
+                  style={{
+    display: "inline-flex",
+    alignItems: "center",
+    marginRight: "15px"
+  }}
+>
                     <input
                       type="radio"
                       name="capitanoDistinta"
@@ -9191,7 +9197,13 @@ if(pagina === "distinta"){
                   </label>
 
 
-                  <label>
+                  <label
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      marginRight: "15px"
+                    }}
+                  >
                     <input
                       type="radio"
                       name="viceCapitanoDistinta"
