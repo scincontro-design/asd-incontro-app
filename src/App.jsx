@@ -2568,6 +2568,766 @@ function caricaGare(){
   setPagina("gare");
 
 }
+function generaDistintaPDF(){
+
+  // =====================================================
+  // CONTROLLI
+  // =====================================================
+
+  if(!distintaGara.gara){
+    alert("Seleziona prima una gara");
+    return;
+  }
+
+  const giocatori = ragazziDistinta
+    .filter((r) => selezionatiDistinta[r.id] === true)
+    .map((r) => {
+
+      const numero =
+        numeriDistinta[r.id] !== undefined
+          ? numeriDistinta[r.id]
+          : (r.numeroMaglia || "");
+
+      return {
+        ...r,
+        numeroDistinta: numero
+      };
+
+    });
+
+
+  if(giocatori.length === 0){
+    alert("Seleziona almeno un giocatore");
+    return;
+  }
+
+
+  if(giocatori.length > 24){
+    alert("Puoi inserire massimo 24 giocatori");
+    return;
+  }
+
+
+  // Ordine per numero maglia
+  giocatori.sort((a, b) => {
+
+    const na = Number(a.numeroDistinta) || 999;
+    const nb = Number(b.numeroDistinta) || 999;
+
+    return na - nb;
+
+  });
+
+
+  // =====================================================
+  // FUNZIONI UTILI
+  // =====================================================
+
+  function dataItaliana(data){
+
+    if(!data){
+      return "";
+    }
+
+    const parti = String(data).split("-");
+
+    if(parti.length !== 3){
+      return data;
+    }
+
+    return (
+      parti[2] +
+      "/" +
+      parti[1] +
+      "/" +
+      parti[0]
+    );
+
+  }
+
+
+  function testo(valore){
+
+    if(
+      valore === null ||
+      valore === undefined
+    ){
+      return "";
+    }
+
+    return String(valore);
+
+  }
+
+
+  // =====================================================
+  // DATI GARA
+  // =====================================================
+
+  const gara = distintaGara.gara;
+
+  const nomeSocieta =
+    "A.S. INCONTRO";
+
+  const avversario =
+    testo(gara.avversario);
+
+  let titoloGara = "";
+
+  if(gara.casaTrasferta === "Trasferta"){
+
+    titoloGara =
+      avversario +
+      " - " +
+      nomeSocieta;
+
+  }else{
+
+    titoloGara =
+      nomeSocieta +
+      " - " +
+      avversario;
+
+  }
+
+
+  // =====================================================
+  // CREA PDF
+  // =====================================================
+
+  const doc = new jsPDF({
+    orientation: "portrait",
+    unit: "mm",
+    format: "a4"
+  });
+
+
+  // =====================================================
+  // LOGO
+  // =====================================================
+
+  try{
+
+    doc.addImage(
+      logo,
+      "PNG",
+      10,
+      7,
+      18,
+      18
+    );
+
+  }catch(e){
+
+    console.log(
+      "Logo non inserito",
+      e
+    );
+
+  }
+
+
+  // =====================================================
+  // INTESTAZIONE
+  // =====================================================
+
+  doc.setFont(
+    "helvetica",
+    "bold"
+  );
+
+  doc.setFontSize(11);
+
+  doc.text(
+    "F.I.G.C. - LEGA NAZIONALE DILETTANTI",
+    105,
+    10,
+    {
+      align: "center"
+    }
+  );
+
+
+  doc.setFontSize(10);
+
+  doc.text(
+    "912989  A.S. INCONTRO",
+    105,
+    18,
+    {
+      align: "center"
+    }
+  );
+
+
+  doc.setFontSize(9);
+
+  doc.text(
+    "Distinta dei/delle giuocatori/trici partecipanti alla gara",
+    10,
+    30
+  );
+
+
+  doc.setFontSize(10);
+
+  doc.text(
+    titoloGara,
+    200,
+    30,
+    {
+      align: "right"
+    }
+  );
+
+
+  doc.setFont(
+    "helvetica",
+    "normal"
+  );
+
+  doc.setFontSize(8);
+
+
+  doc.text(
+    "Campionato: " +
+    testo(distintaGara.campionato),
+    10,
+    36
+  );
+
+
+  doc.text(
+    "Girone: " +
+    testo(distintaGara.girone),
+    145,
+    36
+  );
+
+
+  doc.text(
+    "Data: " +
+    dataItaliana(gara.data),
+    10,
+    42
+  );
+
+
+  doc.text(
+    "Ora: " +
+    testo(
+      gara.orario ||
+      gara.orarioGara
+    ),
+    65,
+    42
+  );
+
+
+  doc.text(
+    "Campo: " +
+    testo(gara.campo),
+    10,
+    48
+  );
+
+
+  // =====================================================
+  // TABELLA GIOCATORI
+  // =====================================================
+
+  let y = 56;
+
+  const altezzaHeader = 10;
+  const altezzaRiga = 6;
+
+  const xNumero = 10;
+  const wNumero = 13;
+
+  const xData = 23;
+  const wData = 28;
+
+  const xNome = 51;
+  const wNome = 62;
+
+  const xCap = 113;
+  const wCap = 17;
+
+  const xMatricola = 130;
+  const wMatricola = 26;
+
+  const xDocumento = 156;
+  const wDocumento = 44;
+
+
+  // HEADER TABELLA
+
+  doc.setFont(
+    "helvetica",
+    "bold"
+  );
+
+  doc.setFontSize(6.5);
+
+
+  doc.rect(
+    xNumero,
+    y,
+    wNumero,
+    altezzaHeader
+  );
+
+  doc.text(
+    "N°",
+    xNumero + wNumero / 2,
+    y + 4,
+    {
+      align: "center"
+    }
+  );
+
+  doc.text(
+    "MAGLIA",
+    xNumero + wNumero / 2,
+    y + 8,
+    {
+      align: "center"
+    }
+  );
+
+
+  doc.rect(
+    xData,
+    y,
+    wData,
+    altezzaHeader
+  );
+
+  doc.text(
+    "DATA DI NASCITA",
+    xData + wData / 2,
+    y + 6,
+    {
+      align: "center"
+    }
+  );
+
+
+  doc.rect(
+    xNome,
+    y,
+    wNome,
+    altezzaHeader
+  );
+
+  doc.text(
+    "COGNOME E NOME",
+    xNome + wNome / 2,
+    y + 6,
+    {
+      align: "center"
+    }
+  );
+
+
+  doc.rect(
+    xCap,
+    y,
+    wCap,
+    altezzaHeader
+  );
+
+  doc.text(
+    "CAP.",
+    xCap + wCap / 2,
+    y + 4,
+    {
+      align: "center"
+    }
+  );
+
+  doc.text(
+    "V. CAP.",
+    xCap + wCap / 2,
+    y + 8,
+    {
+      align: "center"
+    }
+  );
+
+
+  doc.rect(
+    xMatricola,
+    y,
+    wMatricola,
+    altezzaHeader
+  );
+
+  doc.text(
+    "N. MATRICOLA",
+    xMatricola + wMatricola / 2,
+    y + 4,
+    {
+      align: "center"
+    }
+  );
+
+  doc.text(
+    "F.I.G.C.",
+    xMatricola + wMatricola / 2,
+    y + 8,
+    {
+      align: "center"
+    }
+  );
+
+
+  doc.rect(
+    xDocumento,
+    y,
+    wDocumento,
+    altezzaHeader
+  );
+
+  doc.text(
+    "DOCUMENTO DI IDENTIFICAZIONE",
+    xDocumento + wDocumento / 2,
+    y + 4,
+    {
+      align: "center"
+    }
+  );
+
+  doc.text(
+    "Tipo / Numero",
+    xDocumento + wDocumento / 2,
+    y + 8,
+    {
+      align: "center"
+    }
+  );
+
+
+  y += altezzaHeader;
+
+
+  // =====================================================
+  // 24 RIGHE
+  // =====================================================
+
+  for(let i = 0; i < 24; i++){
+
+    const r =
+      giocatori[i] || null;
+
+
+    doc.setFont(
+      "helvetica",
+      "normal"
+    );
+
+    doc.setFontSize(7);
+
+
+    doc.rect(
+      xNumero,
+      y,
+      wNumero,
+      altezzaRiga
+    );
+
+    doc.rect(
+      xData,
+      y,
+      wData,
+      altezzaRiga
+    );
+
+    doc.rect(
+      xNome,
+      y,
+      wNome,
+      altezzaRiga
+    );
+
+    doc.rect(
+      xCap,
+      y,
+      wCap,
+      altezzaRiga
+    );
+
+    doc.rect(
+      xMatricola,
+      y,
+      wMatricola,
+      altezzaRiga
+    );
+
+    doc.rect(
+      xDocumento,
+      y,
+      wDocumento,
+      altezzaRiga
+    );
+
+
+    if(r){
+
+      // NUMERO MAGLIA
+      doc.setFont(
+        "helvetica",
+        "bold"
+      );
+
+      doc.setFontSize(8);
+
+      doc.text(
+        testo(r.numeroDistinta),
+        xNumero + wNumero / 2,
+        y + 4.2,
+        {
+          align: "center"
+        }
+      );
+
+
+      // DATA NASCITA
+      doc.setFont(
+        "helvetica",
+        "normal"
+      );
+
+      doc.setFontSize(7);
+
+      doc.text(
+        dataItaliana(
+          r.dataNascita
+        ),
+        xData + 2,
+        y + 4
+      );
+
+
+      // NOME
+      doc.setFont(
+        "helvetica",
+        "bold"
+      );
+
+      doc.text(
+        testo(r.nome)
+          .toUpperCase(),
+        xNome + 2,
+        y + 4
+      );
+
+
+      // CAPITANO / VICE
+      let simbolo = "";
+
+      if(
+        String(capitanoDistinta) ===
+        String(r.id)
+      ){
+        simbolo = "C";
+      }
+
+      if(
+        String(viceCapitanoDistinta) ===
+        String(r.id)
+      ){
+        simbolo = "V";
+      }
+
+      doc.text(
+        simbolo,
+        xCap + wCap / 2,
+        y + 4,
+        {
+          align: "center"
+        }
+      );
+
+
+      // MATRICOLA
+      doc.setFont(
+        "helvetica",
+        "normal"
+      );
+
+      doc.text(
+        testo(
+          r.matricolaFigc
+        ),
+        xMatricola + 2,
+        y + 4
+      );
+
+    }
+
+
+    y += altezzaRiga;
+
+  }
+
+
+  // =====================================================
+  // STAFF
+  // =====================================================
+
+  y += 7;
+
+  doc.setFontSize(7.5);
+  doc.setFont(
+    "helvetica",
+    "normal"
+  );
+
+
+  function rigaStaff(
+    etichetta,
+    persona
+  ){
+
+    const nome =
+      testo(persona?.nome);
+
+    const tipo =
+      testo(
+        persona?.tipoDocumento
+      );
+
+    const numero =
+      testo(
+        persona?.numeroDocumento
+      );
+
+
+    let riga =
+      etichetta + ": " + nome;
+
+    if(tipo || numero){
+
+      riga +=
+        "     Documento: " +
+        tipo;
+
+      if(numero){
+        riga += " " + numero;
+      }
+
+    }
+
+
+    doc.text(
+      riga,
+      10,
+      y
+    );
+
+    y += 6;
+
+  }
+
+
+  rigaStaff(
+    "Dirigente accompagnatore ufficiale",
+    distintaGara.dirigente
+  );
+
+
+  rigaStaff(
+    "Allenatore",
+    distintaGara.allenatore
+  );
+
+
+  rigaStaff(
+    "Allenatore in seconda",
+    distintaGara.allenatoreSeconda
+  );
+
+
+  // =====================================================
+  // NOTE E FIRME
+  // =====================================================
+
+  y += 3;
+
+  doc.line(
+    10,
+    y,
+    200,
+    y
+  );
+
+  y += 5;
+
+
+  doc.setFontSize(6.5);
+
+  doc.text(
+    "Il sottoscritto Dirigente accompagnatore ufficiale dichiara che i giocatori sopraindicati",
+    10,
+    y
+  );
+
+  y += 4;
+
+  doc.text(
+    "sono regolarmente tesserati e partecipano alla gara sotto la responsabilità della Società.",
+    10,
+    y
+  );
+
+
+  y += 12;
+
+
+  doc.setFont(
+    "helvetica",
+    "bold"
+  );
+
+  doc.text(
+    "V° L'ARBITRO",
+    35,
+    y,
+    {
+      align: "center"
+    }
+  );
+
+  doc.text(
+    "IL DIRIGENTE ACCOMPAGNATORE UFFICIALE",
+    155,
+    y,
+    {
+      align: "center"
+    }
+  );
+
+
+  // =====================================================
+  // SALVA
+  // =====================================================
+
+  const nomeFile =
+    "Distinta_" +
+    testo(gara.gruppo)
+      .replace(/\s+/g, "_") +
+    "_" +
+    testo(gara.avversario)
+      .replace(/\s+/g, "_") +
+    "_" +
+    testo(gara.data) +
+    ".pdf";
+
+
+  doc.save(nomeFile);
+
+}
 function caricaDistinta(){
 
   setDistintaGara({
