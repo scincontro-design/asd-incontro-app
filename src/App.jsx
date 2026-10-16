@@ -9134,99 +9134,123 @@ if(pagina === "distinta"){
 
 
                 <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "10px",
-                    flexWrap: "wrap"
-                  }}
-                >
-
-                  <label>
-                    Numero maglia
-                  </label>
-
-                  <input
-                    type="number"
-                    min="1"
-                    max="99"
-                    value={
-                      numeriDistinta[r.id] !== undefined
-                        ? numeriDistinta[r.id]
-                        : (r.numeroMaglia || "")
-                    }
-                    onChange={(e) =>
-                      setNumeriDistinta({
-                        ...numeriDistinta,
-                        [r.id]: e.target.value
-                      })
-                    }
-                    style={{
-                      width: "75px"
-                    }}
-                  />
-
-
-                  <label
-                  style={{
-    display: "inline-flex",
+  style={{
+    display: "flex",
     alignItems: "center",
-    marginRight: "15px"
+    gap: "14px",
+    flexWrap: "wrap",
+    marginTop: "8px",
+    color: "#111111"
   }}
 >
-                    <input
-                      type="radio"
-                      name="capitanoDistinta"
-                      style={{
-  width: "16px",
-  height: "16px",
-  minWidth: "16px",
-  maxWidth: "16px",
-  marginRight: "6px",
-  padding: 0
-}}
-                      checked={
-                        String(capitanoDistinta) ===
-                        String(r.id)
-                      }
-                      onChange={() =>
-                        setCapitanoDistinta(r.id)
-                      }
-                    />
-                    Capitano
-                  </label>
+
+  <label
+    style={{
+      display: "inline-flex",
+      alignItems: "center",
+      gap: "6px",
+      color: "#111111",
+      fontWeight: "600"
+    }}
+  >
+    N°
+
+    <input
+      type="number"
+      min="1"
+      max="99"
+      value={
+        numeriDistinta[r.id] !== undefined
+          ? numeriDistinta[r.id]
+          : (r.numeroMaglia || "")
+      }
+      onChange={(e) =>
+        setNumeriDistinta({
+          ...numeriDistinta,
+          [r.id]: e.target.value
+        })
+      }
+      style={{
+        width: "60px",
+        height: "34px",
+        color: "#111111",
+        background: "#ffffff"
+      }}
+    />
+
+  </label>
 
 
-                  <label
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      marginRight: "15px"
-                    }}
-                  >
-                    <input
-                      type="radio"
-                      name="viceCapitanoDistinta"
-                      style={{
-  width: "16px",
-  height: "16px",
-  minWidth: "16px",
-  maxWidth: "16px",
-  marginRight: "6px",
-  padding: 0
-}}
-                      checked={
-                        String(viceCapitanoDistinta) ===
-                        String(r.id)
-                      }
-                      onChange={() =>
-                        setViceCapitanoDistinta(r.id)
-                      }
-                    />
-                    Vice
-                  </label>
+  <label
+    style={{
+      display: "inline-flex",
+      alignItems: "center",
+      gap: "6px",
+      color: "#111111",
+      fontWeight: "600"
+    }}
+  >
 
-                </div>
+    <input
+      type="radio"
+      name="capitanoDistinta"
+      style={{
+        width: "16px",
+        height: "16px",
+        minWidth: "16px",
+        maxWidth: "16px",
+        margin: 0,
+        padding: 0
+      }}
+      checked={
+        String(capitanoDistinta) ===
+        String(r.id)
+      }
+      onChange={() =>
+        setCapitanoDistinta(r.id)
+      }
+    />
+
+    C
+
+  </label>
+
+
+  <label
+    style={{
+      display: "inline-flex",
+      alignItems: "center",
+      gap: "6px",
+      color: "#111111",
+      fontWeight: "600"
+    }}
+  >
+
+    <input
+      type="radio"
+      name="viceCapitanoDistinta"
+      style={{
+        width: "16px",
+        height: "16px",
+        minWidth: "16px",
+        maxWidth: "16px",
+        margin: 0,
+        padding: 0
+      }}
+      checked={
+        String(viceCapitanoDistinta) ===
+        String(r.id)
+      }
+      onChange={() =>
+        setViceCapitanoDistinta(r.id)
+      }
+    />
+
+    VC
+
+  </label>
+
+</div>
 
               </div>
 
