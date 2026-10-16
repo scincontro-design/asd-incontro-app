@@ -9039,15 +9039,26 @@ if(pagina === "distinta"){
 
             <label
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                cursor: "pointer"
-              }}
+  display: "flex",
+  alignItems: "center",
+  gap: "10px",
+  cursor: "pointer",
+  width: "100%",
+  minWidth: 0
+}}
             >
 
               <input
                 type="checkbox"
+                style={{
+  width: "18px",
+  height: "18px",
+  minWidth: "18px",
+  maxWidth: "18px",
+  flex: "0 0 18px",
+  margin: 0,
+  padding: 0
+}}
                 checked={selezionato}
                 onChange={(e) => {
 
@@ -9075,10 +9086,15 @@ if(pagina === "distinta"){
                 }}
               />
 
-              <b
+            <b
   style={{
     color: "#111111",
-    fontSize: "15px"
+    fontSize: "15px",
+    flex: "1 1 auto",
+    minWidth: 0,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap"
   }}
 >
   {r.nome || "NOME NON DISPONIBILE"}
@@ -9155,6 +9171,14 @@ if(pagina === "distinta"){
                     <input
                       type="radio"
                       name="capitanoDistinta"
+                      style={{
+  width: "16px",
+  height: "16px",
+  minWidth: "16px",
+  maxWidth: "16px",
+  marginRight: "6px",
+  padding: 0
+}}
                       checked={
                         String(capitanoDistinta) ===
                         String(r.id)
@@ -9171,6 +9195,14 @@ if(pagina === "distinta"){
                     <input
                       type="radio"
                       name="viceCapitanoDistinta"
+                      style={{
+  width: "16px",
+  height: "16px",
+  minWidth: "16px",
+  maxWidth: "16px",
+  marginRight: "6px",
+  padding: 0
+}}
                       checked={
                         String(viceCapitanoDistinta) ===
                         String(r.id)
